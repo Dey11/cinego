@@ -1,11 +1,9 @@
-"use client";
-
-import { SignIn } from "@/components/custom-btns/signin";
+import { ModeToggle } from "@/components/custom-btns/toggle-theme";
 
 export default function Home() {
   return (
     <div className="">
-      <SignIn />
+      <ModeToggle />
     </div>
   );
 }
