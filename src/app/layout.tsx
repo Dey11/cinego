@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import Header from "@/components/header/header";
+import Footer from "@/components/footer/footer";
+import MobileNav from "@/components/footer/mobile-nav";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,14 +20,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className}`}>
+      <body className={`${inter.className} `}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
+          {/* <div className="mx-auto max-w-7xl"> */}
+          <Header />
           {children}
+          <MobileNav />
+          <Footer />
         </ThemeProvider>
       </body>
     </html>
