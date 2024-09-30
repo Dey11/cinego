@@ -6,6 +6,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import Search from "./search";
+import { ModeToggle } from "../custom-btns/toggle-theme";
 
 const options = [
   { name: "Home", href: "/", icon: Home },
@@ -20,7 +21,8 @@ const Header = () => {
     <header className="absolute top-0 z-20 mt-5 flex w-full items-center justify-between px-5 md:px-10">
       <h1 className="text-2xl font-bold text-red-500">Cinego</h1>
       <Search />
-      <div className="flex gap-x-5">
+      <div className="flex items-center gap-x-5">
+        {/* <ModeToggle /> */}
         <MenuOps />
         <User />
       </div>
