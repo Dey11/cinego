@@ -14,7 +14,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 import { Button } from "../ui/button";
-import { Info, Play } from "lucide-react";
+import { Calendar, Info, Play, Star } from "lucide-react";
 
 export default function TopSlider() {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -47,8 +47,13 @@ export default function TopSlider() {
               <div className="absolute bottom-[25dvh] left-8 z-10 text-white">
                 <h1 className="mb-2 text-6xl font-bold">{slide.title}</h1>
                 <div className="mb-2 flex items-center">
-                  <span className="mr-2 text-yellow-400">★ {slide.rating}</span>
-                  <span className="text-gray-300">{slide.date}</span>
+                  <span className="mr-2 flex items-center gap-x-1">
+                    <Star className="h-4 w-4 text-yellow-500" /> {slide.rating}
+                  </span>
+                  <span className="ml-2 flex items-center gap-x-1 text-gray-300">
+                    <Calendar className="h-4 w-4" />
+                    {slide.date}
+                  </span>
                 </div>
                 <p className="max-w-2xl text-lg">{slide.description}</p>
                 <div className="mt-4">
@@ -78,7 +83,7 @@ export default function TopSlider() {
       <div className="absolute -bottom-20 left-0 right-0 px-4 lg:px-8">
         <Swiper
           modules={[Navigation, A11y, Autoplay]}
-          spaceBetween={10}
+          // spaceBetween={}
           slidesPerView={"auto"}
           autoplay={{
             delay: 2500,
@@ -94,18 +99,13 @@ export default function TopSlider() {
             700: {
               slidesPerView: 4,
             },
-            800: {
-              slidesPerView: 5,
-            },
             1000: {
-              slidesPerView: 6,
+              slidesPerView: 4,
             },
-            1536: {
-              slidesPerView: 7,
-            },
+            1536: { slidesPerView: 5 },
           }}
           //   navigation
-          className="h-full w-full"
+          className="mx-auto h-full w-full"
         >
           {thumbnailSlides.map((slide, index) => (
             <SwiperSlide key={index} className="">

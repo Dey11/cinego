@@ -86,3 +86,39 @@
     @apply bg-background text-foreground;
   }
 }
+
+.swiper-button-prev {
+  --swiper-navigation-size: 30px;
+  --swiper-navigation-top-offset: 50%;
+  --swiper-navigation-sides-offset: 10px;
+  --swiper-navigation-color: #ff0000;
+}
+
+.swiper-button-next {
+  --swiper-navigation-size: 30px;
+  --swiper-navigation-top-offset: 50%;
+  --swiper-navigation-sides-offset: 10px;
+  --swiper-navigation-color: #ff0000;
+}
+
+@layer utilities {
+  .scrollbar::-webkit-scrollbar {
+    width: 10px;
+    height: 20px;
+  }
+
+  .scrollbar::-webkit-scrollbar-track {
+    border-radius: 100vh;
+    background: #2a2929;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    background: #4a4a4a;
+    border-radius: 80vh;
+    /* border: 3px solid #f6f7ed; */
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #c0a0b9;
+  }
+}

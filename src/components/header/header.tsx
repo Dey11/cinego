@@ -22,9 +22,9 @@ const Header = () => {
       <h1 className="text-2xl font-bold text-red-500">Cinego</h1>
       <Search />
       <div className="flex items-center gap-x-5">
-        {/* <ModeToggle /> */}
+        <ModeToggle />
         <MenuOps />
-        <User />
+        <User className="text-white" />
       </div>
     </header>
   );
@@ -36,7 +36,7 @@ const MenuOps = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Menu />
+        <Menu className="text-white" />
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         {options.map((option) => (

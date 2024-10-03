@@ -7,7 +7,7 @@ const PopularAppleShows = async () => {
 
   return (
     <div>
-      <h1 className="inline-block bg-gradient-to-r from-white to-slate-500 bg-clip-text pl-2 text-lg font-bold text-transparent sm:text-2xl lg:px-0">
+      <h1 className="inline-block pl-2 text-lg font-bold text-black dark:bg-gradient-to-r dark:from-white dark:to-slate-500 dark:bg-clip-text dark:text-transparent sm:text-2xl lg:px-0">
         Apple TV Shows
       </h1>
       <div className="flex pt-4">
@@ -15,7 +15,11 @@ const PopularAppleShows = async () => {
           shows={
             appleShows! as Pick<
               Shows,
-              "id" | "title" | "poster_path" | "vote_average"
+              | "id"
+              | "title"
+              | "poster_path"
+              | "vote_average"
+              | "original_language"
             >[]
           }
         />

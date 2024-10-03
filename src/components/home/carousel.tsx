@@ -15,6 +15,7 @@ type CarouselProps = {
   poster_path?: string;
   backdrop_path?: string;
   vote_average: number;
+  original_language: string;
 };
 
 export function CarouselComponent({ shows }: { shows: CarouselProps[] }) {
@@ -43,15 +44,14 @@ export function CarouselComponent({ shows }: { shows: CarouselProps[] }) {
           1280: {
             slidesPerView: 6,
           },
-          1536: {
-            slidesPerView: 7,
-          },
+          // 1536: {
+          //   slidesPerView: 7,
+          // },
         }}
-        // navigation
+        navigation
         // pagination={{ clickable: true }}
         scrollbar={{ draggable: true }}
         onSwiper={(swiper) => console.log(swiper)}
-        onSlideChange={() => console.log("slide change")}
       >
         {shows.map((show) => (
           <SwiperSlide key={show.id}>

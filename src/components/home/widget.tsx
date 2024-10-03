@@ -26,7 +26,7 @@ export default function TopList({ movieItems, tvItems, type }: TopListProps) {
   return (
     <div className="w-full p-4 text-white">
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="flex items-center text-2xl font-bold">
+        <h2 className="flex items-center text-2xl font-bold text-black dark:text-white">
           <span className="mr-2 text-yellow-400">▶</span> TOP
         </h2>
         <div className="space-x-2">

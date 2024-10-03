@@ -7,7 +7,7 @@ const PopularIndianShows = async () => {
 
   return (
     <div>
-      <h1 className="inline-block bg-gradient-to-r from-orange-400 to-orange-700 bg-clip-text pl-2 text-lg font-bold text-transparent sm:text-2xl lg:px-0">
+      <h1 className="inline-block pl-2 text-lg font-bold text-black dark:bg-gradient-to-r dark:from-orange-400 dark:to-orange-700 dark:bg-clip-text dark:text-transparent sm:text-2xl lg:px-0">
         Indian Shows
       </h1>
       <div className="flex pt-4">
@@ -15,7 +15,11 @@ const PopularIndianShows = async () => {
           shows={
             indianShows! as Pick<
               Shows,
-              "id" | "title" | "poster_path" | "vote_average"
+              | "id"
+              | "title"
+              | "poster_path"
+              | "vote_average"
+              | "original_language"
             >[]
           }
         />
