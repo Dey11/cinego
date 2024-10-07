@@ -16,6 +16,7 @@ import "swiper/css/scrollbar";
 import { Button } from "../ui/button";
 import { Calendar, Info, Play, Star } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 type SlideInfo = {
   id: string;
@@ -198,14 +199,16 @@ export default function TopSlider() {
                     <Play className="fill-black pr-1 dark:fill-white" />
                     Play
                   </Button>
-                  <Button
-                    variant={"secondary"}
-                    size={"lg"}
-                    className="border border-white bg-transparent px-6 py-2 font-bold text-white transition-transform hover:scale-110"
-                  >
-                    <Info className="pr-1" />
-                    See More
-                  </Button>
+                  <Link href={`/movie/${slide.id}`}>
+                    <Button
+                      variant={"secondary"}
+                      size={"lg"}
+                      className="border border-white bg-transparent px-6 py-2 font-bold text-white transition-transform hover:scale-110"
+                    >
+                      <Info className="pr-1" />
+                      See More
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -242,16 +245,18 @@ export default function TopSlider() {
         >
           {thumnailInfo.map((slide, index) => (
             <SwiperSlide key={index} className="">
-              <img
-                src={`https://image.tmdb.org/t/p/original${slide.backdrop_path}`}
-                alt={slide.original_name}
-                className="relative h-20 w-full object-contain brightness-50 lg:h-40"
-              />
-              <div className="absolute top-0 flex h-full w-full items-center justify-center px-10">
-                <p className="line-clamp-2 font-semibold text-red-500 md:text-xl">
-                  {slide.original_name}
-                </p>
-              </div>
+              <Link href={`/tv/${slide.id}`}>
+                <img
+                  src={`https://image.tmdb.org/t/p/original${slide.backdrop_path}`}
+                  alt={slide.original_name}
+                  className="relative h-20 w-full object-contain brightness-50 lg:h-40"
+                />
+                <div className="absolute top-0 flex h-full w-full items-center justify-center px-10">
+                  <p className="line-clamp-2 font-semibold text-red-500 md:text-xl">
+                    {slide.original_name}
+                  </p>
+                </div>
+              </Link>
             </SwiperSlide>
           ))}
         </Swiper>
