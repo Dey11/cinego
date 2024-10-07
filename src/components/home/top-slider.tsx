@@ -248,7 +248,7 @@ export default function TopSlider() {
                 className="relative h-20 w-full object-contain brightness-50 lg:h-40"
               />
               <div className="absolute top-0 flex h-full w-full items-center justify-center px-10">
-                <p className="text-xl font-semibold text-red-500">
+                <p className="line-clamp-2 font-semibold text-red-500 md:text-xl">
                   {slide.original_name}
                 </p>
               </div>
