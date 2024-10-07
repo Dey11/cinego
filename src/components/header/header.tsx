@@ -1,4 +1,16 @@
-import { Book, Clapperboard, Home, Menu, Sword, Tv, User } from "lucide-react";
+"use client";
+
+import {
+  Book,
+  Clapperboard,
+  Home,
+  Menu,
+  Moon,
+  Sun,
+  Sword,
+  Tv,
+  User,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -6,7 +18,10 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import Search from "./search";
-import { ModeToggle } from "../custom-btns/toggle-theme";
+import Link from "next/link";
+import { useTheme } from "next-themes";
+import { Button } from "../ui/button";
+import { useEffect, useState } from "react";
 
 const options = [
   { name: "Home", href: "/", icon: Home },
@@ -17,14 +32,42 @@ const options = [
 ];
 
 const Header = () => {
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  // UseEffect to set the initial theme to dark
+  useEffect(() => {
+    setTheme("dark");
+    setMounted(true);
+  }, []);
+
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
+
+  if (!mounted) return null;
+
   return (
     <header className="absolute top-0 z-20 mt-5 flex w-full items-center justify-between px-5 md:px-10">
-      <h1 className="text-2xl font-bold text-red-500">Cinego</h1>
+      <Link className="text-2xl font-bold text-red-500" href={"/"}>
+        Cinego
+      </Link>
       <Search />
       <div className="flex items-center gap-x-5">
-        <ModeToggle />
-        <MenuOps />
+        <Button
+          // variant="ghost"
+          size="icon"
+          onClick={toggleTheme}
+          className="bg-transparent"
+        >
+          {theme === "dark" ? (
+            <Sun className="h-5 w-5 text-white" />
+          ) : (
+            <Moon className="h-5 w-5 text-white" />
+          )}
+        </Button>
         <User className="text-white" />
+        <MenuOps />
       </div>
     </header>
   );

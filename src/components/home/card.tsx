@@ -30,7 +30,7 @@ const Card = ({ show }: { show: CardProps }) => {
     type = "TV";
   }
   return (
-    <Link href={`/${type}/${show.id}`}>
+    <Link href={`/${type.toLowerCase()}/${show.id}`}>
       <div className="relative max-h-44 max-w-24 overflow-hidden hover:text-white sm:max-h-56 sm:max-w-36">
         <div className="relative h-44 w-24 overflow-hidden rounded-sm border-0 sm:h-56 sm:w-36">
           <Image
@@ -44,7 +44,8 @@ const Card = ({ show }: { show: CardProps }) => {
             fill
           />
           <div className="absolute left-0 top-0 flex h-full w-full flex-col items-center justify-center rounded-sm bg-gray-900 bg-opacity-60 opacity-0 transition-opacity hover:opacity-100">
-            <PlayCircle className="h-8 w-8 text-red-500" />
+            {/* <PlayCircle className="h-8 w-8 text-red-500" /> */}
+            <Image src={"/icon-play.png"} alt="play" width={25} height={25} />
             <div className="absolute bottom-2 px-1 text-center text-sm font-semibold leading-snug sm:text-base">
               <h3 className="text-sm font-semibold">
                 {show.name ? show.name : show.title}

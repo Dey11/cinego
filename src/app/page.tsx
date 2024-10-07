@@ -11,7 +11,7 @@ import TopWidget from "@/components/home/lists/top-movies";
 
 export default function Home() {
   return (
-    <main className="">
+    <main className="bg-white text-gray-900 dark:bg-black dark:text-white">
       <TopSlider />
       <div className="mx-auto max-w-[1440px] pt-28">
         <div className="sm:grid sm:grid-cols-12">

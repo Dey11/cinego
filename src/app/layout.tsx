@@ -27,11 +27,14 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {/* <div className="mx-auto max-w-7xl"> */}
+          {/* <div className="flex"> */}
           <Header />
+          {/* <main className="flex-grow"> */}
           {children}
+          {/* </main> */}
           <MobileNav />
           <Footer />
+          {/* </div> */}
         </ThemeProvider>
       </body>
     </html>
