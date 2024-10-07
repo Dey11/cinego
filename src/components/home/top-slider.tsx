@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import {
   Navigation,
@@ -15,9 +15,133 @@ import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 import { Button } from "../ui/button";
 import { Calendar, Info, Play, Star } from "lucide-react";
+import Image from "next/image";
+
+type SlideInfo = {
+  id: string;
+  backdrop_path: string;
+  original_language: string;
+  original_title: string;
+  logo_path: string;
+  release_date: string;
+  vote_average: number;
+  overview: string;
+};
+type ThumbnailInfo = {
+  id: string;
+  backdrop_path: string;
+  original_language: string;
+  original_name: string;
+  first_air_date: string;
+  vote_average: number;
+  overview: string;
+};
 
 export default function TopSlider() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [slideInfo, setSlideInfo] = useState<SlideInfo[]>([]);
+  const [thumnailInfo, setThumbnailInfo] = useState<ThumbnailInfo[]>([]);
+
+  const fetchSliderData = async () => {
+    const url =
+      "https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc";
+    const options = {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`,
+      },
+    };
+    try {
+      const response = await fetch(url, options);
+      const data = await response.json();
+      const slides = data.results.slice(0, 5).map((movie: any) => ({
+        id: movie.id.toString(),
+        backdrop_path: movie.backdrop_path,
+        original_language: movie.original_language,
+        original_title: movie.original_title,
+        logo_path: "",
+        release_date: movie.release_date,
+        vote_average: movie.vote_average,
+        overview: movie.overview,
+      }));
+      setSlideInfo(slides);
+    } catch (error) {
+      console.error("Error fetching slider data:", error);
+    }
+  };
+
+  const fetchThumbnailData = async () => {
+    const url =
+      "https://api.themoviedb.org/3/discover/tv?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc";
+    const options = {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`,
+      },
+    };
+    try {
+      const response = await fetch(url, options);
+      const data = await response.json();
+      const slides = data.results.slice(0, 20).map((tv: any) => ({
+        id: tv.id.toString(),
+        backdrop_path: tv.backdrop_path,
+        original_language: tv.original_language,
+        original_name: tv.original_name,
+        first_air_date: tv.first_air_date,
+        vote_average: tv.vote_average,
+        overview: tv.overview,
+      }));
+      setThumbnailInfo(slides);
+    } catch (error) {
+      console.error("Error fetching slider data:", error);
+    }
+  };
+
+  const fetchSlideInfo = async (id: string) => {
+    const url = `https://api.themoviedb.org/3/movie/${id}/images`;
+    const options = {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization:
+          "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0YzY4ZTRjYjBhMDM4OTk0MTliNmVmYTZiOGJjOGJiZSIsIm5iZiI6MTcyNzUwNjM2NS40NDQxNjUsInN1YiI6IjY2NWQ5YmMwYTVlMDU0MzUwMTQ5MWUwNSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.8OL7WQIZGWr9tRfmSkRFIsaf1Wy0ksrOGDCB4KcocW4",
+      },
+    };
+    try {
+      const response = await fetch(url, options);
+      const data = await response.json();
+      const logo = data.logos.find(
+        (logo: any) => logo.iso_639_1 === "en",
+      )?.file_path;
+      return logo || "";
+    } catch (error) {
+      console.error(`Error fetching slide info for id ${id}:`, error);
+      return "";
+    }
+  };
+
+  useEffect(() => {
+    fetchSliderData();
+    fetchThumbnailData();
+  }, []);
+
+  useEffect(() => {
+    const fetchLogos = async () => {
+      const updatedSlideInfo = await Promise.all(
+        slideInfo.map(async (slide) => {
+          const logoPath = await fetchSlideInfo(slide.id);
+          return { ...slide, logo_path: logoPath };
+        }),
+      );
+      setSlideInfo(updatedSlideInfo);
+    };
+
+    if (slideInfo.length > 0 && !slideInfo[0].logo_path) {
+      fetchLogos();
+    }
+  }, [slideInfo]);
 
   return (
     <div className="relative h-screen w-full">
@@ -35,34 +159,43 @@ export default function TopSlider() {
         onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
         className="h-full w-full"
       >
-        {mainSlides.map((slide, index) => (
-          <SwiperSlide key={index}>
+        {slideInfo.map((slide, index) => (
+          <SwiperSlide key={slide.id}>
             <div className="relative h-full w-full">
               <img
-                src={slide.image}
-                alt={slide.title}
+                src={`https://image.tmdb.org/t/p/original${slide.backdrop_path}`}
+                alt={slide.original_title}
                 className="absolute inset-0 h-full w-full object-cover"
               />
               <div className="absolute inset-0 bg-black bg-opacity-50" />
               <div className="absolute bottom-[25dvh] left-8 z-10 text-white">
-                <h1 className="mb-2 text-6xl font-bold">{slide.title}</h1>
+                <Image
+                  src={`https://image.tmdb.org/t/p/original${slide.logo_path}`}
+                  alt={slide.original_title}
+                  width={300}
+                  height={300}
+                  className="pb-10"
+                />
                 <div className="mb-2 flex items-center">
                   <span className="mr-2 flex items-center gap-x-1">
-                    <Star className="h-4 w-4 text-yellow-500" /> {slide.rating}
+                    <Star className="h-4 w-4 text-yellow-500" />{" "}
+                    {slide.vote_average}
                   </span>
                   <span className="ml-2 flex items-center gap-x-1 text-gray-300">
                     <Calendar className="h-4 w-4" />
-                    {slide.date}
+                    {slide.release_date}
                   </span>
                 </div>
-                <p className="max-w-2xl text-lg">{slide.description}</p>
+                <p className="line-clamp-3 max-w-2xl text-lg">
+                  {slide.overview}
+                </p>
                 <div className="mt-4">
                   <Button
                     variant={"default"}
                     size={"lg"}
                     className="mr-4 px-6 py-2 font-bold transition-transform hover:scale-110"
                   >
-                    <Play className="fill-black pr-1" />
+                    <Play className="fill-black pr-1 dark:fill-white" />
                     Play
                   </Button>
                   <Button
@@ -107,15 +240,17 @@ export default function TopSlider() {
           //   navigation
           className="mx-auto h-full w-full"
         >
-          {thumbnailSlides.map((slide, index) => (
+          {thumnailInfo.map((slide, index) => (
             <SwiperSlide key={index} className="">
               <img
-                src={slide.logo}
-                alt={slide.alt}
-                className="relative h-20 w-full object-contain brightness-75 lg:h-40"
+                src={`https://image.tmdb.org/t/p/original${slide.backdrop_path}`}
+                alt={slide.original_name}
+                className="relative h-20 w-full object-contain brightness-50 lg:h-40"
               />
-              <div className="absolute top-0 flex h-full w-full items-center justify-center">
-                <p className="text-white">{slide.alt}</p>
+              <div className="absolute top-0 flex h-full w-full items-center justify-center px-10">
+                <p className="text-xl font-semibold text-red-500">
+                  {slide.original_name}
+                </p>
               </div>
             </SwiperSlide>
           ))}
@@ -124,78 +259,3 @@ export default function TopSlider() {
     </div>
   );
 }
-
-const mainSlides = [
-  {
-    title: "HIJACK 1971",
-    rating: "6.4",
-    date: "2024-06-21",
-    description:
-      "Pilots Tae-in and Gyu-sik are set to fly to Gimpo. Under the guidance of flight attendant Ok-soon, passengers are busy boarding. However, shortly after takeoff, a homemade bomb explodes, turning the cabin into chaos.",
-    image:
-      "https://image.tmdb.org/t/p/original/fY3lD0jM5AoHJMunjGWqJ0hRteI.jpg",
-  },
-  {
-    title: "MOVIE 2",
-    rating: "7.2",
-    date: "2024-07-15",
-    description: "A thrilling adventure in space.",
-    image:
-      "https://image.tmdb.org/t/p/original/fY3lD0jM5AoHJMunjGWqJ0hRteI.jpg",
-  },
-  {
-    title: "MOVIE 3",
-    rating: "8.1",
-    date: "2024-08-30",
-    description: "A heartwarming story of friendship.",
-    image:
-      "https://image.tmdb.org/t/p/original/fY3lD0jM5AoHJMunjGWqJ0hRteI.jpg",
-  },
-];
-
-const thumbnailSlides = [
-  {
-    logo: "https://image.tmdb.org/t/p/original/fY3lD0jM5AoHJMunjGWqJ0hRteI.jpg",
-    alt: "Netflix",
-  },
-  {
-    logo: "https://image.tmdb.org/t/p/original/fY3lD0jM5AoHJMunjGWqJ0hRteI.jpg",
-    alt: "Disney+",
-  },
-  {
-    logo: "https://image.tmdb.org/t/p/original/fY3lD0jM5AoHJMunjGWqJ0hRteI.jpg",
-    alt: "Apple TV+",
-  },
-  {
-    logo: "https://image.tmdb.org/t/p/original/fY3lD0jM5AoHJMunjGWqJ0hRteI.jpg",
-    alt: "Prime Video",
-  },
-  {
-    logo: "https://image.tmdb.org/t/p/original/fY3lD0jM5AoHJMunjGWqJ0hRteI.jpg",
-    alt: "HBO Max",
-  },
-  {
-    logo: "https://image.tmdb.org/t/p/original/fY3lD0jM5AoHJMunjGWqJ0hRteI.jpg",
-    alt: "Hulu",
-  },
-  {
-    logo: "https://image.tmdb.org/t/p/original/fY3lD0jM5AoHJMunjGWqJ0hRteI.jpg",
-    alt: "Hulu",
-  },
-  {
-    logo: "https://image.tmdb.org/t/p/original/fY3lD0jM5AoHJMunjGWqJ0hRteI.jpg",
-    alt: "Hulu",
-  },
-  {
-    logo: "https://image.tmdb.org/t/p/original/fY3lD0jM5AoHJMunjGWqJ0hRteI.jpg",
-    alt: "Hulu",
-  },
-  {
-    logo: "https://image.tmdb.org/t/p/original/fY3lD0jM5AoHJMunjGWqJ0hRteI.jpg",
-    alt: "Hulu",
-  },
-  {
-    logo: "https://image.tmdb.org/t/p/original/fY3lD0jM5AoHJMunjGWqJ0hRteI.jpg",
-    alt: "Hulu",
-  },
-];
