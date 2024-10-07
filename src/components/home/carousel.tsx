@@ -27,10 +27,10 @@ export function CarouselComponent({ shows }: { shows: CarouselProps[] }) {
         slidesPerView={"auto"}
         breakpoints={{
           320: {
-            slidesPerView: 3,
+            slidesPerView: 2,
           },
-          480: {
-            slidesPerView: 4,
+          450: {
+            slidesPerView: 3,
           },
           640: {
             slidesPerView: 3,
