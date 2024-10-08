@@ -50,7 +50,7 @@ export default function TopSlider() {
       method: "GET",
       headers: {
         accept: "application/json",
-        Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`,
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMDB_ACCESS_TOKEN}`,
       },
     };
     try {
@@ -79,7 +79,7 @@ export default function TopSlider() {
       method: "GET",
       headers: {
         accept: "application/json",
-        Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`,
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMDB_ACCESS_TOKEN}`,
       },
     };
     try {
@@ -194,9 +194,9 @@ export default function TopSlider() {
                   <Button
                     variant={"default"}
                     size={"lg"}
-                    className="mr-4 px-6 py-2 font-bold transition-transform hover:scale-110"
+                    className="mr-4 border border-white px-6 py-2 font-bold transition-transform hover:scale-110"
                   >
-                    <Play className="fill-black pr-1 dark:fill-white" />
+                    <Play className="fill-black pr-1" />
                     Play
                   </Button>
                   <Link href={`/movie/${slide.id}`}>

@@ -31,8 +31,8 @@ const Card = ({ show }: { show: CardProps }) => {
   }
   return (
     <Link href={`/${type.toLowerCase()}/${show.id}`}>
-      <div className="relative max-h-56 max-w-36 overflow-hidden hover:text-white">
-        <div className="relative h-56 w-36 overflow-hidden rounded-sm border-0">
+      <div className="relative overflow-hidden hover:text-white">
+        <div className="relative h-60 w-40 overflow-hidden rounded-sm border-0 sm:h-52 sm:w-32 md:h-44 md:w-28 lg:h-48 lg:w-32 xl:h-48 xl:w-32">
           <Image
             className="object-cover transition-transform hover:scale-110"
             src={`https://image.tmdb.org/t/p/original${

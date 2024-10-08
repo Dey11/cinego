@@ -21,8 +21,8 @@ const Card = ({ show }: { show: CardProps }) => {
 
   return (
     <Link href={`/${type}/${show.id}`}>
-      <div className="max-h-44 max-w-24 overflow-hidden hover:text-red-500 sm:max-h-52 sm:max-w-32">
-        <div className="relative h-32 w-24 overflow-hidden rounded-sm border-0 sm:h-40 sm:w-32">
+      <div className="max-h-44 max-w-24 overflow-hidden hover:text-red-500 sm:max-h-60 sm:max-w-40">
+        <div className="relative h-32 w-24 overflow-hidden rounded-sm border-0 sm:h-52 sm:w-40">
           <Image
             className="object-cover transition-transform hover:scale-110"
             src={`${process.env.TMDB_IMG}${
@@ -45,7 +45,7 @@ const Card = ({ show }: { show: CardProps }) => {
             />
           </div>
         </div>
-        <div className="pt-1 text-center text-sm font-semibold sm:text-base">
+        <div className="truncate pt-1 text-center text-sm font-semibold sm:text-base">
           {show.name ? show.name : show.title}
         </div>
       </div>

@@ -23,8 +23,8 @@ export function CarouselComponent({ shows }: { shows: CarouselProps[] }) {
     <div className="mx-auto w-full min-w-[350px] overflow-hidden px-2 lg:max-w-screen-xl xl:overflow-visible">
       <Swiper
         modules={[Navigation, Pagination, Scrollbar, A11y]}
-        spaceBetween={6}
-        slidesPerView={"auto"}
+        spaceBetween={-10}
+        // slidesPerView={"auto"}
         breakpoints={{
           320: {
             slidesPerView: 2,
@@ -32,9 +32,9 @@ export function CarouselComponent({ shows }: { shows: CarouselProps[] }) {
           450: {
             slidesPerView: 3,
           },
-          640: {
-            slidesPerView: 3,
-          },
+          // 640: {
+          //   slidesPerView: 3,
+          // },
           768: {
             slidesPerView: 4,
           },

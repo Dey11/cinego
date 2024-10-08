@@ -1,6 +1,7 @@
 "use client";
-
+import { usePathname } from "next/navigation";
 import {
+  ArrowLeft,
   Book,
   Clapperboard,
   Home,
@@ -22,6 +23,7 @@ import Link from "next/link";
 import { useTheme } from "next-themes";
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
+import { Router } from "next/router";
 
 const options = [
   { name: "Home", href: "/", icon: Home },
@@ -34,6 +36,8 @@ const options = [
 const Header = () => {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const pathname = usePathname();
+  console.log(pathname.split("/")[1]);
 
   // UseEffect to set the initial theme to dark
   useEffect(() => {
@@ -49,10 +53,18 @@ const Header = () => {
 
   return (
     <header className="absolute top-0 z-20 mt-5 flex w-full items-center justify-between px-5 md:px-10">
-      <Link className="text-2xl font-bold text-red-500" href={"/"}>
-        Cinego
-      </Link>
-      <Search />
+      {pathname.split("/")[1] === "movie" || pathname.split("/")[1] === "tv" ? (
+        <Link href={"/"}>
+          <ArrowLeft className="text-2xl font-bold text-white" />{" "}
+        </Link>
+      ) : (
+        <>
+          <Link className="text-2xl font-bold text-red-500" href={"/"}>
+            Cinego
+          </Link>
+          <Search />
+        </>
+      )}
       <div className="flex items-center gap-x-5">
         <Button
           // variant="ghost"

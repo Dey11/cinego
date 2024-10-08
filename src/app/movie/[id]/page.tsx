@@ -42,7 +42,7 @@ const Page = async ({ params }: { params: { id: number } }) => {
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/60 to-white dark:via-black/60 dark:to-black"></div>
         </div>
         <div className="relative z-10 mx-auto -mt-48 max-w-screen-xl px-4 md:px-8 lg:px-12 xl:px-16">
-          <div className="flex flex-col md:flex-row md:items-start md:space-x-8">
+          <div className="flex flex-col md:flex-row md:items-start md:space-x-32">
             <div className="flex-shrink-0 md:w-1/3 lg:w-1/4">
               <Image
                 className="mx-auto rounded-xl shadow-xl md:mx-0"
@@ -58,6 +58,7 @@ const Page = async ({ params }: { params: { id: number } }) => {
               </h1>
               <div className="mb-4 flex items-center space-x-4">
                 <div className="flex items-center">
+                  <h3 className="mr-4">MOVIE</h3>
                   <Star className="mr-1 h-5 w-5 fill-yellow-500 text-yellow-500" />
                   <span>{movieInfo.vote_average.toFixed(1)}</span>
                 </div>
@@ -67,28 +68,31 @@ const Page = async ({ params }: { params: { id: number } }) => {
                 {movieInfo.genres.slice(0, 3).map((genre) => (
                   <span
                     key={genre.id}
-                    className="rounded-full bg-red-900 bg-opacity-40 px-3 py-1 text-sm text-red-400 dark:bg-red-700 dark:bg-opacity-40 dark:text-red-200"
+                    className="rounded-full bg-slate-900 bg-opacity-40 px-3 py-1 text-sm text-white dark:bg-red-900 dark:bg-opacity-40 dark:text-red-400"
                   >
                     {genre.name}
                   </span>
                 ))}
               </div>
               <p className="mb-6 text-lg">{movieInfo.overview}</p>
-              <div className="flex space-x-4">
+              <div className="flex items-center space-x-4">
                 <Button
-                  variant="default"
-                  className="flex items-center space-x-2"
+                  variant={"default"}
+                  size={"lg"}
+                  className="border border-white font-bold transition-transform hover:scale-110"
                 >
-                  <Play className="h-5 w-5 fill-black dark:fill-white" />
-                  <span>Play</span>
+                  <Play className="fill-black pr-1" />
+                  Play
                 </Button>
                 <Button
-                  variant="secondary"
-                  className="flex items-center space-x-2"
+                  variant={"secondary"}
+                  size={"lg"}
+                  className="border border-black bg-transparent font-bold transition-transform hover:scale-110 dark:border-white dark:text-white"
                 >
-                  <Plus className="h-5 w-5" />
-                  <span>Add to watchlist</span>
+                  <Plus className="pr-1" />
+                  Add to watchlist
                 </Button>
+                <Download className="h-5 w-5" />
               </div>
             </div>
           </div>
@@ -98,9 +102,9 @@ const Page = async ({ params }: { params: { id: number } }) => {
             <h2 className="mb-6 text-2xl font-bold">Cast</h2>
             <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4">
               {castInfo.slice(0, 8).map((cast) => (
-                <div key={cast.cast_id} className="flex items-center space-x-4">
+                <div key={cast.id} className="flex items-center space-x-4">
                   <Image
-                    className="h-16 w-16 rounded-full"
+                    className="h-16 w-16 rounded-full object-cover"
                     src={`${process.env.TMDB_IMG}${cast.profile_path}`}
                     width={64}
                     height={64}
@@ -125,7 +129,7 @@ const Page = async ({ params }: { params: { id: number } }) => {
           {/* Recommendations */}
           <div className="mt-16">
             <h2 className="mb-6 text-2xl font-bold">You may also like</h2>
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+            <div className="grid grid-cols-2 justify-items-center gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
               {recommendationsInfo.slice(0, 12).map((recommendation) => (
                 <Card key={recommendation.id} show={recommendation} />
               ))}
@@ -151,6 +155,7 @@ const Page = async ({ params }: { params: { id: number } }) => {
           </h1>
           <div className="mb-4 flex items-center space-x-4">
             <div className="flex items-center">
+              <h3 className="mr-4">MOVIE</h3>
               <Star className="mr-1 h-5 w-5 fill-yellow-500 text-yellow-500" />
               <span>{movieInfo.vote_average.toFixed(1)}</span>
             </div>
@@ -160,7 +165,7 @@ const Page = async ({ params }: { params: { id: number } }) => {
             {movieInfo.genres.slice(0, 2).map((genre) => (
               <span
                 key={genre.id}
-                className="rounded-full bg-red-900 bg-opacity-40 px-3 py-1 text-sm text-red-400 dark:bg-red-700 dark:bg-opacity-40 dark:text-red-200"
+                className="rounded-full bg-slate-900 bg-opacity-40 px-3 py-1 text-sm text-white dark:bg-red-900 dark:bg-opacity-40 dark:text-red-400"
               >
                 {genre.name}
               </span>
@@ -169,22 +174,24 @@ const Page = async ({ params }: { params: { id: number } }) => {
           <p className="mb-6 text-sm">{movieInfo.overview}</p>
           <div className="space-y-3">
             <Button
-              variant="default"
-              className="flex w-full items-center justify-center space-x-2"
+              variant={"default"}
+              size={"lg"}
+              className="w-full border border-white font-bold transition-transform hover:scale-110"
             >
-              <Play className="h-5 w-5 fill-black dark:fill-white" />
-              <span>Play</span>
+              <Play className="fill-black pr-1" />
+              Play
+            </Button>
+            <Button
+              variant={"secondary"}
+              size={"lg"}
+              className="w-full border border-black bg-transparent font-bold transition-transform hover:scale-110 dark:border-white dark:text-white"
+            >
+              <Plus className="pr-1" />
+              Add to watchlist
             </Button>
             <Button
               variant="secondary"
-              className="flex w-full items-center justify-center space-x-2"
-            >
-              <Plus className="h-5 w-5" />
-              <span>Add to watchlist</span>
-            </Button>
-            <Button
-              variant="secondary"
-              className="flex w-full items-center justify-center space-x-2"
+              className="flex w-full items-center justify-center space-x-2 border border-black"
             >
               <Download className="h-5 w-5" />
               <span>Download</span>
@@ -194,21 +201,19 @@ const Page = async ({ params }: { params: { id: number } }) => {
           {/* Cast */}
           <div className="mt-8">
             <h2 className="mb-4 text-xl font-bold">Cast</h2>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4">
               {castInfo.slice(0, 8).map((cast) => (
-                <div key={cast.cast_id} className="flex items-center space-x-3">
+                <div key={cast.id} className="flex items-center space-x-4">
                   <Image
-                    className="h-12 w-12 rounded-full"
+                    className="h-16 w-16 rounded-full object-cover"
                     src={`${process.env.TMDB_IMG}${cast.profile_path}`}
-                    width={48}
-                    height={48}
+                    width={64}
+                    height={64}
                     alt={cast.name}
                   />
                   <div>
-                    <h3 className="text-sm font-semibold">
-                      {cast.original_name}
-                    </h3>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">
+                    <h3 className="font-semibold">{cast.original_name}</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
                       {cast.character}
                     </p>
                   </div>
@@ -225,7 +230,7 @@ const Page = async ({ params }: { params: { id: number } }) => {
           {/* Recommendations */}
           <div className="mt-8">
             <h2 className="mb-4 text-xl font-bold">You may also like</h2>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-3 justify-items-center gap-3">
               {recommendationsInfo.slice(0, 12).map((recommendation) => (
                 <Card key={recommendation.id} show={recommendation} />
               ))}
