@@ -20,41 +20,38 @@ type CarouselProps = {
 
 export function CarouselComponent({ shows }: { shows: CarouselProps[] }) {
   return (
-    <div className="mx-auto w-full min-w-[350px] overflow-hidden px-2 lg:max-w-screen-xl xl:overflow-visible">
+    <div className="mx-auto w-full min-w-[350px] overflow-hidden px-2 md:px-0 lg:max-w-screen-xl xl:overflow-visible">
       <Swiper
         modules={[Navigation, Pagination, Scrollbar, A11y]}
-        spaceBetween={-10}
+        spaceBetween={80}
         // slidesPerView={"auto"}
         breakpoints={{
           320: {
-            slidesPerView: 2,
+            slidesPerView: 3,
           },
           450: {
             slidesPerView: 3,
           },
-          // 640: {
-          //   slidesPerView: 3,
-          // },
-          768: {
+          600: {
             slidesPerView: 4,
           },
-          1024: {
+          950: {
             slidesPerView: 5,
           },
-          1280: {
+          1100: {
             slidesPerView: 6,
           },
-          // 1536: {
-          //   slidesPerView: 7,
-          // },
+          1350: {
+            slidesPerView: 7,
+          },
         }}
         navigation
         // pagination={{ clickable: true }}
-        scrollbar={{ draggable: true }}
+        // scrollbar={{ draggable: true }}
         // onSwiper={(swiper) => console.log(swiper)}
       >
         {shows.map((show) => (
-          <SwiperSlide key={show.id}>
+          <SwiperSlide key={show.id} className="">
             <Card show={show} />
           </SwiperSlide>
         ))}

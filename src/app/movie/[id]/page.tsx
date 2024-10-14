@@ -1,4 +1,4 @@
-import Card from "@/components/Card";
+import Card from "@/components/movie-page/Card";
 import Player from "@/components/movie-page/Player";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,7 +32,7 @@ const Page = async ({ params }: { params: { id: number } }) => {
     <div className="relative min-h-screen pb-16 text-gray-900 dark:text-gray-100">
       {/* Large Screens */}
       <div className="hidden font-semibold sm:block">
-        <div className="relative h-[70vh]">
+        <div className="relative h-dvh">
           <Image
             src={`${process.env.TMDB_IMG}${movieInfo.backdrop_path}`}
             fill
@@ -41,7 +41,7 @@ const Page = async ({ params }: { params: { id: number } }) => {
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/60 to-white dark:via-black/60 dark:to-black"></div>
         </div>
-        <div className="relative z-10 mx-auto -mt-48 max-w-screen-xl px-4 md:px-8 lg:px-12 xl:px-16">
+        <div className="relative z-10 mx-auto -mt-96 max-w-screen-xl px-4 md:px-8 lg:px-12 xl:px-16">
           <div className="flex flex-col md:flex-row md:items-start md:space-x-32">
             <div className="flex-shrink-0 md:w-1/3 lg:w-1/4">
               <Image
@@ -129,8 +129,9 @@ const Page = async ({ params }: { params: { id: number } }) => {
           {/* Recommendations */}
           <div className="mt-16">
             <h2 className="mb-6 text-2xl font-bold">You may also like</h2>
-            <div className="grid grid-cols-2 justify-items-center gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-              {recommendationsInfo.slice(0, 12).map((recommendation) => (
+            <div className="grid grid-cols-2 justify-items-center gap-4 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6">
+              {recommendationsInfo.map((recommendation) => (
+                // <Card key={recommendation.id} show={recommendation} />
                 <Card key={recommendation.id} show={recommendation} />
               ))}
             </div>
@@ -140,7 +141,7 @@ const Page = async ({ params }: { params: { id: number } }) => {
 
       {/* Small Screens */}
       <div className="sm:hidden">
-        <div className="relative h-96">
+        <div className="relative h-dvh">
           <Image
             src={`${process.env.TMDB_IMG}${movieInfo.poster_path}`}
             alt={movieInfo.original_title}
@@ -149,7 +150,7 @@ const Page = async ({ params }: { params: { id: number } }) => {
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white dark:to-black"></div>
         </div>
-        <div className="relative z-10 -mt-20 px-4 py-6">
+        <div className="relative z-10 -mt-96 px-4 py-6">
           <h1 className="mb-2 text-2xl font-semibold">
             {movieInfo.original_title}
           </h1>

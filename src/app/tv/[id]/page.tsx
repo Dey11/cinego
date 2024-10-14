@@ -1,4 +1,4 @@
-import Card from "@/components/Card";
+import Card from "@/components/movie-page/Card";
 import Player from "@/components/movie-page/Player";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,7 +32,7 @@ const Page = async ({ params }: { params: { id: number } }) => {
   return (
     <div className="relative min-h-screen pb-16 text-gray-900 dark:text-gray-100">
       {/* Background Image */}
-      <div className="relative h-[70vh] sm:h-[80vh]">
+      <div className="relative h-dvh">
         <Image
           src={`${process.env.TMDB_IMG}${tvInfo.backdrop_path}`}
           fill
@@ -44,7 +44,7 @@ const Page = async ({ params }: { params: { id: number } }) => {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 mx-auto -mt-48 max-w-screen-xl px-4 md:px-8 lg:px-12 xl:px-16">
+      <div className="relative z-10 mx-auto -mt-96 max-w-screen-xl px-4 md:px-8 lg:px-12 xl:px-16">
         <div className="flex flex-col md:flex-row md:items-start md:space-x-32">
           {/* Poster */}
           <div className="hidden flex-shrink-0 md:block md:w-1/3 lg:w-1/4">
@@ -167,7 +167,7 @@ const Page = async ({ params }: { params: { id: number } }) => {
         {/* Recommendations */}
         <div className="mt-8">
           <h2 className="mb-4 text-xl font-bold">You may also like</h2>
-          <div className="grid grid-cols-3 justify-items-center gap-4 md:grid-cols-4 lg:grid-cols-6">
+          <div className="grid grid-cols-3 justify-items-center gap-4 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6">
             {recommendationsInfo.slice(0, 12).map((recommendation) => (
               <Card key={recommendation.id} show={recommendation} />
             ))}

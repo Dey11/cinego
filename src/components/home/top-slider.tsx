@@ -22,30 +22,77 @@ type SlideInfo = {
   id: string;
   backdrop_path: string;
   original_language: string;
-  original_title: string;
+  title?: string;
+  name?: string;
   logo_path: string;
-  release_date: string;
+  release_date?: string;
+  first_air_date?: string;
   vote_average: number;
   overview: string;
+  media_type: string;
 };
 type ThumbnailInfo = {
   id: string;
   backdrop_path: string;
   original_language: string;
-  original_name: string;
-  first_air_date: string;
+  title?: string;
+  name?: string;
+  logo_path: string;
+  release_date?: string;
+  first_air_date?: string;
   vote_average: number;
   overview: string;
+  media_type: string;
+  genre_ids: number[];
+};
+
+type GenreIds = {
+  id: number;
+  name: string;
 };
 
 export default function TopSlider() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [slideInfo, setSlideInfo] = useState<SlideInfo[]>([]);
   const [thumnailInfo, setThumbnailInfo] = useState<ThumbnailInfo[]>([]);
+  const [movieGenres, setMovieGenres] = useState<GenreIds[]>([]);
+  const [tvGenres, setTVGenres] = useState<GenreIds[]>([]);
+
+  const fetchGenres = async () => {
+    const movieGenresUrl =
+      "https://api.themoviedb.org/3/genre/movie/list?language=en-US";
+    const tvGenresUrl =
+      "https://api.themoviedb.org/3/genre/tv/list?language=en-US";
+    const options = {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMDB_ACCESS_TOKEN}`,
+      },
+    };
+    try {
+      const movieGenresResponse = await fetch(movieGenresUrl, options);
+      const movieGenresData = await movieGenresResponse.json();
+      // const movieGenresList = movieGenresData.genres.map((genre: any) => ({
+      //   id: genre.id,
+      //   name: genre.name,
+      // }));
+      setMovieGenres(movieGenresData.genres);
+      const tvGenresResponse = await fetch(tvGenresUrl, options);
+      const tvGenresData = await tvGenresResponse.json();
+      // const tvGenresList = tvGenresData.genres.map((genre: any) => ({
+      //   id: genre.id,
+      //   name: genre.name,
+      // }));
+      setTVGenres(tvGenresData.genres);
+    } catch (error) {
+      console.error("Error fetching genres:", error);
+    }
+  };
 
   const fetchSliderData = async () => {
     const url =
-      "https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc";
+      "https://api.themoviedb.org/3/trending/all/day?language=en-US&page=1";
     const options = {
       method: "GET",
       headers: {
@@ -56,15 +103,18 @@ export default function TopSlider() {
     try {
       const response = await fetch(url, options);
       const data = await response.json();
-      const slides = data.results.slice(0, 5).map((movie: any) => ({
+      const slides = data.results.map((movie: any) => ({
         id: movie.id.toString(),
         backdrop_path: movie.backdrop_path,
         original_language: movie.original_language,
-        original_title: movie.original_title,
+        name: movie.name || "",
+        title: movie.title || "",
         logo_path: "",
-        release_date: movie.release_date,
+        release_date: movie.release_date || "",
+        first_air_date: movie.first_air_date || "",
         vote_average: movie.vote_average,
         overview: movie.overview,
+        media_type: movie.media_type,
       }));
       setSlideInfo(slides);
     } catch (error) {
@@ -74,7 +124,7 @@ export default function TopSlider() {
 
   const fetchThumbnailData = async () => {
     const url =
-      "https://api.themoviedb.org/3/discover/tv?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc";
+      "https://api.themoviedb.org/3/trending/all/week?language=en-US&page=1";
     const options = {
       method: "GET",
       headers: {
@@ -85,14 +135,19 @@ export default function TopSlider() {
     try {
       const response = await fetch(url, options);
       const data = await response.json();
-      const slides = data.results.slice(0, 20).map((tv: any) => ({
+      console.log(data.results[0]);
+      const slides = data.results.map((tv: any) => ({
         id: tv.id.toString(),
         backdrop_path: tv.backdrop_path,
         original_language: tv.original_language,
-        original_name: tv.original_name,
-        first_air_date: tv.first_air_date,
+        name: tv.name || "",
+        title: tv.title || "",
+        first_air_date: tv.first_air_date || "",
+        release_date: tv.release_date || "",
         vote_average: tv.vote_average,
         overview: tv.overview,
+        media_type: tv.media_type,
+        genre_ids: tv.genre_ids,
       }));
       setThumbnailInfo(slides);
     } catch (error) {
@@ -100,8 +155,8 @@ export default function TopSlider() {
     }
   };
 
-  const fetchSlideInfo = async (id: string) => {
-    const url = `https://api.themoviedb.org/3/movie/${id}/images`;
+  const fetchSlideInfo = async (id: string, media_type: string) => {
+    const url = `https://api.themoviedb.org/3/${media_type}/${id}/images`;
     const options = {
       method: "GET",
       headers: {
@@ -124,6 +179,7 @@ export default function TopSlider() {
   };
 
   useEffect(() => {
+    fetchGenres();
     fetchSliderData();
     fetchThumbnailData();
   }, []);
@@ -132,7 +188,7 @@ export default function TopSlider() {
     const fetchLogos = async () => {
       const updatedSlideInfo = await Promise.all(
         slideInfo.map(async (slide) => {
-          const logoPath = await fetchSlideInfo(slide.id);
+          const logoPath = await fetchSlideInfo(slide.id, slide.media_type);
           return { ...slide, logo_path: logoPath };
         }),
       );
@@ -165,14 +221,14 @@ export default function TopSlider() {
             <div className="relative h-full w-full">
               <img
                 src={`https://image.tmdb.org/t/p/original${slide.backdrop_path}`}
-                alt={slide.original_title}
+                alt={slide.title ? slide.title : slide.name!}
                 className="absolute inset-0 h-full w-full object-cover"
               />
               <div className="absolute inset-0 bg-black bg-opacity-50" />
               <div className="absolute bottom-[25dvh] left-8 z-10 text-white">
                 <Image
                   src={`https://image.tmdb.org/t/p/original${slide.logo_path}`}
-                  alt={slide.original_title}
+                  alt={slide.title ? slide.title : slide.name!}
                   width={300}
                   height={300}
                   className="pb-10"
@@ -184,7 +240,12 @@ export default function TopSlider() {
                   </span>
                   <span className="ml-2 flex items-center gap-x-1 text-gray-300">
                     <Calendar className="h-4 w-4" />
-                    {slide.release_date}
+                    {slide.release_date
+                      ? slide.release_date
+                      : slide.first_air_date}
+                  </span>
+                  <span className="ml-2 text-gray-300">
+                    {slide.original_language.toUpperCase()}
                   </span>
                 </div>
                 <p className="line-clamp-3 max-w-2xl text-lg">
@@ -199,7 +260,7 @@ export default function TopSlider() {
                     <Play className="fill-black pr-1" />
                     Play
                   </Button>
-                  <Link href={`/movie/${slide.id}`}>
+                  <Link href={`/${slide.media_type}/${slide.id}`}>
                     <Button
                       variant={"secondary"}
                       size={"lg"}
@@ -219,7 +280,7 @@ export default function TopSlider() {
       <div className="absolute -bottom-20 left-0 right-0 px-4 lg:px-8">
         <Swiper
           modules={[Navigation, A11y, Autoplay]}
-          // spaceBetween={}
+          spaceBetween={30}
           slidesPerView={"auto"}
           autoplay={{
             delay: 2500,
@@ -227,34 +288,79 @@ export default function TopSlider() {
           }}
           breakpoints={{
             320: {
+              slidesPerView: 1,
+            },
+            640: {
               slidesPerView: 2,
             },
-            500: {
+            768: {
               slidesPerView: 3,
             },
-            700: {
+            // 800: {
+            //   slidesPerView: 3,
+            // },
+            1024: {
               slidesPerView: 4,
             },
-            1000: {
-              slidesPerView: 4,
+            1280: {
+              slidesPerView: 5,
             },
-            1536: { slidesPerView: 5 },
+            1440: {
+              slidesPerView: 6,
+            },
+            // 1536: { slidesPerView: 5 },
           }}
           //   navigation
-          className="mx-auto h-full w-full"
+          className="mx-auto h-full"
         >
           {thumnailInfo.map((slide, index) => (
-            <SwiperSlide key={index} className="">
-              <Link href={`/tv/${slide.id}`}>
-                <img
-                  src={`https://image.tmdb.org/t/p/original${slide.backdrop_path}`}
-                  alt={slide.original_name}
-                  className="relative h-20 w-full object-contain brightness-50 lg:h-40"
-                />
-                <div className="absolute top-0 flex h-full w-full items-center justify-center px-10">
-                  <p className="line-clamp-2 font-semibold text-red-500 md:text-xl">
-                    {slide.original_name}
-                  </p>
+            <SwiperSlide key={index} className="gap-x-10">
+              <Link href={`/${slide.media_type}/${slide.id}`}>
+                <div
+                  className="relative h-52 w-full overflow-hidden rounded-xl bg-red-500 sm:h-40 md:h-32 lg:h-32"
+                  style={{
+                    backgroundImage: `url(https://image.tmdb.org/t/p/original${slide.backdrop_path})`,
+                    backgroundSize: "cover",
+                    objectFit: "cover",
+                    backgroundPosition: "center",
+                    backgroundRepeat: "no-repeat",
+                    // backdropFilter: "brightness(0.7)",
+                    filter: "brightness(0.8)",
+                    // filter: "blur(2px)",
+                  }}
+                >
+                  {/* <img
+                    src={`https://image.tmdb.org/t/p/original${slide.backdrop_path}`}
+                    alt={slide.name ? slide.name : slide.title}
+                    className="h-full w-fit overflow-clip rounded-xl object-contain brightness-50 sm:h-40 md:h-32 lg:h-32"
+                  /> */}
+                  <div className="absolute inset-0 h-full w-full items-center justify-center rounded-2xl px-5 text-white transition duration-300 ease-in-out hover:text-red-500 hover:backdrop-blur-[2px]">
+                    <p className="absolute inset-0 left-2 right-2 top-1/2 flex flex-col truncate font-semibold md:text-xl">
+                      <span className="truncate">
+                        {slide.name ? slide.name : slide.title}
+                      </span>
+
+                      <div className="flex gap-x-2 text-[10px] text-gray-400">
+                        {slide.genre_ids.slice(0, 2).map((genreId) => {
+                          let genre;
+                          if (slide.media_type === "movie") {
+                            genre = movieGenres.find(
+                              (genre) => genre.id === genreId,
+                            );
+                          } else {
+                            genre = tvGenres.find(
+                              (genre) => genre.id === genreId,
+                            );
+                          }
+                          return (
+                            <span className="truncate">
+                              {genre ? genre.name : ""}
+                            </span>
+                          );
+                        })}
+                      </div>
+                    </p>
+                  </div>
                 </div>
               </Link>
             </SwiperSlide>

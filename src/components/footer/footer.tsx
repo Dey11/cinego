@@ -8,7 +8,7 @@ export default function Footer() {
   const isMobile = useMediaQuery({ maxWidth: 500 });
 
   return (
-    <footer className="p-4 pb-16 text-white md:p-8 md:pb-4">
+    <footer className="mx-auto max-w-[1440px] pb-16 pt-16 text-white md:pb-4">
       <div className="mx-auto">
         <div
           className={`flex ${isMobile ? "flex-col" : "flex-row justify-between"} mb-6`}

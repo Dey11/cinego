@@ -24,7 +24,7 @@ export default function TopList({ movieItems, tvItems, type }: TopListProps) {
   const filteredItems = activeTab === "Movies" ? movieItems : tvItems;
 
   return (
-    <div className="w-full p-4 text-gray-900 dark:text-white">
+    <div className="w-full pl-4 text-gray-900 dark:text-white">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="flex items-center text-2xl font-bold">
           <span className="mr-2 text-yellow-400">▶</span> TOP
@@ -59,7 +59,7 @@ export default function TopList({ movieItems, tvItems, type }: TopListProps) {
                 alt={item.title || item.original_name}
                 className="h-full w-full rounded object-cover"
               />
-              <div className="absolute -left-3 top-1/3 flex h-6 w-6 items-center justify-center rounded-full border-2 border-yellow-500 bg-red-500 text-sm font-bold text-white">
+              <div className="absolute -left-3 top-1/3 flex h-6 w-6 items-center justify-center rounded-full border-2 border-yellow-500 bg-gray-200 text-sm font-bold text-black dark:bg-gray-700 dark:text-white">
                 {index + 1}
               </div>
             </div>
