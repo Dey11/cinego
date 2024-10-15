@@ -225,7 +225,7 @@ export default function TopSlider() {
                 className="absolute inset-0 h-full w-full object-cover"
               />
               <div className="absolute inset-0 bg-black bg-opacity-50" />
-              <div className="absolute bottom-[25dvh] left-1/2 z-10 w-[90%] -translate-x-1/2 px-4 text-white sm:left-8 sm:-translate-x-0">
+              <div className="absolute bottom-[25dvh] left-1/2 z-10 w-[90%] -translate-x-1/2 text-white sm:left-8 sm:-translate-x-0 sm:px-4">
                 <Image
                   src={`https://image.tmdb.org/t/p/original${slide.logo_path}`}
                   alt={slide.title ? slide.title : slide.name!}
@@ -279,7 +279,7 @@ export default function TopSlider() {
       <div className="absolute -bottom-20 left-0 right-0 px-4 lg:px-8">
         <Swiper
           modules={[Navigation, A11y, Autoplay]}
-          spaceBetween={30}
+          spaceBetween={10}
           slidesPerView={"auto"}
           autoplay={{
             delay: 2500,
