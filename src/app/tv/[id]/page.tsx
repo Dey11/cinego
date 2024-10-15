@@ -10,6 +10,7 @@ import {
 import { Download, Play, Plus, Star } from "lucide-react";
 import Image from "next/image";
 import { Combobox } from "../../../components/tv-page/EpisodesSection";
+import Example from "@/components/movie-page/youtube-player";
 
 const Page = async ({ params }: { params: { id: number } }) => {
   const tvId = params.id;
@@ -141,7 +142,7 @@ const Page = async ({ params }: { params: { id: number } }) => {
                   src={
                     cast.profile_path
                       ? `${process.env.TMDB_IMG}${cast.profile_path}`
-                      : "/profile-icon.jpg"
+                      : `https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-4-user-grey-d8fe957375e70239d6abdd549fd7568c89281b2179b5f4470e2e12895792dfa5.svg`
                   }
                   width={64}
                   height={64}
@@ -164,13 +165,18 @@ const Page = async ({ params }: { params: { id: number } }) => {
         </div>
 
         {/* Trailer */}
-        <div className="mt-16">
-          <Player trailerInfo={trailerInfo} name={tvInfo.name} />
+        <div className="mt-8 sm:hidden">
+          {/* <Player trailerInfo={trailerInfo} name={tvInfo.name} /> */}
+          <Example trailerInfo={trailerInfo} height="250" />
+        </div>
+        <div className="hidden sm:block">
+          {/* <Player trailerInfo={trailerInfo} name={tvInfo.name} /> */}
+          <Example trailerInfo={trailerInfo} height="580" />
         </div>
 
         {/* Recommendations */}
-        <div className="mt-8">
-          <h2 className="mb-4 text-xl font-bold">You may also like</h2>
+        <div className="mt-16">
+          <h2 className="mb-4 text-2xl font-bold">You may also like</h2>
           <div className="grid grid-cols-3 justify-items-center gap-4 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6">
             {recommendationsInfo.slice(0, 12).map((recommendation) => (
               <Card key={recommendation.id} show={recommendation} />

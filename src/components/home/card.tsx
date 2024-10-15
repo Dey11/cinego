@@ -40,7 +40,7 @@ const Card = ({ show }: { show: CardProps }) => {
                 ? `https://image.tmdb.org/t/p/original${
                     show.poster_path ? show.poster_path : show.backdrop_path
                   }`
-                : "/poster-icon.png"
+                : "/placeholder.png"
             }
             alt={(show.name ? show.name : show.title)!}
             sizes="fill"

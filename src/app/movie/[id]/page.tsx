@@ -1,5 +1,6 @@
 import Card from "@/components/movie-page/Card";
 import Player from "@/components/movie-page/Player";
+import Example from "@/components/movie-page/youtube-player";
 import { Button } from "@/components/ui/button";
 import {
   fetchCastInfo,
@@ -127,7 +128,8 @@ const Page = async ({ params }: { params: { id: number } }) => {
 
           {/* Trailer */}
           <div className="mt-16">
-            <Player trailerInfo={trailerInfo} name={movieInfo.title} />
+            {/* <Player trailerInfo={trailerInfo} name={movieInfo.title} /> */}
+            <Example trailerInfo={trailerInfo} height="580" />
           </div>
 
           {/* Recommendations */}
@@ -231,14 +233,15 @@ const Page = async ({ params }: { params: { id: number } }) => {
 
           {/* Trailer */}
           <div className="mt-8">
-            <Player trailerInfo={trailerInfo} name={movieInfo.title} />
+            {/* <Player trailerInfo={trailerInfo} name={movieInfo.title} /> */}
+            <Example trailerInfo={trailerInfo} height="250" />
           </div>
 
           {/* Recommendations */}
           <div className="mt-8">
             <h2 className="mb-4 text-xl font-bold">You may also like</h2>
             <div className="grid grid-cols-3 justify-items-center gap-3">
-              {recommendationsInfo.slice(0, 12).map((recommendation) => (
+              {recommendationsInfo.map((recommendation) => (
                 <Card key={recommendation.id} show={recommendation} />
               ))}
             </div>
