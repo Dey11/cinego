@@ -59,7 +59,7 @@ const Page = async ({ params }: { params: { id: number } }) => {
               </h1>
               <div className="mb-4 flex items-center space-x-4">
                 <div className="flex items-center">
-                  <h3 className="mr-4">MOVIE</h3>
+                  <h3 className="mr-4">Movie</h3>
                   <Star className="mr-1 h-5 w-5 fill-yellow-500 text-yellow-500" />
                   <span>{movieInfo.vote_average.toFixed(1)}</span>
                 </div>
@@ -109,7 +109,7 @@ const Page = async ({ params }: { params: { id: number } }) => {
                     src={
                       cast.profile_path
                         ? `${process.env.TMDB_IMG}${cast.profile_path}`
-                        : "/profile-icon.jpg"
+                        : "https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-4-user-grey-d8fe957375e70239d6abdd549fd7568c89281b2179b5f4470e2e12895792dfa5.svg"
                     }
                     width={64}
                     height={64}
@@ -160,7 +160,7 @@ const Page = async ({ params }: { params: { id: number } }) => {
           <h1 className="mb-2 text-2xl font-semibold">{movieInfo.title}</h1>
           <div className="mb-4 flex items-center space-x-4">
             <div className="flex items-center">
-              <h3 className="mr-4">MOVIE</h3>
+              <h3 className="mr-4">Movie</h3>
               <Star className="mr-1 h-5 w-5 fill-yellow-500 text-yellow-500" />
               <span>{movieInfo.vote_average.toFixed(1)}</span>
             </div>
@@ -214,7 +214,7 @@ const Page = async ({ params }: { params: { id: number } }) => {
                     src={
                       cast.profile_path
                         ? `${process.env.TMDB_IMG}${cast.profile_path}`
-                        : "/profile-icon.jpg"
+                        : "https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-4-user-grey-d8fe957375e70239d6abdd549fd7568c89281b2179b5f4470e2e12895792dfa5.svg"
                     }
                     width={64}
                     height={64}

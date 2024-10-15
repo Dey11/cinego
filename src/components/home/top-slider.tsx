@@ -220,7 +220,7 @@ export default function TopSlider() {
                 className="absolute inset-0 h-full w-full object-cover"
               />
               <div className="absolute inset-0 bg-black bg-opacity-50" />
-              <div className="absolute bottom-[25dvh] left-1/2 z-10 w-[90%] -translate-x-1/2 text-white sm:left-8 sm:-translate-x-0 sm:px-4">
+              <div className="absolute bottom-[25dvh] left-1/2 z-10 w-[90%] -translate-x-1/2 text-white sm:left-5 sm:-translate-x-0 sm:px-5">
                 <Image
                   src={`https://image.tmdb.org/t/p/original${slide.logo_path}`}
                   alt={slide.title ? slide.title : slide.name!}
@@ -232,8 +232,9 @@ export default function TopSlider() {
                   <span className="mr-3 flex items-center capitalize text-gray-300">
                     {slide.media_type}
                   </span>
-                  <span className="mr-2 flex items-center gap-x-1">
-                    <Star className="h-4 w-4 fill-white" /> {slide.vote_average}
+                  <span className="mr-2 flex items-center gap-x-1 text-gray-300">
+                    <Star className="h-4 w-4 fill-white text-white" />{" "}
+                    {slide.vote_average}
                   </span>
                   <span className="ml-2 flex items-center gap-x-1 text-gray-300">
                     <Calendar className="h-4 w-4" />

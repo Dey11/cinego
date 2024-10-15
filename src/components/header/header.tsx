@@ -24,6 +24,7 @@ import { useTheme } from "next-themes";
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 import { Router } from "next/router";
+import Image from "next/image";
 
 const options = [
   { name: "Home", href: "/", icon: Home },
@@ -55,12 +56,12 @@ const Header = () => {
     <header className="absolute top-0 z-20 mt-5 flex w-full items-center justify-between px-5 md:px-10">
       {pathname.split("/")[1] === "movie" || pathname.split("/")[1] === "tv" ? (
         <Link href={"/"}>
-          <ArrowLeft className="text-2xl font-bold text-white" />{" "}
+          <ArrowLeft className="text-2xl font-bold text-white hover:scale-110 hover:transform" />{" "}
         </Link>
       ) : (
         <>
           <Link className="text-2xl font-bold text-red-500" href={"/"}>
-            Cinego
+            <Image src={"/logo.png"} alt="logo" width={150} height={150} />
           </Link>
           <Search />
         </>

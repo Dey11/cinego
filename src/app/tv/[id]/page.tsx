@@ -65,7 +65,7 @@ const Page = async ({ params }: { params: { id: number } }) => {
             </h1>
             <div className="mb-4 flex items-center space-x-4">
               <div className="flex items-center">
-                <h3 className="mr-4">TV</h3>
+                <h3 className="mr-4">Tv</h3>
                 <Star className="mr-1 h-5 w-5 fill-yellow-500 text-yellow-500" />
                 <span>{tvInfo.vote_average.toFixed(1)}</span>
               </div>
