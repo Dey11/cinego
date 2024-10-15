@@ -73,17 +73,9 @@ export default function TopSlider() {
     try {
       const movieGenresResponse = await fetch(movieGenresUrl, options);
       const movieGenresData = await movieGenresResponse.json();
-      // const movieGenresList = movieGenresData.genres.map((genre: any) => ({
-      //   id: genre.id,
-      //   name: genre.name,
-      // }));
       setMovieGenres(movieGenresData.genres);
       const tvGenresResponse = await fetch(tvGenresUrl, options);
       const tvGenresData = await tvGenresResponse.json();
-      // const tvGenresList = tvGenresData.genres.map((genre: any) => ({
-      //   id: genre.id,
-      //   name: genre.name,
-      // }));
       setTVGenres(tvGenresData.genres);
     } catch (error) {
       console.error("Error fetching genres:", error);
@@ -168,9 +160,12 @@ export default function TopSlider() {
     try {
       const response = await fetch(url, options);
       const data = await response.json();
-      const logo = data.logos.find(
+      let logo = data.logos.find(
         (logo: any) => logo.iso_639_1 === "en",
       )?.file_path;
+      if (!logo) {
+        logo = data.logos[0].file_path;
+      }
       return logo || "";
     } catch (error) {
       console.error(`Error fetching slide info for id ${id}:`, error);
