@@ -7,6 +7,8 @@ import Link from "next/link";
 interface ListItem {
   id: number;
   title?: string;
+  name?: string;
+  original_title?: string;
   original_name?: string;
   season?: number;
   episode?: number;
@@ -56,7 +58,7 @@ export default function TopList({ movieItems, tvItems, type }: TopListProps) {
             <div className="relative h-16 w-12 flex-shrink-0">
               <img
                 src={`https://image.tmdb.org/t/p/original${item.poster_path}`}
-                alt={item.title || item.original_name}
+                alt={item.title || item.name}
                 className="h-full w-full rounded object-cover"
               />
               <div className="absolute -left-3 top-1/3 flex h-6 w-6 items-center justify-center rounded-full border-2 border-yellow-500 bg-gray-200 text-sm font-bold text-black dark:bg-gray-700 dark:text-white">
@@ -69,7 +71,7 @@ export default function TopList({ movieItems, tvItems, type }: TopListProps) {
                 {item.episode && `/ EP ${item.episode}`}
               </p>
               <h3 className="line-clamp-1 font-semibold">
-                {item.title || item.original_name}
+                {item.title || item.name}
               </h3>
             </div>
           </Link>
