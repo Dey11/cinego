@@ -138,13 +138,17 @@ const Page = async ({ params }: { params: { id: number } }) => {
               <div key={cast.id} className="flex items-center space-x-4">
                 <Image
                   className="h-16 w-16 rounded-full object-cover"
-                  src={`${process.env.TMDB_IMG}${cast.profile_path}`}
+                  src={
+                    cast.profile_path
+                      ? `${process.env.TMDB_IMG}${cast.profile_path}`
+                      : "/profile-icon.jpg"
+                  }
                   width={64}
                   height={64}
                   alt={cast.name}
                 />
                 <div>
-                  <h3 className="font-semibold">{cast.original_name}</h3>
+                  <h3 className="font-semibold">{cast.name}</h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
                     {cast.character}
                   </p>

@@ -225,7 +225,7 @@ export default function TopSlider() {
                 className="absolute inset-0 h-full w-full object-cover"
               />
               <div className="absolute inset-0 bg-black bg-opacity-50" />
-              <div className="absolute bottom-[25dvh] left-8 z-10 text-white">
+              <div className="absolute bottom-[25dvh] left-1/2 z-10 w-[90%] -translate-x-1/2 px-4 text-white sm:left-8 sm:-translate-x-0">
                 <Image
                   src={`https://image.tmdb.org/t/p/original${slide.logo_path}`}
                   alt={slide.title ? slide.title : slide.name!}
@@ -233,19 +233,18 @@ export default function TopSlider() {
                   height={300}
                   className="pb-10"
                 />
-                <div className="mb-2 flex items-center">
+                <div className="mx-auto mb-2 flex items-center">
+                  <span className="mr-3 flex items-center capitalize text-gray-300">
+                    {slide.media_type}
+                  </span>
                   <span className="mr-2 flex items-center gap-x-1">
-                    <Star className="h-4 w-4 text-yellow-500" />{" "}
-                    {slide.vote_average}
+                    <Star className="h-4 w-4 fill-white" /> {slide.vote_average}
                   </span>
                   <span className="ml-2 flex items-center gap-x-1 text-gray-300">
                     <Calendar className="h-4 w-4" />
                     {slide.release_date
                       ? slide.release_date
                       : slide.first_air_date}
-                  </span>
-                  <span className="ml-2 text-gray-300">
-                    {slide.original_language.toUpperCase()}
                   </span>
                 </div>
                 <p className="line-clamp-3 max-w-2xl text-lg">
@@ -255,7 +254,7 @@ export default function TopSlider() {
                   <Button
                     variant={"default"}
                     size={"lg"}
-                    className="mr-4 border border-white px-6 py-2 font-bold transition-transform hover:scale-110"
+                    className="mr-4 border border-white bg-white px-6 py-2 font-bold text-black transition-transform hover:scale-110 hover:bg-gray-200"
                   >
                     <Play className="fill-black pr-1" />
                     Play
@@ -303,10 +302,10 @@ export default function TopSlider() {
               slidesPerView: 4,
             },
             1280: {
-              slidesPerView: 5,
+              slidesPerView: 4,
             },
             1440: {
-              slidesPerView: 6,
+              slidesPerView: 5,
             },
             // 1536: { slidesPerView: 5 },
           }}
@@ -317,7 +316,7 @@ export default function TopSlider() {
             <SwiperSlide key={index} className="gap-x-10">
               <Link href={`/${slide.media_type}/${slide.id}`}>
                 <div
-                  className="relative h-52 w-full overflow-hidden rounded-xl bg-red-500 sm:h-40 md:h-32 lg:h-32"
+                  className="relative h-52 w-full overflow-hidden rounded-xl bg-red-500 sm:h-40 md:h-32 lg:h-32 xl:h-44"
                   style={{
                     backgroundImage: `url(https://image.tmdb.org/t/p/original${slide.backdrop_path})`,
                     backgroundSize: "cover",

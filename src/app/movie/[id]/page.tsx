@@ -37,7 +37,7 @@ const Page = async ({ params }: { params: { id: number } }) => {
             src={`${process.env.TMDB_IMG}${movieInfo.backdrop_path}`}
             fill
             className="object-cover"
-            alt={movieInfo.original_title}
+            alt={movieInfo.title}
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/60 to-white dark:via-black/60 dark:to-black"></div>
         </div>
@@ -47,14 +47,14 @@ const Page = async ({ params }: { params: { id: number } }) => {
               <Image
                 className="mx-auto rounded-xl shadow-xl md:mx-0"
                 src={`${process.env.TMDB_IMG}${movieInfo.poster_path}`}
-                alt={movieInfo.original_title}
+                alt={movieInfo.title}
                 width={300}
                 height={450}
               />
             </div>
             <div className="mt-6 md:mt-0 md:w-2/3 lg:w-3/4">
               <h1 className="mb-4 text-3xl font-bold md:text-4xl">
-                {movieInfo.original_title}
+                {movieInfo.title}
               </h1>
               <div className="mb-4 flex items-center space-x-4">
                 <div className="flex items-center">
@@ -105,13 +105,17 @@ const Page = async ({ params }: { params: { id: number } }) => {
                 <div key={cast.id} className="flex items-center space-x-4">
                   <Image
                     className="h-16 w-16 rounded-full object-cover"
-                    src={`${process.env.TMDB_IMG}${cast.profile_path}`}
+                    src={
+                      cast.profile_path
+                        ? `${process.env.TMDB_IMG}${cast.profile_path}`
+                        : "/profile-icon.jpg"
+                    }
                     width={64}
                     height={64}
                     alt={cast.name}
                   />
                   <div>
-                    <h3 className="font-semibold">{cast.original_name}</h3>
+                    <h3 className="font-semibold">{cast.name}</h3>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
                       {cast.character}
                     </p>
@@ -123,7 +127,7 @@ const Page = async ({ params }: { params: { id: number } }) => {
 
           {/* Trailer */}
           <div className="mt-16">
-            <Player trailerInfo={trailerInfo} name={movieInfo.original_title} />
+            <Player trailerInfo={trailerInfo} name={movieInfo.title} />
           </div>
 
           {/* Recommendations */}
@@ -144,16 +148,14 @@ const Page = async ({ params }: { params: { id: number } }) => {
         <div className="relative h-dvh">
           <Image
             src={`${process.env.TMDB_IMG}${movieInfo.poster_path}`}
-            alt={movieInfo.original_title}
+            alt={movieInfo.title}
             fill
             className="object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white dark:to-black"></div>
         </div>
-        <div className="relative z-10 -mt-96 px-4 py-6">
-          <h1 className="mb-2 text-2xl font-semibold">
-            {movieInfo.original_title}
-          </h1>
+        <div className="relative z-10 -mt-[120%] px-4 py-6">
+          <h1 className="mb-2 text-2xl font-semibold">{movieInfo.title}</h1>
           <div className="mb-4 flex items-center space-x-4">
             <div className="flex items-center">
               <h3 className="mr-4">MOVIE</h3>
@@ -207,13 +209,17 @@ const Page = async ({ params }: { params: { id: number } }) => {
                 <div key={cast.id} className="flex items-center space-x-4">
                   <Image
                     className="h-16 w-16 rounded-full object-cover"
-                    src={`${process.env.TMDB_IMG}${cast.profile_path}`}
+                    src={
+                      cast.profile_path
+                        ? `${process.env.TMDB_IMG}${cast.profile_path}`
+                        : "/profile-icon.jpg"
+                    }
                     width={64}
                     height={64}
                     alt={cast.name}
                   />
                   <div>
-                    <h3 className="font-semibold">{cast.original_name}</h3>
+                    <h3 className="font-semibold">{cast.name}</h3>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
                       {cast.character}
                     </p>
@@ -225,7 +231,7 @@ const Page = async ({ params }: { params: { id: number } }) => {
 
           {/* Trailer */}
           <div className="mt-8">
-            <Player trailerInfo={trailerInfo} name={movieInfo.original_title} />
+            <Player trailerInfo={trailerInfo} name={movieInfo.title} />
           </div>
 
           {/* Recommendations */}

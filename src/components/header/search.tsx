@@ -12,7 +12,7 @@ const Search = () => {
       />
 
       <button className="absolute left-2 top-[6px] flex items-center gap-x-2 rounded-xl bg-black px-2 py-1">
-        <Filter className="h-3 w-3 text-white" />
+        <Filter className="h-3 w-3 text-gray-500" />
         <span className="text-sm text-gray-500">Filter</span>
       </button>
 
