@@ -16,10 +16,7 @@ const TopWidget = async () => {
 
   return (
     <div>
-      {/* <div className="inline-block bg-gradient-to-r from-blue-400 to-green-500 bg-clip-text text-center text-lg font-bold text-transparent sm:text-2xl lg:px-0">
-        Popular Movies Now
-      </div> */}
-      <TopList movieItems={topMovies} tvItems={topTVShows!} type="Movies" />
+      <TopList movieItems={topMovies} tvItems={topTVShows!} type="Movie" />
     </div>
   );
 };
