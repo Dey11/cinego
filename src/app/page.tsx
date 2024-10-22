@@ -7,7 +7,8 @@ import PopularNetflixShows from "@/components/home/lists/netflix";
 import TrendingTVSection from "@/components/home/lists/trending-tv";
 import TopSlider from "@/components/home/top-slider";
 import TrendingMoviesSection from "@/components/home/lists/trending-movies";
-import TopWidget from "@/components/home/lists/top-movies";
+import TopWidget from "@/components/home/lists/top-widget";
+import PopularWidget from "@/components/home/lists/popular-widget";
 
 export default function Home() {
   return (
@@ -43,6 +44,7 @@ export default function Home() {
           </div>
           <div className="sm:col-span-4">
             <TopWidget />
+            <PopularWidget />
           </div>
         </div>
       </div>
