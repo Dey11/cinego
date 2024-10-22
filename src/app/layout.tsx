@@ -33,7 +33,7 @@ export default function RootLayout({
           {children}
           {/* </main> */}
           <MobileNav />
-          <Footer />
+          <Footer backgroundImage="/footer-bg.jpeg" />
           {/* </div> */}
         </ThemeProvider>
       </body>

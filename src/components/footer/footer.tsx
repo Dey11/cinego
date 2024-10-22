@@ -1,62 +1,114 @@
-"use client";
-
-import Link from "next/link";
 import React from "react";
-import { useMediaQuery } from "react-responsive";
+import Image from "next/image";
+import Link from "next/link";
 
-export default function Footer() {
-  const isMobile = useMediaQuery({ maxWidth: 500 });
+interface FooterProps {
+  backgroundImage: string;
+}
 
+export default function Footer({ backgroundImage }: FooterProps) {
   return (
-    <footer className="mx-auto max-w-[1440px] pb-16 pt-16 text-white md:pb-4">
-      <div className="mx-auto">
-        <div
-          className={`flex ${isMobile ? "flex-col" : "flex-row justify-between"} mb-6`}
-        >
-          <h2 className="mb-4 text-2xl font-bold text-red-500">Cinego</h2>
-          <div
-            className={`grid ${isMobile ? "grid-cols-2" : "grid-cols-3"} gap-4`}
-          >
-            <div>
-              <Link href="#" className="block text-red-500 hover:text-red-400">
+    <footer className="relative mb-12 mt-10 overflow-hidden text-white md:mb-0">
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-100"
+        style={{ backgroundImage: `url(${backgroundImage})` }}
+      ></div>
+      <div className="relative z-10 bg-black bg-opacity-80">
+        <div className="container mx-auto px-4 py-10 pt-20">
+          <div className="mb-4 w-full">
+            <Image
+              src="/logo.png"
+              alt="FLIXHQ Logo"
+              width={120}
+              height={40}
+              className="mx-auto h-10 w-auto sm:m-0"
+            />
+          </div>
+          <div className="mb-2 flex flex-row items-center justify-center gap-x-5 text-xs sm:flex-row sm:justify-between">
+            <nav className="flex flex-col space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0">
+              <Link
+                href="/request"
+                className="transition-colors hover:text-red-500"
+              >
+                Request
+              </Link>
+              <Link
+                href="/contact"
+                className="transition-colors hover:text-red-500"
+              >
+                Contact
+              </Link>
+              <Link
+                href="/faqs"
+                className="transition-colors hover:text-red-500"
+              >
+                FAQs
+              </Link>
+              <Link
+                href="/policy"
+                className="transition-colors hover:text-red-500"
+              >
+                Policy
+              </Link>
+            </nav>
+            <nav className="flex flex-col space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0">
+              <Link
+                href="/movies"
+                className="transition-colors hover:text-red-500"
+              >
                 Movies
               </Link>
-              <Link href="#" className="block text-red-500 hover:text-red-400">
+              <Link
+                href="/tv-shows"
+                className="transition-colors hover:text-red-500"
+              >
                 TV-Shows
               </Link>
-            </div>
-            <div>
-              <a href="#" className="block text-red-500 hover:text-red-400">
-                Request
-              </a>
-              <a href="#" className="block text-red-500 hover:text-red-400">
-                Contact
-              </a>
-            </div>
-            <div>
-              <a href="#" className="block text-red-500 hover:text-red-400">
-                FAQs
-              </a>
-              <a href="#" className="block text-red-500 hover:text-red-400">
-                Policy
-              </a>
-            </div>
+              <Link
+                href="/favorites"
+                className="transition-colors hover:text-red-500"
+              >
+                Favorites
+              </Link>
+            </nav>
+          </div>
+          <div className="my-4 border-t border-red-500"></div>
+          <div className="flex flex-col items-center justify-between text-sm md:flex-row">
+            <p className="mx-auto mb-4 max-w-4xl text-center text-red-500 md:mb-0">
+              Flixhq.lol is top of free streaming website, where to watch movies
+              online free without registration required. With a big database and
+              great features, we're confident. Flixhq.lol is the best free
+              movies online website in the space that you can't simply miss!
+            </p>
+          </div>
+          <div className="mt-4 text-center text-xs">
+            <p>
+              This site does not store any files on our server, we only linked
+              to the media which is hosted on 3rd party services.
+            </p>
+            <p className="text-gray-400">FLIXHQ © 2024. All Rights Reserved</p>
           </div>
         </div>
-        <div className="border-t border-gray-700 pt-6">
-          <p className="mx-auto mb-4 max-w-6xl text-center text-sm">
-            Cinego is a free streaming website, where you can watch movies
-            online without registration.
-          </p>
-          <p className="mb-4 text-center text-sm text-red-500">
-            This site does not store any files on our server, we only link to
-            the media which is hosted on 3rd party services.
-          </p>
-          <p className="text-center text-xs text-gray-500">
-            Cinego © 2024. All Rights Reserved
-          </p>
-        </div>
       </div>
+      {/* <div className="fixed bottom-4 right-4 z-20">
+        <button className="flex items-center space-x-2 rounded-full bg-red-500 px-4 py-2 font-bold text-white transition-colors hover:bg-red-600">
+          <span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </span>
+          <span>Movie & Tv Shows Request</span>
+        </button>
+      </div> */}
     </footer>
   );
 }
