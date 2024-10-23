@@ -32,7 +32,7 @@ export default function TopList({ movieItems, tvItems, type }: TopListProps) {
     <div className="w-full px-4 pt-6 text-gray-900 dark:text-white md:px-0 md:pl-4 md:pt-6">
       <div className="mb-2 flex items-center justify-between">
         <h2 className="flex items-center text-xl font-bold">
-          <span className="mr-2 text-yellow-400">▶</span> TOP
+          <span className="mr-2">▶</span> TOP
         </h2>
         <div className="space-x-2">
           <Button
@@ -52,11 +52,11 @@ export default function TopList({ movieItems, tvItems, type }: TopListProps) {
         </div>
       </div>
       <div className="space-y-2">
-        {filteredItems.map((item, index) => (
+        {filteredItems.slice(0, 15).map((item, index) => (
           <Link
             key={item.id}
             href={`/${activeTab.toLowerCase() === "movie" ? "movie" : "tv"}/${item.id}`}
-            className="group flex items-center space-x-3 rounded bg-gray-100 p-2 hover:bg-lime-500 dark:bg-gray-700 dark:hover:bg-lime-500 dark:hover:text-black"
+            className="group flex items-center space-x-3 rounded bg-gray-100 p-2 hover:bg-yellow-500 dark:bg-gray-700 dark:hover:bg-yellow-500 dark:hover:text-black"
           >
             <div className="relative h-16 w-12 flex-shrink-0">
               <img
@@ -64,7 +64,7 @@ export default function TopList({ movieItems, tvItems, type }: TopListProps) {
                 alt={item.title || item.name}
                 className="h-full w-full rounded object-cover"
               />
-              <div className="absolute -left-3 top-1/3 flex h-6 w-6 items-center justify-center rounded-full border-2 border-yellow-500 bg-gray-100 text-sm font-bold text-black group-hover:bg-lime-500 group-hover:text-black dark:bg-gray-700 dark:text-white">
+              <div className="absolute -left-3 top-1/3 flex h-6 w-6 items-center justify-center rounded-full border-2 border-yellow-500 bg-gray-100 text-sm font-bold text-black group-hover:bg-yellow-500 group-hover:text-black dark:bg-gray-700 dark:text-white">
                 {index + 1}
               </div>
             </div>

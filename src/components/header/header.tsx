@@ -79,8 +79,8 @@ const Header = () => {
             <Moon className="h-5 w-5 text-white" />
           )}
         </Button>
-        <User className="text-white" />
         <MenuOps />
+        <User className="text-white" />
       </div>
     </header>
   );

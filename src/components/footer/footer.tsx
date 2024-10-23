@@ -10,10 +10,10 @@ export default function Footer({ backgroundImage }: FooterProps) {
   return (
     <footer className="relative mb-12 mt-10 overflow-hidden text-white md:mb-0">
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-100"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${backgroundImage})` }}
       ></div>
-      <div className="relative z-10 bg-black bg-opacity-80">
+      <div className="relative z-10">
         <div className="container mx-auto px-4 py-10 pt-20">
           <div className="mb-4 w-full">
             <Image

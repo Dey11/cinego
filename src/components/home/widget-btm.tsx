@@ -56,11 +56,11 @@ export default function PopularList({
         </div>
       </div>
       <div className="space-y-2">
-        {filteredItems.map((item, index) => (
+        {filteredItems.slice(0, 15).map((item, index) => (
           <Link
             key={item.id}
             href={`/${activeTab.toLowerCase() === "movie" ? "movie" : "tv"}/${item.id}`}
-            className="group flex items-center space-x-3 rounded bg-gray-100 p-2 hover:bg-lime-500 dark:bg-gray-700 dark:hover:bg-lime-500 dark:hover:text-black"
+            className="group flex items-center space-x-3 rounded bg-gray-100 p-2 hover:bg-yellow-500 dark:bg-gray-700 dark:hover:bg-yellow-500 dark:hover:text-black"
           >
             <div className="relative h-16 w-12 flex-shrink-0">
               <img
@@ -68,7 +68,7 @@ export default function PopularList({
                 alt={item.title || item.name}
                 className="h-full w-full rounded object-cover"
               />
-              <div className="absolute -left-3 top-1/3 flex h-6 w-6 items-center justify-center rounded-full border-2 border-yellow-500 bg-gray-100 text-sm font-bold text-black group-hover:bg-lime-500 group-hover:text-black dark:bg-gray-700 dark:text-white">
+              <div className="absolute -left-3 top-1/3 flex h-6 w-6 items-center justify-center rounded-full border-2 border-yellow-500 bg-gray-100 text-sm font-bold text-black group-hover:bg-yellow-500 group-hover:text-black dark:bg-gray-700 dark:text-white">
                 {index + 1}
               </div>
             </div>
