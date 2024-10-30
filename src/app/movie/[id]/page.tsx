@@ -10,6 +10,7 @@ import {
 } from "@/lib/api-calls/shows";
 import { Download, Play, Plus, Star } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 const Page = async ({ params }: { params: { id: number } }) => {
   const movieId = params.id;
@@ -77,14 +78,16 @@ const Page = async ({ params }: { params: { id: number } }) => {
               </div>
               <p className="mb-6 text-lg">{movieInfo.overview}</p>
               <div className="flex items-center space-x-4">
-                <Button
-                  variant={"default"}
-                  size={"lg"}
-                  className="border border-white font-bold transition-transform hover:scale-110"
-                >
-                  <Play className="fill-black pr-1" />
-                  Play
-                </Button>
+                <Link href={`/watch/movie/${movieInfo.id}`}>
+                  <Button
+                    variant={"default"}
+                    size={"lg"}
+                    className="border border-white font-bold transition-transform hover:scale-110"
+                  >
+                    <Play className="fill-black pr-1" />
+                    Play
+                  </Button>
+                </Link>
                 <Button
                   variant={"secondary"}
                   size={"lg"}
@@ -178,14 +181,16 @@ const Page = async ({ params }: { params: { id: number } }) => {
           </div>
           <p className="mb-6 text-sm">{movieInfo.overview}</p>
           <div className="space-y-3">
-            <Button
-              variant={"default"}
-              size={"lg"}
-              className="w-full border border-white font-bold transition-transform hover:scale-110"
-            >
-              <Play className="fill-black pr-1" />
-              Play
-            </Button>
+            <Link href={`/watch/movie/${movieInfo.id}`}>
+              <Button
+                variant={"default"}
+                size={"lg"}
+                className="w-full border border-white font-bold transition-transform hover:scale-110"
+              >
+                <Play className="fill-black pr-1" />
+                Play
+              </Button>
+            </Link>
             <Button
               variant={"secondary"}
               size={"lg"}
