@@ -14,9 +14,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Command,
-  CommandEmpty,
   CommandGroup,
-  CommandInput,
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
@@ -79,7 +77,7 @@ export function Combobox({
 
   return (
     <div className="w-full">
-      <h1 className="pb-5 text-2xl">Episodes</h1>
+      <h1 className="pb-5 text-2xl font-semibold">Episodes</h1>
       <div className="flex justify-between">
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
@@ -100,8 +98,6 @@ export function Combobox({
           <PopoverContent className="w-[200px] p-0">
             <Command>
               <CommandList>
-                <CommandInput placeholder="Search season..." />
-                <CommandEmpty>No season found.</CommandEmpty>
                 <CommandGroup>
                   {seasons.map((season) => (
                     <CommandItem
@@ -166,7 +162,9 @@ export function Combobox({
             : epInfo
                 .filter((ep) => ep.id == Number(value))[0]
                 ?.data.episodes.toReversed()
-          )?.map((ep) => <ListItem props={ep} icons={icon} key={ep.id} />)}
+          )?.map((ep) => (
+            <ListItem props={ep} icons={icon} key={ep.id} tvId={props.id} />
+          ))}
         </div>
       </ScrollArea>
     </div>

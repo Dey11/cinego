@@ -62,7 +62,7 @@ const Header = () => {
       ) : (
         <>
           <Link className="text-2xl font-bold text-red-500" href={"/"}>
-            <Image src={"/logo.png"} alt="logo" width={150} height={150} />
+            <Image src={"/logo.png"} alt="logo" width={150} height={100} />
           </Link>
           <Search />
         </>

@@ -246,14 +246,16 @@ export default function TopSlider() {
                   {slide.overview}
                 </p>
                 <div className="mt-4">
-                  <Button
-                    variant={"default"}
-                    size={"lg"}
-                    className="mr-4 border border-white bg-white px-6 py-2 font-bold text-black transition-transform hover:scale-110 hover:bg-gray-200"
-                  >
-                    <Play className="fill-black pr-1" />
-                    Play
-                  </Button>
+                  <Link href={`/watch/${slide.media_type}/${slide.id}`}>
+                    <Button
+                      variant={"default"}
+                      size={"lg"}
+                      className="mr-4 border border-white bg-white px-6 py-2 font-bold text-black transition-transform hover:scale-110 hover:bg-gray-200"
+                    >
+                      <Play className="fill-black pr-1" />
+                      Play
+                    </Button>
+                  </Link>
                   <Link href={`/${slide.media_type}/${slide.id}`}>
                     <Button
                       variant={"secondary"}

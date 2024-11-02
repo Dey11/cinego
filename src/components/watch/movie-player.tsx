@@ -1,8 +1,9 @@
 "use client";
 
 import { usePersistedState } from "@/hooks/usePersistedState";
+import { cn } from "@/lib/utils";
 import { MovieInfo } from "@/types/tmdbApi";
-import { Server, X } from "lucide-react";
+import { Bell, Server, X } from "lucide-react";
 import { useState } from "react";
 
 const PROVIDERS = [
@@ -79,9 +80,9 @@ const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
     "currentProvider",
     PROVIDERS[0],
   );
-  const [autoplay, setAutoplay] = usePersistedState("autoplay", false);
-  const [bookmarked, setBookmarked] = usePersistedState("bookmarked", false);
-  const [autonext, setAutonext] = usePersistedState("autonext", false);
+  const [bookmarked, setBookmarked] = useState(false);
+  const [autonext, setAutonext] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
   const handleProviderChange = (provider: (typeof PROVIDERS)[0]) => {
     setCurrentProvider(provider);
@@ -132,26 +133,36 @@ const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
           )}
 
           {!loading && (
-            <iframe
-              src={`${currentProvider?.url ? currentProvider.url : PROVIDERS[0].url}${movieId}`}
-              className="absolute left-0 top-0 h-full w-full"
-              allowFullScreen
-              allow="autoplay; encrypted-media; picture-in-picture"
-            />
+            <div>
+              <div
+                className={cn(
+                  "absolute top-0 z-50 flex w-full items-center bg-red-700",
+                  isOpen ? "" : "hidden",
+                )}
+              >
+                <div className="flex w-full items-center justify-center gap-x-2 p-2 text-sm">
+                  <Bell className="h-4 w-4 fill-white" />
+                  <p>
+                    Please switch to other servers if default server is not
+                    working.
+                  </p>
+                </div>
+                <X
+                  className="h-8 w-8 cursor-pointer justify-end pr-2"
+                  onClick={() => setIsOpen(false)}
+                />
+              </div>
+              <iframe
+                src={`${currentProvider?.url ? currentProvider.url : PROVIDERS[0].url}${movieId}`}
+                className="absolute left-0 top-0 h-full w-full"
+                allowFullScreen
+                allow="autoplay; encrypted-media; picture-in-picture"
+              />
+            </div>
           )}
         </div>
 
-        <div className="mt-2 flex items-center justify-center gap-x-4 text-sm">
-          <label className="flex cursor-pointer items-center gap-x-2 rounded-md transition-all">
-            <input
-              type="checkbox"
-              checked={autoplay}
-              onChange={(e) => setAutoplay(e.target.checked)}
-              className="h-3 w-3 rounded border-gray-600 bg-gray-700 text-red-500 focus:ring-red-500"
-            />
-            <span>Autoplay</span>
-          </label>
-
+        <div className="mx-auto flex w-full items-center justify-center gap-x-4 rounded-b-md bg-gray-900 py-1 text-sm text-white lg:w-3/4">
           <label className="flex cursor-pointer items-center gap-x-2 rounded-md transition-all">
             <input
               type="checkbox"
