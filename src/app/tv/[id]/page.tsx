@@ -1,5 +1,4 @@
 import Card from "@/components/movie-page/Card";
-import Player from "@/components/movie-page/Player";
 import { Button } from "@/components/ui/button";
 import {
   fetchCastInfo,
@@ -11,6 +10,7 @@ import { Download, Play, Plus, Star } from "lucide-react";
 import Image from "next/image";
 import { Combobox } from "../../../components/tv-page/EpisodesSection";
 import Example from "@/components/movie-page/youtube-player";
+import Link from "next/link";
 
 const Page = async ({ params }: { params: { id: number } }) => {
   const tvId = params.id;
@@ -84,14 +84,16 @@ const Page = async ({ params }: { params: { id: number } }) => {
             <p className="mb-6 text-lg">{tvInfo.overview}</p>
             <div className="hidden md:block">
               <div className="flex items-center space-x-4">
-                <Button
-                  variant={"default"}
-                  size={"lg"}
-                  className="border border-white font-bold transition-transform hover:scale-110"
-                >
-                  <Play className="fill-black pr-1" />
-                  Play
-                </Button>
+                <Link href={`/watch/tv/${tvId}`}>
+                  <Button
+                    variant={"default"}
+                    size={"lg"}
+                    className="border border-white font-bold transition-transform hover:scale-110"
+                  >
+                    <Play className="fill-black pr-1" />
+                    Play
+                  </Button>
+                </Link>
                 <Button
                   variant={"secondary"}
                   size={"lg"}
@@ -104,14 +106,16 @@ const Page = async ({ params }: { params: { id: number } }) => {
               </div>
             </div>
             <div className="space-y-3 md:hidden">
-              <Button
-                variant={"default"}
-                size={"lg"}
-                className="w-full border border-white font-bold transition-transform hover:scale-110"
-              >
-                <Play className="fill-black pr-1" />
-                Play
-              </Button>
+              <Link href={`/watch/tv/${tvId}`}>
+                <Button
+                  variant={"default"}
+                  size={"lg"}
+                  className="w-full border border-white font-bold transition-transform hover:scale-110"
+                >
+                  <Play className="fill-black pr-1" />
+                  Play
+                </Button>
+              </Link>
               <Button
                 variant={"secondary"}
                 size={"lg"}

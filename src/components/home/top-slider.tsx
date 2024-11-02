@@ -127,7 +127,6 @@ export default function TopSlider() {
     try {
       const response = await fetch(url, options);
       const data = await response.json();
-      console.log(data.results[0]);
       const slides = data.results.map((tv: any) => ({
         id: tv.id.toString(),
         backdrop_path: tv.backdrop_path,
@@ -312,7 +311,7 @@ export default function TopSlider() {
             <SwiperSlide key={index} className="gap-x-10">
               <Link href={`/${slide.media_type}/${slide.id}`}>
                 <div
-                  className="relative h-52 w-full overflow-hidden rounded-xl bg-red-500 sm:h-40 md:h-32 lg:h-32 xl:h-44"
+                  className="relative h-52 w-full overflow-hidden rounded-xl sm:h-40 md:h-32 lg:h-32 xl:h-44"
                   style={{
                     backgroundImage: `url(https://image.tmdb.org/t/p/original${slide.backdrop_path})`,
                     backgroundSize: "cover",
@@ -324,17 +323,11 @@ export default function TopSlider() {
                     // filter: "blur(2px)",
                   }}
                 >
-                  {/* <img
-                    src={`https://image.tmdb.org/t/p/original${slide.backdrop_path}`}
-                    alt={slide.name ? slide.name : slide.title}
-                    className="h-full w-fit overflow-clip rounded-xl object-contain brightness-50 sm:h-40 md:h-32 lg:h-32"
-                  /> */}
                   <div className="absolute inset-0 h-full w-full items-center justify-center rounded-2xl px-5 text-white transition duration-300 ease-in-out hover:text-red-500 hover:backdrop-blur-[2px]">
-                    <p className="absolute inset-0 left-2 right-2 top-1/2 flex flex-col truncate font-semibold md:text-xl">
+                    <div className="absolute inset-0 left-2 right-2 top-1/2 flex flex-col truncate font-semibold md:text-xl">
                       <span className="truncate">
                         {slide.name ? slide.name : slide.title}
                       </span>
-
                       <div className="flex gap-x-2 text-[10px] text-gray-400">
                         {slide.genre_ids.slice(0, 2).map((genreId) => {
                           let genre;
@@ -348,13 +341,13 @@ export default function TopSlider() {
                             );
                           }
                           return (
-                            <span className="truncate">
+                            <span key={genreId} className="truncate">
                               {genre ? genre.name : ""}
                             </span>
                           );
                         })}
                       </div>
-                    </p>
+                    </div>
                   </div>
                 </div>
               </Link>

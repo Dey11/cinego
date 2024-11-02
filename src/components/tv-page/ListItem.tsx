@@ -42,7 +42,7 @@ const ListItem = ({
         width={225}
         alt={props.name}
       />
-      <div className="absolute left-0 top-0 rounded-br-md bg-black bg-opacity-70 px-2 py-1 text-sm text-white">
+      <div className="absolute left-0 top-0 rounded-br-md rounded-tl-md bg-black bg-opacity-70 px-2 py-1 text-sm text-white">
         {props.episode_number}
       </div>
     </div>

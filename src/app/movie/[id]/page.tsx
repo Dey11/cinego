@@ -1,5 +1,4 @@
 import Card from "@/components/movie-page/Card";
-import Player from "@/components/movie-page/Player";
 import Example from "@/components/movie-page/youtube-player";
 import { Button } from "@/components/ui/button";
 import {
@@ -41,7 +40,7 @@ const Page = async ({ params }: { params: { id: number } }) => {
             className="object-cover"
             alt={movieInfo.title}
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/60 to-white dark:via-black/60 dark:to-black"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/60 to-white dark:via-black/20 dark:to-black"></div>
         </div>
         <div className="relative z-10 mx-auto -mt-96 max-w-screen-xl px-4 md:px-8 lg:px-12 xl:px-16">
           <div className="flex flex-col md:flex-row md:items-start md:space-x-32">
