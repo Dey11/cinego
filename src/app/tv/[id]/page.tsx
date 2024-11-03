@@ -84,7 +84,7 @@ const Page = async ({ params }: { params: { id: number } }) => {
             <p className="mb-6 text-lg">{tvInfo.overview}</p>
             <div className="hidden md:block">
               <div className="flex items-center space-x-4">
-                <Link href={`/watch/tv/${tvId}`}>
+                <Link href={`/watch/tv/${tvId}?season=1&episode=1`}>
                   <Button
                     variant={"default"}
                     size={"lg"}
@@ -106,7 +106,7 @@ const Page = async ({ params }: { params: { id: number } }) => {
               </div>
             </div>
             <div className="space-y-3 md:hidden">
-              <Link href={`/watch/tv/${tvId}`}>
+              <Link href={`/watch/tv/${tvId}?season=1&episode=1`}>
                 <Button
                   variant={"default"}
                   size={"lg"}

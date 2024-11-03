@@ -40,13 +40,13 @@ export default async function WatchPage({ params }: PageProps) {
   }
 
   return (
-    <main className="relative min-h-screen">
+    <main className="relative min-h-screen bg-gray-800">
       {/* Background Image */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 blur-sm">
         <Image
           src={`${process.env.TMDB_IMG}${movieInfo.backdrop_path}`}
           fill
-          className="object-cover blur-sm"
+          className="object-cover"
           alt={movieInfo.title}
           priority
         />

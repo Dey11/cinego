@@ -3,10 +3,12 @@ import Link from "next/link";
 
 const ListItem = ({
   props,
-  icons,
+  // icons,
   tvId,
+  viewMode,
 }: {
-  icons: boolean;
+  viewMode: "list" | "grid" | "thumbnail";
+  // icons: boolean;
   tvId: number;
   props: {
     name: string;
@@ -16,7 +18,7 @@ const ListItem = ({
     season_number: number;
   };
 }) => {
-  if (icons) {
+  if (viewMode === "list") {
     return (
       <Link
         href={`/watch/tv/${tvId}?season=${props.season_number}&episode=${props.episode_number}`}
@@ -41,24 +43,42 @@ const ListItem = ({
     );
   }
 
-  return (
-    <Link
-      href={`/watch/tv/${tvId}?season=${props.season_number}&episode=${props.episode_number}`}
-    >
-      <div className="relative cursor-pointer transition-opacity hover:opacity-80">
-        <Image
-          className="rounded-md"
-          src={`https://image.tmdb.org/t/p/original${props.still_path}`}
-          height={300}
-          width={300}
-          alt={props.name}
-        />
-        <div className="absolute left-0 top-0 rounded-br-md rounded-tl-md bg-black bg-opacity-70 px-2 py-1 text-sm text-white">
-          {props.episode_number}
+  if (viewMode === "grid") {
+    return (
+      <Link
+        href={`/watch/tv/${tvId}?season=${props.season_number}&episode=${props.episode_number}`}
+      >
+        <div className="mb-2 flex h-12 w-full cursor-pointer gap-2 overflow-hidden rounded-md bg-gray-100 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700">
+          <div className="flex flex-col justify-center p-2">
+            <h2 className="text-sm font-semibold">
+              Episode {props.episode_number}: {props.name}
+            </h2>
+          </div>
         </div>
-      </div>
-    </Link>
-  );
+      </Link>
+    );
+  }
+
+  if (viewMode === "thumbnail") {
+    return (
+      <Link
+        href={`/watch/tv/${tvId}?season=${props.season_number}&episode=${props.episode_number}`}
+      >
+        <div className="relative cursor-pointer transition-opacity hover:opacity-80">
+          <Image
+            className="rounded-md"
+            src={`https://image.tmdb.org/t/p/original${props.still_path}`}
+            height={300}
+            width={300}
+            alt={props.name}
+          />
+          <div className="absolute left-0 top-0 rounded-br-md rounded-tl-md bg-black bg-opacity-70 px-2 py-1 text-sm text-white">
+            {props.episode_number}
+          </div>
+        </div>
+      </Link>
+    );
+  }
 };
 
 export default ListItem;

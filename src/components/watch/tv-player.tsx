@@ -2,18 +2,20 @@
 
 import { usePersistedState } from "@/hooks/usePersistedState";
 import { TVInfo } from "@/types/tmdbApi";
-import { Bell, Server, X } from "lucide-react";
+import { Bell, BookmarkIcon, SkipBack, SkipForward, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Combobox } from "../tv-page/EpisodesSection";
 import { useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
+import {
+  isBookmarked,
+  toggleTVBookmark,
+  DEFAULT_TV_PROVIDER,
+} from "@/lib/utils";
 
 const PROVIDERS = [
-  {
-    name: "VidSrc",
-    url: "https://vidsrc.xyz/embed/tv/",
-    countryUrl: `https://flagsapi.com/US/flat/32.png`,
-  },
+  DEFAULT_TV_PROVIDER,
   {
     name: "Embedsu",
     url: "https://embed.su/embed/tv/",
@@ -31,7 +33,7 @@ const TVPlayer = ({ tvId, tvInfo }: TVPlayerProps) => {
   const [showServers, setShowServers] = useState(false);
   const [currentProvider, setCurrentProvider, loading] = usePersistedState(
     "currentTVProvider",
-    PROVIDERS[0],
+    DEFAULT_TV_PROVIDER,
   );
   const [currentSeason, setCurrentSeason] = useState(
     parseInt(searchParams.get("season") || "1"),
@@ -40,15 +42,67 @@ const TVPlayer = ({ tvId, tvInfo }: TVPlayerProps) => {
     parseInt(searchParams.get("episode") || "1"),
   );
   const [bookmarked, setBookmarked] = useState(false);
-  const [autonext, setAutonext] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
+  const [seasons, setSeasons] = useState<number>(tvInfo.number_of_seasons);
+  const [currSeasonEps, setCurrSeasonEps] = useState<number>(0);
+  const [isLastEp, setIsLastEp] = useState(false);
+
+  const canGoBack = () => {
+    return !(currentSeason === 1 && currentEpisode === 1);
+  };
+
+  const canGoForward = () => {
+    const lastSeason = tvInfo.seasons[tvInfo.seasons.length - 1];
+    return !(
+      currentSeason === lastSeason.season_number &&
+      currentEpisode === currSeasonEps
+    );
+  };
+
+  const getNextEpisodeLink = () => {
+    if (currentEpisode === currSeasonEps) {
+      return `/watch/tv/${tvId}?season=${currentSeason + 1}&episode=1`;
+    }
+    return `/watch/tv/${tvId}?season=${currentSeason}&episode=${
+      currentEpisode + 1
+    }`;
+  };
+
+  const getPreviousEpisodeLink = () => {
+    if (currentEpisode === 1) {
+      const prevSeasonData = tvInfo.seasons.find(
+        (season) => season.season_number === currentSeason - 1,
+      );
+      return `/watch/tv/${tvId}?season=${
+        currentSeason - 1
+      }&episode=${prevSeasonData?.episode_count || 1}`;
+    }
+    return `/watch/tv/${tvId}?season=${currentSeason}&episode=${
+      currentEpisode - 1
+    }`;
+  };
 
   useEffect(() => {
     const season = searchParams.get("season");
     const episode = searchParams.get("episode");
     if (season) setCurrentSeason(parseInt(season));
     if (episode) setCurrentEpisode(parseInt(episode));
-  }, [searchParams]);
+
+    const data = tvInfo.seasons.find(
+      (season) => season.season_number === currentSeason,
+    );
+    setCurrSeasonEps(data?.episode_count || 0);
+
+    console.log(currSeasonEps, "  ", currentEpisode);
+    if (currentEpisode === currSeasonEps) {
+      console.log("im here");
+      setIsLastEp(true);
+    }
+  }, [searchParams, currentSeason, tvInfo.seasons]);
+
+  useEffect(() => {
+    setBookmarked(isBookmarked(tvId, "tv"));
+  }, [tvId]);
 
   const handleProviderChange = (provider: (typeof PROVIDERS)[0]) => {
     setCurrentProvider(provider);
@@ -58,6 +112,15 @@ const TVPlayer = ({ tvId, tvInfo }: TVPlayerProps) => {
   const handleEpisodeSelect = (season: number, episode: number) => {
     setCurrentSeason(season);
     setCurrentEpisode(episode);
+  };
+
+  const handleBookmarkToggle = () => {
+    const isNowBookmarked = toggleTVBookmark(
+      tvId,
+      currentSeason,
+      currentEpisode,
+    );
+    setBookmarked(isNowBookmarked);
   };
 
   return (
@@ -89,9 +152,22 @@ const TVPlayer = ({ tvId, tvInfo }: TVPlayerProps) => {
           {/* Server selection */}
           <button
             onClick={() => setShowServers(!showServers)}
-            className="absolute left-0 right-0 top-0 z-20 mx-auto flex h-10 w-40 items-center justify-center gap-x-2 rounded-md bg-red-500 text-white transition-all hover:bg-red-600"
+            className="absolute left-0 right-0 top-0 z-20 mx-auto flex h-10 w-40 items-center justify-center gap-x-2 rounded-b-[12px] bg-red-500 text-white transition-all hover:bg-red-600"
           >
-            {showServers ? <X /> : <Server />}
+            {showServers ? (
+              <X />
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 md:h-7 md:w-7"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fill="currentColor"
+                  d="M20 3H4a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm-5 5h-2V6h2zm4 0h-2V6h2zm1 5H4a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2zm-5 5h-2v-2h2zm4 0h-2v-2h2z"
+                ></path>
+              </svg>
+            )}
             {showServers ? "Close" : "Select a server"}
           </button>
 
@@ -139,26 +215,29 @@ const TVPlayer = ({ tvId, tvInfo }: TVPlayerProps) => {
         </div>
 
         {/* Controls */}
-        <div className="mx-auto flex w-full items-center justify-center gap-x-4 rounded-b-md bg-gray-900 py-1 text-sm text-white lg:w-3/4">
-          <label className="flex cursor-pointer items-center gap-x-2 rounded-md transition-all">
-            <input
-              type="checkbox"
-              checked={autonext}
-              onChange={(e) => setAutonext(e.target.checked)}
-              className="h-3 w-3 rounded border-gray-600 bg-gray-700 text-red-500 focus:ring-red-500"
+        <div className="relative z-10 mx-auto -mt-2 flex w-full items-center justify-center gap-x-4 rounded-b-lg bg-gray-900 py-1 text-sm text-white lg:w-3/4">
+          {canGoBack() && (
+            <Link href={getPreviousEpisodeLink()}>
+              <label className="flex cursor-pointer items-center gap-x-2 rounded-md transition-all">
+                <SkipBack className="h-4 w-4" />
+              </label>
+            </Link>
+          )}
+
+          <label className="flex cursor-pointer items-center gap-x-1 rounded-md transition-all">
+            <BookmarkIcon
+              className={cn("h-4 w-4 rounded", bookmarked && "fill-white")}
+              onClick={handleBookmarkToggle}
             />
-            <span>Auto Next</span>
           </label>
 
-          <label className="flex cursor-pointer items-center gap-x-2 rounded-md transition-all">
-            <input
-              type="checkbox"
-              checked={bookmarked}
-              onChange={(e) => setBookmarked(e.target.checked)}
-              className="h-3 w-3 rounded border-gray-600 bg-gray-700 text-red-500 focus:ring-red-500"
-            />
-            <span>Bookmark</span>
-          </label>
+          {canGoForward() && (
+            <Link href={getNextEpisodeLink()}>
+              <label className="flex cursor-pointer items-center gap-x-2 rounded-md transition-all">
+                <SkipForward className="h-4 w-4" />
+              </label>
+            </Link>
+          )}
         </div>
 
         {/* TV Info and Episodes */}

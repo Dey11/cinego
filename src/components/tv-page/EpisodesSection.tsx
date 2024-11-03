@@ -8,6 +8,7 @@ import {
   ChevronsUpDown,
   GalleryThumbnails,
   List,
+  ListEndIcon,
 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
@@ -52,8 +53,10 @@ export function Combobox({
   const seasons = props.seasons;
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("1");
-  const [order, setOrder] = React.useState(false);
-  const [icon, setIcon] = React.useState(false);
+  const [order, setOrder] = React.useState(true);
+  const [viewMode, setViewMode] = React.useState<"list" | "grid" | "thumbnail">(
+    "list",
+  );
   const [epInfo, setEpInfo] = React.useState<SeasonInfo[]>([]);
 
   const fetchEpisodeInfo = React.useCallback(
@@ -139,11 +142,19 @@ export function Combobox({
             )}
           </div>
           <div>
-            {icon ? (
-              <List onClick={() => setIcon(!icon)} className="cursor-pointer" />
-            ) : (
+            {viewMode === "list" ? (
+              <List
+                onClick={() => setViewMode("grid")}
+                className="cursor-pointer"
+              />
+            ) : viewMode === "thumbnail" ? (
               <GalleryThumbnails
-                onClick={() => setIcon(!icon)}
+                onClick={() => setViewMode("list")}
+                className="cursor-pointer"
+              />
+            ) : (
+              <ListEndIcon
+                onClick={() => setViewMode("thumbnail")}
                 className="cursor-pointer"
               />
             )}
@@ -153,8 +164,9 @@ export function Combobox({
       <ScrollArea className="h-[500px] px-2 pt-5">
         <div
           className={clsx(
-            !icon && "grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4",
-            icon && "space-y-4",
+            viewMode === "thumbnail" &&
+              "grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4",
+            // icon && "space-y-4",
           )}
         >
           {(order
@@ -163,7 +175,12 @@ export function Combobox({
                 .filter((ep) => ep.id == Number(value))[0]
                 ?.data.episodes.toReversed()
           )?.map((ep) => (
-            <ListItem props={ep} icons={icon} key={ep.id} tvId={props.id} />
+            <ListItem
+              props={ep}
+              viewMode={viewMode}
+              key={ep.id}
+              tvId={props.id}
+            />
           ))}
         </div>
       </ScrollArea>

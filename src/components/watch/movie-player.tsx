@@ -1,17 +1,18 @@
 "use client";
 
 import { usePersistedState } from "@/hooks/usePersistedState";
-import { cn } from "@/lib/utils";
+import {
+  cn,
+  isBookmarked,
+  toggleMovieBookmark,
+  DEFAULT_MOVIE_PROVIDER,
+} from "@/lib/utils";
 import { MovieInfo } from "@/types/tmdbApi";
 import { Bell, Server, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const PROVIDERS = [
-  {
-    name: "VidSrc",
-    url: "https://vidsrc.xyz/embed/movie/",
-    countryUrl: `https://flagsapi.com/US/flat/32.png`,
-  },
+  DEFAULT_MOVIE_PROVIDER,
   {
     name: "Embedsu",
     url: "https://embed.su/embed/movie/",
@@ -78,11 +79,20 @@ const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
   const [showServers, setShowServers] = useState(false);
   const [currentProvider, setCurrentProvider, loading] = usePersistedState(
     "currentProvider",
-    PROVIDERS[0],
+    DEFAULT_MOVIE_PROVIDER,
   );
   const [bookmarked, setBookmarked] = useState(false);
   const [autonext, setAutonext] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
+
+  useEffect(() => {
+    setBookmarked(isBookmarked(movieId, "movie"));
+  }, [movieId]);
+
+  const handleBookmarkToggle = () => {
+    const isNowBookmarked = toggleMovieBookmark(movieId);
+    setBookmarked(isNowBookmarked);
+  };
 
   const handleProviderChange = (provider: (typeof PROVIDERS)[0]) => {
     setCurrentProvider(provider);
@@ -116,9 +126,22 @@ const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
         <div className="relative mx-auto aspect-video w-full overflow-hidden rounded-lg shadow-lg lg:w-3/4">
           <button
             onClick={() => setShowServers(!showServers)}
-            className="absolute left-0 right-0 top-0 z-20 mx-auto flex h-10 w-40 items-center justify-center gap-x-2 rounded-md bg-red-500 text-white transition-all hover:bg-red-600"
+            className="absolute left-0 right-0 top-0 z-20 mx-auto flex h-10 w-40 items-center justify-center gap-x-2 rounded-b-[12px] bg-red-500 text-white transition-all hover:bg-red-600"
           >
-            {showServers ? <X /> : <Server />}
+            {showServers ? (
+              <X />
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 md:h-7 md:w-7"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fill="currentColor"
+                  d="M20 3H4a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm-5 5h-2V6h2zm4 0h-2V6h2zm1 5H4a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2zm-5 5h-2v-2h2zm4 0h-2v-2h2z"
+                ></path>
+              </svg>
+            )}
             {showServers ? "Close" : "Select a server"}
           </button>
 
@@ -165,7 +188,7 @@ const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
           )}
         </div>
 
-        <div className="mx-auto flex w-full items-center justify-center gap-x-4 rounded-b-md bg-gray-900 py-1 text-sm text-white lg:w-3/4">
+        <div className="relative z-10 mx-auto -mt-2 flex w-full items-center justify-center gap-x-4 rounded-b-lg bg-gray-900 py-1 text-sm text-white lg:w-3/4">
           <label className="flex cursor-pointer items-center gap-x-2 rounded-md transition-all">
             <input
               type="checkbox"
@@ -180,7 +203,7 @@ const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
             <input
               type="checkbox"
               checked={bookmarked}
-              onChange={(e) => setBookmarked(e.target.checked)}
+              onChange={handleBookmarkToggle}
               className="h-3 w-3 rounded border-gray-600 bg-gray-700 text-red-500 focus:ring-red-500"
             />
             <span>Bookmark</span>

@@ -246,7 +246,13 @@ export default function TopSlider() {
                   {slide.overview}
                 </p>
                 <div className="mt-4">
-                  <Link href={`/watch/${slide.media_type}/${slide.id}`}>
+                  <Link
+                    href={
+                      slide.media_type === "movie"
+                        ? `/watch/${slide.media_type}/${slide.id}`
+                        : `/watch/${slide.media_type}/${slide.id}?season=1&episode=1`
+                    }
+                  >
                     <Button
                       variant={"default"}
                       size={"lg"}

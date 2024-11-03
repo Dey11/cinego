@@ -1,56 +1,24 @@
-// import { getItem, setItem } from "@/lib/utils";
-import { setItem } from "@/lib/utils";
-import React from "react";
+import { getItem, setItem } from "@/lib/utils";
+import { useEffect, useState } from "react";
 
-export function usePersistedState<T>(
-  key: string,
-  initialValue: {
-    name: string;
-    url: string;
-    countryUrl: string;
-  },
-) {
-  const [state, setState] = React.useState<{
-    name: string;
-    url: string;
-    countryUrl: string;
-  }>();
-  const [loading, setLoading] = React.useState(true);
+export function usePersistedState<T>(key: string, defaultValue: T) {
+  const [state, setState] = useState<T>(defaultValue);
+  const [loading, setLoading] = useState(true);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (typeof window !== "undefined") {
-      setState(() => {
-        if (key == "currentTVProvider") {
-          return {
-            name: "VidSrc",
-            url: "https://vidsrc.xyz/embed/tv/",
-            countryUrl: `https://flagsapi.com/US/flat/32.png`,
-          };
-        }
-        return {
-          name: "VidSrc",
-          url: "https://vidsrc.xyz/embed/movie/",
-          countryUrl: `https://flagsapi.com/US/flat/32.png`,
-        };
-
-        // const item = getItem(key);
-        // console.log(item);
-        // if (item) {
-        //   return item as T;
-        //   // return JSON.parse(item) as T;
-        // } else {
-        //   // console.log("im here");
-        //   setItem(key, JSON.stringify(initialValue));
-        //   return initialValue;
-        // }
-      });
+      const stored = getItem<T>(key);
+      // Use defaultValue if nothing is stored
+      setState(stored !== null ? stored : defaultValue);
       setLoading(false);
     }
-  }, [key, initialValue]);
+  }, [key, defaultValue]);
 
-  React.useEffect(() => {
-    setItem(key, JSON.stringify(state));
-  }, [key, state]);
+  useEffect(() => {
+    if (!loading) {
+      setItem(key, state);
+    }
+  }, [key, state, loading]);
 
   return [state, setState, loading] as const;
 }
