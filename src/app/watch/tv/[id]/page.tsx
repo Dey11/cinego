@@ -46,7 +46,7 @@ export default async function WatchPage({ params }: PageProps) {
         <Image
           src={`${process.env.TMDB_IMG}${tvInfo.backdrop_path}`}
           fill
-          className="object-cover"
+          className="object-cover blur-sm"
           alt={tvInfo.name}
           priority
         />

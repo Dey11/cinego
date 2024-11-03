@@ -62,12 +62,34 @@ const TVPlayer = ({ tvId, tvInfo }: TVPlayerProps) => {
 
   return (
     <div className="min-h-screen pt-16">
-      <div className="mx-auto max-w-screen-xl px-4 pt-10">
+      <div className="mx-auto max-w-screen-xl px-4">
+        <h1 className="truncate pb-5 text-center text-xl font-semibold">
+          Now Watching: <span className="font-bold">{tvInfo.name}</span>
+        </h1>
+
+        <div
+          className={cn(
+            "mx-auto mb-2 flex w-full items-center rounded-sm bg-red-700 text-white lg:w-3/4 lg:pl-6",
+            isOpen ? "" : "hidden",
+          )}
+        >
+          <div className="flex w-full items-center justify-center gap-x-2 p-2 text-sm">
+            <Bell className="h-4 w-4 fill-white" />
+            <p>
+              Please switch to other servers if default server is not working.
+            </p>
+          </div>
+          <X
+            className="h-8 w-8 cursor-pointer justify-end pr-2"
+            onClick={() => setIsOpen(false)}
+          />
+        </div>
+
         <div className="relative mx-auto aspect-video w-full overflow-hidden rounded-lg shadow-lg lg:w-3/4">
           {/* Server selection */}
           <button
             onClick={() => setShowServers(!showServers)}
-            className="absolute left-0 right-0 top-2 z-20 mx-auto flex h-10 w-40 items-center justify-center gap-x-2 rounded-md bg-red-500 text-white transition-all hover:bg-red-600"
+            className="absolute left-0 right-0 top-0 z-20 mx-auto flex h-10 w-40 items-center justify-center gap-x-2 rounded-md bg-red-500 text-white transition-all hover:bg-red-600"
           >
             {showServers ? <X /> : <Server />}
             {showServers ? "Close" : "Select a server"}
@@ -106,24 +128,6 @@ const TVPlayer = ({ tvId, tvInfo }: TVPlayerProps) => {
           {/* Video Player */}
           {!loading && (
             <div>
-              <div
-                className={cn(
-                  "absolute top-0 z-50 flex w-full items-center bg-red-700",
-                  isOpen ? "" : "hidden",
-                )}
-              >
-                <div className="flex w-full items-center justify-center gap-x-2 p-2 text-sm">
-                  <Bell className="h-4 w-4 fill-white" />
-                  <p>
-                    Please switch to other servers if default server is not
-                    working.
-                  </p>
-                </div>
-                <X
-                  className="h-8 w-8 cursor-pointer justify-end pr-2"
-                  onClick={() => setIsOpen(false)}
-                />
-              </div>
               <iframe
                 src={`${currentProvider?.url}${tvId}/${currentSeason}/${currentEpisode}`}
                 className="absolute left-0 top-0 h-full w-full"
@@ -135,7 +139,7 @@ const TVPlayer = ({ tvId, tvInfo }: TVPlayerProps) => {
         </div>
 
         {/* Controls */}
-        <div className="mt-2 flex items-center justify-center gap-x-4 text-sm">
+        <div className="mx-auto flex w-full items-center justify-center gap-x-4 rounded-b-md bg-gray-900 py-1 text-sm text-white lg:w-3/4">
           <label className="flex cursor-pointer items-center gap-x-2 rounded-md transition-all">
             <input
               type="checkbox"
@@ -158,11 +162,7 @@ const TVPlayer = ({ tvId, tvInfo }: TVPlayerProps) => {
         </div>
 
         {/* TV Info and Episodes */}
-        <div className="mx-auto mt-8 px-4 lg:px-10">
-          <h1 className="text-xl font-semibold">
-            Now Watching: <span className="font-bold">{tvInfo.name}</span>
-          </h1>
-
+        <div className="mx-auto mt-8 w-full lg:w-3/4">
           {/* Episodes Section */}
           <div className="mt-6">
             <Combobox

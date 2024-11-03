@@ -8,7 +8,7 @@ interface FooterProps {
 
 export default function Footer({ backgroundImage }: FooterProps) {
   return (
-    <footer className="relative mb-12 mt-10 overflow-hidden text-white md:mb-0">
+    <footer className="relative mb-12 overflow-hidden pt-10 text-white md:mb-0">
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${backgroundImage})` }}
