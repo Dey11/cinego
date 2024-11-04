@@ -9,6 +9,8 @@ import {
   X,
   Clipboard,
   Check,
+  Download,
+  Forward,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Combobox } from "../tv-page/EpisodesSection";
@@ -153,10 +155,10 @@ const TVPlayer = ({ tvId, tvInfo }: TVPlayerProps) => {
           )}
         >
           <div className="flex w-full items-center justify-center gap-x-2 p-2 text-sm">
-            <Bell className="h-4 w-4 fill-white" />
-            <p>
-              Please switch to other servers if default server is not working.
-            </p>
+            <Bell className="h-3 w-3 fill-white" />
+            <span className="text-[10px] md:text-xs lg:text-sm">
+              Please switch to other servers if default server doesnt work.
+            </span>
           </div>
           <X
             className="h-8 w-8 cursor-pointer justify-end pr-2"
@@ -186,7 +188,6 @@ const TVPlayer = ({ tvId, tvInfo }: TVPlayerProps) => {
             )}
             {showServers ? "Close" : "Select a server"}
           </button>
-
           {/* Server selection modal */}
           {!loading && (
             <div
@@ -235,7 +236,7 @@ const TVPlayer = ({ tvId, tvInfo }: TVPlayerProps) => {
           {canGoBack() && (
             <Link href={getPreviousEpisodeLink()}>
               <label className="flex cursor-pointer items-center gap-x-1 rounded-md transition-all">
-                <FastForward className="h-4 w-4 rotate-180" />
+                <FastForward className="h-4 w-4 rotate-180 fill-white" />
                 <span className="hidden lg:block">Previous</span>
               </label>
             </Link>
@@ -244,7 +245,7 @@ const TVPlayer = ({ tvId, tvInfo }: TVPlayerProps) => {
           {canGoForward() && (
             <Link href={getNextEpisodeLink()}>
               <label className="flex cursor-pointer items-center gap-x-1 rounded-md transition-all">
-                <FastForward className="h-4 w-4" />
+                <FastForward className="h-4 w-4 fill-white" />
                 <span className="hidden lg:block">Next</span>
               </label>
             </Link>
@@ -267,10 +268,19 @@ const TVPlayer = ({ tvId, tvInfo }: TVPlayerProps) => {
             {linkCopied ? (
               <Check className="h-4 w-4 text-green-500" />
             ) : (
-              <Clipboard className="h-4 w-4" />
+              <Forward className="h-5 w-5" />
             )}
             <span className="hidden lg:block">Share</span>
           </label>
+
+          <Link
+            href={`https://dl.vidsrc.vip/tv/${tvId}/${currentSeason}/${currentEpisode}`}
+          >
+            <label className="flex cursor-pointer items-center gap-x-1 rounded-md transition-all">
+              <Download className="h-4 w-4" />
+              <span className="hidden lg:block">Download</span>
+            </label>
+          </Link>
         </div>
 
         {/* TV Info and Episodes */}

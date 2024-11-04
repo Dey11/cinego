@@ -11,7 +11,8 @@ import { Download, Play, Plus, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-const Page = async ({ params }: { params: { id: number } }) => {
+const Page = async (props: { params: Promise<{ id: number }> }) => {
+  const params = await props.params;
   const movieId = params.id;
   const [movieInfo, trailerInfo, recommendationsInfo, castInfo] =
     await Promise.all([
@@ -30,7 +31,7 @@ const Page = async ({ params }: { params: { id: number } }) => {
   }
 
   return (
-    <div className="relative min-h-screen pb-16 text-gray-900 dark:text-gray-100">
+    (<div className="relative min-h-screen pb-16 text-gray-900 dark:text-gray-100">
       {/* Large Screens */}
       <div className="hidden font-semibold sm:block">
         <div className="relative h-dvh">
@@ -142,13 +143,12 @@ const Page = async ({ params }: { params: { id: number } }) => {
             <div className="grid grid-cols-2 justify-items-center gap-4 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6">
               {recommendationsInfo.map((recommendation) => (
                 // <Card key={recommendation.id} show={recommendation} />
-                <Card key={recommendation.id} show={recommendation} />
+                (<Card key={recommendation.id} show={recommendation} />)
               ))}
             </div>
           </div>
         </div>
       </div>
-
       {/* Small Screens */}
       <div className="sm:hidden">
         <div className="relative h-dvh">
@@ -254,7 +254,7 @@ const Page = async ({ params }: { params: { id: number } }) => {
           </div>
         </div>
       </div>
-    </div>
+    </div>)
   );
 };
 

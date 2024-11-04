@@ -16,6 +16,7 @@ import {
   Clipboard,
   Check,
   Download,
+  Forward,
 } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -224,7 +225,7 @@ const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
             {linkCopied ? (
               <Check className="h-4 w-4 text-green-500" />
             ) : (
-              <Clipboard className="h-4 w-4" />
+              <Forward className="h-4 w-4" />
             )}
             <span className="hidden lg:block">Share</span>
           </label>

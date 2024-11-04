@@ -93,9 +93,10 @@ export function Combobox({
     const episodes =
       epInfo.filter((ep) => ep.id == Number(value))[0]?.data.episodes || [];
     return episodes.filter(
-      (ep) =>
+      (ep, index) =>
         ep.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        ep.overview.toLowerCase().includes(searchTerm.toLowerCase()),
+        ep.overview.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        String(index + 1).includes(searchTerm), // Filter by index
     );
   }, [epInfo, value, searchTerm]);
 
@@ -109,7 +110,7 @@ export function Combobox({
               variant="outline"
               role="combobox"
               aria-expanded={open}
-              className="w-[200px] justify-between"
+              className="w-[160px] justify-between"
             >
               {value
                 ? seasons.find(
@@ -154,7 +155,7 @@ export function Combobox({
             placeholder="Search"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="mb-1 w-32 rounded border px-2 py-1 lg:w-44"
+            className="mb-1 w-32 rounded-md border px-2 py-[5px] lg:w-44"
           />
           <div className="mr-6 flex h-10 w-10 items-center gap-2">
             <div>
@@ -207,6 +208,7 @@ export function Combobox({
                 key={ep.id}
                 tvId={props.id}
                 backdrop={props.backdrop_path}
+                isWrappedInAnchor={true} // Pass a prop to indicate if it's wrapped in an anchor
               />
             ),
           )}

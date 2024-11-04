@@ -12,7 +12,8 @@ import { Combobox } from "../../../components/tv-page/EpisodesSection";
 import Example from "@/components/movie-page/youtube-player";
 import Link from "next/link";
 
-const Page = async ({ params }: { params: { id: number } }) => {
+const Page = async (props0: { params: Promise<{ id: number }> }) => {
+  const params = await props0.params;
   const tvId = params.id;
   const [tvInfo, trailerInfo, recommendationsInfo, castInfo] =
     await Promise.all([
@@ -102,7 +103,6 @@ const Page = async ({ params }: { params: { id: number } }) => {
                   <Plus className="pr-1" />
                   Add to watchlist
                 </Button>
-                <Download className="h-5 w-5" />
               </div>
             </div>
             <div className="space-y-3 md:hidden">
@@ -123,13 +123,6 @@ const Page = async ({ params }: { params: { id: number } }) => {
               >
                 <Plus className="pr-1" />
                 Add to watchlist
-              </Button>
-              <Button
-                variant="secondary"
-                className="flex w-full items-center justify-center space-x-2"
-              >
-                <Download className="h-5 w-5" />
-                <span>Download</span>
               </Button>
             </div>
           </div>

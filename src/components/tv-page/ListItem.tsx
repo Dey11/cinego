@@ -1,6 +1,5 @@
 "use client";
 
-import { TVInfo } from "@/types/tmdbApi";
 import { Download } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,6 +10,7 @@ const ListItem = ({
   tvId,
   viewMode,
   backdrop,
+  isWrappedInAnchor,
 }: {
   backdrop: string;
   viewMode: "list" | "grid" | "thumbnail";
@@ -22,6 +22,7 @@ const ListItem = ({
     episode_number: number;
     season_number: number;
   };
+  isWrappedInAnchor?: boolean;
 }) => {
   const searchParams = useSearchParams();
   const season = searchParams.get("season");
@@ -30,7 +31,15 @@ const ListItem = ({
     parseInt(season! as string) == props.season_number &&
     parseInt(episode! as string) == props.episode_number;
 
-  // console.log(showInfo?.backdrop_path, "backdrop baby");
+  const downloadLink = (
+    <Link
+      className="flex items-center justify-center pr-2"
+      href={`https://dl.vidsrc.vip/tv/${tvId}/${props.season_number}/${props.episode_number}`}
+      onClick={(e) => e.stopPropagation()} // Add this line
+    >
+      <Download className="z-50" />
+    </Link>
+  );
 
   if (viewMode === "list") {
     return (
@@ -53,13 +62,18 @@ const ListItem = ({
             />
             <div className="absolute inset-0">
               {isActive && (
-                <Image
-                  src="/icon-play.png"
-                  className="absolute left-1/2 top-1/2 mx-auto -translate-x-1/2 -translate-y-1/2 object-contain opacity-80"
-                  width={20}
-                  height={20}
-                  alt="play"
-                />
+                <div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="28"
+                    height="28"
+                    className="absolute left-1/2 top-1/2 mx-auto shrink-0 -translate-x-1/2 -translate-y-1/2 fill-slate-50"
+                    viewBox="0 0 24 24"
+                  >
+                    <rect width="24" height="24" fill="none"></rect>
+                    <path d="M21.409 9.353a2.998 2.998 0 0 1 0 5.294L8.597 21.614C6.534 22.737 4 21.277 4 18.968V5.033c0-2.31 2.534-3.769 4.597-2.648z"></path>
+                  </svg>
+                </div>
               )}
               <div className="absolute left-0 top-0 rounded-br-md rounded-tl-md bg-black bg-opacity-70 px-2 py-1 text-sm text-white">
                 {props.episode_number}
@@ -75,6 +89,7 @@ const ListItem = ({
           <Link
             className="flex items-center justify-center pr-2"
             href={`https://dl.vidsrc.vip/tv/${tvId}/${props.season_number}/${props.episode_number}`}
+            onClick={(e) => e.stopPropagation()} // Add this line
           >
             <Download className="z-50" />
           </Link>
@@ -95,12 +110,7 @@ const ListItem = ({
             <div className="flex flex-1 text-sm font-semibold">
               Episode {props.episode_number}: {props.name}
             </div>
-            <Link
-              className="flex items-center justify-center pr-2"
-              href={`https://dl.vidsrc.vip/tv/${tvId}/${props.season_number}/${props.episode_number}`}
-            >
-              <Download className="z-50" />
-            </Link>
+            {downloadLink}
           </div>
         </div>
       </Link>
@@ -126,13 +136,18 @@ const ListItem = ({
           />
           <div className="absolute inset-0">
             {isActive && (
-              <Image
-                src="/icon-play.png"
-                className="absolute left-1/2 top-1/2 mx-auto -translate-x-1/2 -translate-y-1/2 object-contain opacity-80"
-                width={20}
-                height={20}
-                alt="play"
-              />
+              <div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="28"
+                  height="28"
+                  className="absolute left-1/2 top-1/2 mx-auto shrink-0 -translate-x-1/2 -translate-y-1/2 fill-slate-50"
+                  viewBox="0 0 24 24"
+                >
+                  <rect width="24" height="24" fill="none"></rect>
+                  <path d="M21.409 9.353a2.998 2.998 0 0 1 0 5.294L8.597 21.614C6.534 22.737 4 21.277 4 18.968V5.033c0-2.31 2.534-3.769 4.597-2.648z"></path>
+                </svg>
+              </div>
             )}
             <div className="absolute left-0 top-0 rounded-br-md rounded-tl-md bg-black bg-opacity-70 px-2 py-1 text-sm text-white">
               {props.episode_number}

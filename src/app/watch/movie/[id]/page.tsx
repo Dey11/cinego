@@ -4,14 +4,13 @@ import { Metadata } from "next";
 import Image from "next/image";
 
 interface PageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
-export async function generateMetadata({
-  params,
-}: PageProps): Promise<Metadata> {
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const params = await props.params;
   const movieInfo = await fetchMovieInfo(parseInt(params.id));
 
   if (!movieInfo) {
@@ -26,7 +25,8 @@ export async function generateMetadata({
   };
 }
 
-export default async function WatchPage({ params }: PageProps) {
+export default async function WatchPage(props: PageProps) {
+  const params = await props.params;
   const movieInfo = await fetchMovieInfo(parseInt(params.id));
 
   if (!movieInfo) {
