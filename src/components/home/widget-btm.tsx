@@ -60,7 +60,7 @@ export default function PopularList({
           <Link
             key={item.id}
             href={`/${activeTab.toLowerCase() === "movie" ? "movie" : "tv"}/${item.id}`}
-            className="group flex items-center space-x-3 rounded bg-gray-100 p-2 hover:bg-yellow-500 dark:bg-gray-700 dark:hover:bg-yellow-500 dark:hover:text-black"
+            className="group flex items-center space-x-3 rounded bg-gray-100 p-2 hover:bg-yellow-500 dark:bg-[#2a2a30] dark:hover:bg-yellow-500 dark:hover:text-black"
           >
             <div className="relative h-16 w-12 flex-shrink-0">
               <img

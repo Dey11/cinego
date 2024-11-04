@@ -1,5 +1,6 @@
 "use client";
 
+import { TVInfo } from "@/types/tmdbApi";
 import { Download } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,7 +10,9 @@ const ListItem = ({
   props,
   tvId,
   viewMode,
+  backdrop,
 }: {
+  backdrop: string;
   viewMode: "list" | "grid" | "thumbnail";
   tvId: number;
   props: {
@@ -27,13 +30,15 @@ const ListItem = ({
     parseInt(season! as string) == props.season_number &&
     parseInt(episode! as string) == props.episode_number;
 
+  // console.log(showInfo?.backdrop_path, "backdrop baby");
+
   if (viewMode === "list") {
     return (
       <Link
         href={`/watch/tv/${tvId}?season=${props.season_number}&episode=${props.episode_number}`}
       >
         <div
-          className={`mb-2 flex h-20 w-full cursor-pointer gap-2 overflow-hidden rounded-md transition-colors ${isActive ? "bg-gray-400 dark:bg-gray-900" : "bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700"}`}
+          className={`mb-2 flex h-20 w-full cursor-pointer gap-2 overflow-hidden rounded-md transition-colors ${isActive ? "bg-gray-400 dark:bg-gray-900" : "bg-gray-100 hover:bg-gray-200 dark:bg-[#2a2a30] dark:hover:bg-gray-700"}`}
         >
           <div className="relative h-full min-w-36">
             <Image
@@ -41,7 +46,7 @@ const ListItem = ({
               src={
                 props.still_path
                   ? `https://image.tmdb.org/t/p/original${props.still_path}`
-                  : "/placeholder.png"
+                  : `https://image.tmdb.org/t/p/original${backdrop}`
               }
               fill
               alt={props.name}
@@ -84,7 +89,7 @@ const ListItem = ({
         href={`/watch/tv/${tvId}?season=${props.season_number}&episode=${props.episode_number}`}
       >
         <div
-          className={`mb-2 flex h-12 w-full cursor-pointer gap-2 overflow-hidden rounded-md transition-colors ${isActive ? "bg-gray-400 dark:bg-gray-900" : "bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700"}`}
+          className={`mb-2 flex h-12 w-full cursor-pointer gap-2 overflow-hidden rounded-md transition-colors ${isActive ? "bg-gray-400 dark:bg-gray-900" : "bg-gray-100 hover:bg-gray-200 dark:bg-[#2a2a30] dark:hover:bg-gray-700"}`}
         >
           <div className="flex flex-1 items-center justify-center p-2">
             <div className="flex flex-1 text-sm font-semibold">
@@ -113,7 +118,7 @@ const ListItem = ({
             src={
               props.still_path
                 ? `https://image.tmdb.org/t/p/original${props.still_path}`
-                : "/placeholder.png"
+                : `https://image.tmdb.org/t/p/original${backdrop}`
             }
             height={300}
             width={300}

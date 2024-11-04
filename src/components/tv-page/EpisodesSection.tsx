@@ -24,8 +24,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { fetchSeasonInfo } from "@/lib/api-calls/tv";
-import { TVSeasonInfo } from "@/types/tmdbApi";
+import { fetchSeasonInfo, fetchTVInfo } from "@/lib/api-calls/tv";
+import { TVInfo, TVSeasonInfo } from "@/types/tmdbApi";
 import ListItem from "./ListItem";
 import clsx from "clsx";
 import { useSearchParams } from "next/navigation";
@@ -49,7 +49,7 @@ type SeasonInfo = {
 export function Combobox({
   props,
 }: {
-  props: { id: number; seasons: Seasons[] };
+  props: { id: number; seasons: Seasons[]; backdrop_path: string };
 }) {
   const seasons = props.seasons;
   const searchParams = useSearchParams();
@@ -62,6 +62,7 @@ export function Combobox({
   );
   const [epInfo, setEpInfo] = React.useState<SeasonInfo[]>([]);
   const [searchTerm, setSearchTerm] = React.useState("");
+  const [showInfo, setShowInfo] = React.useState<TVInfo>();
 
   React.useEffect(() => {
     if (seasonFromParams) {
@@ -153,7 +154,7 @@ export function Combobox({
             placeholder="Search"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="mb-1 rounded border px-2 py-1"
+            className="mb-1 w-32 rounded border px-2 py-1 lg:w-44"
           />
           <div className="mr-6 flex h-10 w-10 items-center gap-2">
             <div>
@@ -205,6 +206,7 @@ export function Combobox({
                 viewMode={viewMode}
                 key={ep.id}
                 tvId={props.id}
+                backdrop={props.backdrop_path}
               />
             ),
           )}

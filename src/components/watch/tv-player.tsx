@@ -281,6 +281,7 @@ const TVPlayer = ({ tvId, tvInfo }: TVPlayerProps) => {
               props={{
                 id: Number(tvId),
                 seasons: tvInfo.seasons,
+                backdrop_path: tvInfo.backdrop_path,
               }}
             />
           </div>
