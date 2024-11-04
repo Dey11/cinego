@@ -8,7 +8,16 @@ import {
   DEFAULT_MOVIE_PROVIDER,
 } from "@/lib/utils";
 import { MovieInfo } from "@/types/tmdbApi";
-import { Bell, Server, X } from "lucide-react";
+import {
+  Bell,
+  BookmarkIcon,
+  Server,
+  X,
+  Clipboard,
+  Check,
+  Download,
+} from "lucide-react";
+import Link from "next/link";
 import { useState, useEffect } from "react";
 
 const PROVIDERS = [
@@ -84,6 +93,7 @@ const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
   const [bookmarked, setBookmarked] = useState(false);
   const [autonext, setAutonext] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
+  const [linkCopied, setLinkCopied] = useState(false);
 
   useEffect(() => {
     setBookmarked(isBookmarked(movieId, "movie"));
@@ -97,6 +107,14 @@ const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
   const handleProviderChange = (provider: (typeof PROVIDERS)[0]) => {
     setCurrentProvider(provider);
     setShowServers(false);
+  };
+
+  const handleShare = () => {
+    const link = window.location.href;
+    navigator.clipboard.writeText(link).then(() => {
+      setLinkCopied(true);
+      setTimeout(() => setLinkCopied(false), 2000);
+    });
   };
 
   return (
@@ -189,25 +207,33 @@ const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
         </div>
 
         <div className="relative z-10 mx-auto -mt-2 flex w-full items-center justify-center gap-x-4 rounded-b-lg bg-gray-900 py-1 text-sm text-white lg:w-3/4">
-          <label className="flex cursor-pointer items-center gap-x-2 rounded-md transition-all">
-            <input
-              type="checkbox"
-              checked={autonext}
-              onChange={(e) => setAutonext(e.target.checked)}
-              className="h-3 w-3 rounded border-gray-600 bg-gray-700 text-red-500 focus:ring-red-500"
+          <label
+            className="flex cursor-pointer items-center gap-x-1 rounded-md transition-all"
+            onClick={handleBookmarkToggle}
+          >
+            <BookmarkIcon
+              className={cn("h-4 w-4 rounded", bookmarked && "fill-white")}
             />
-            <span>Auto Next</span>
+            <span className="hidden lg:block">Bookmark</span>
           </label>
 
-          <label className="flex cursor-pointer items-center gap-x-2 rounded-md transition-all">
-            <input
-              type="checkbox"
-              checked={bookmarked}
-              onChange={handleBookmarkToggle}
-              className="h-3 w-3 rounded border-gray-600 bg-gray-700 text-red-500 focus:ring-red-500"
-            />
-            <span>Bookmark</span>
+          <label
+            className="flex cursor-pointer items-center gap-x-1 rounded-md transition-all"
+            onClick={handleShare}
+          >
+            {linkCopied ? (
+              <Check className="h-4 w-4 text-green-500" />
+            ) : (
+              <Clipboard className="h-4 w-4" />
+            )}
+            <span className="hidden lg:block">Share</span>
           </label>
+          <Link href={`https://dl.vidsrc.vip/movie/${movieId}`}>
+            <label className="flex cursor-pointer items-center gap-x-1 rounded-md transition-all">
+              <Download className="h-4 w-4" />
+              <span className="hidden lg:block">Download</span>
+            </label>
+          </Link>
         </div>
       </div>
     </div>

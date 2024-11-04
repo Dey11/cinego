@@ -2,7 +2,14 @@
 
 import { usePersistedState } from "@/hooks/usePersistedState";
 import { TVInfo } from "@/types/tmdbApi";
-import { Bell, BookmarkIcon, SkipBack, SkipForward, X } from "lucide-react";
+import {
+  Bell,
+  BookmarkIcon,
+  FastForward,
+  X,
+  Clipboard,
+  Check,
+} from "lucide-react";
 import { useState, useEffect } from "react";
 import { Combobox } from "../tv-page/EpisodesSection";
 import { useSearchParams } from "next/navigation";
@@ -46,6 +53,7 @@ const TVPlayer = ({ tvId, tvInfo }: TVPlayerProps) => {
   const [seasons, setSeasons] = useState<number>(tvInfo.number_of_seasons);
   const [currSeasonEps, setCurrSeasonEps] = useState<number>(0);
   const [isLastEp, setIsLastEp] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
 
   const canGoBack = () => {
     return !(currentSeason === 1 && currentEpisode === 1);
@@ -121,6 +129,14 @@ const TVPlayer = ({ tvId, tvInfo }: TVPlayerProps) => {
       currentEpisode,
     );
     setBookmarked(isNowBookmarked);
+  };
+
+  const handleShare = () => {
+    const link = window.location.href;
+    navigator.clipboard.writeText(link).then(() => {
+      setLinkCopied(true);
+      setTimeout(() => setLinkCopied(false), 2000);
+    });
   };
 
   return (
@@ -218,26 +234,43 @@ const TVPlayer = ({ tvId, tvInfo }: TVPlayerProps) => {
         <div className="relative z-10 mx-auto -mt-2 flex w-full items-center justify-center gap-x-4 rounded-b-lg bg-gray-900 py-1 text-sm text-white lg:w-3/4">
           {canGoBack() && (
             <Link href={getPreviousEpisodeLink()}>
-              <label className="flex cursor-pointer items-center gap-x-2 rounded-md transition-all">
-                <SkipBack className="h-4 w-4" />
+              <label className="flex cursor-pointer items-center gap-x-1 rounded-md transition-all">
+                <FastForward className="h-4 w-4 rotate-180" />
+                <span className="hidden lg:block">Previous</span>
               </label>
             </Link>
           )}
-
-          <label className="flex cursor-pointer items-center gap-x-1 rounded-md transition-all">
-            <BookmarkIcon
-              className={cn("h-4 w-4 rounded", bookmarked && "fill-white")}
-              onClick={handleBookmarkToggle}
-            />
-          </label>
 
           {canGoForward() && (
             <Link href={getNextEpisodeLink()}>
-              <label className="flex cursor-pointer items-center gap-x-2 rounded-md transition-all">
-                <SkipForward className="h-4 w-4" />
+              <label className="flex cursor-pointer items-center gap-x-1 rounded-md transition-all">
+                <FastForward className="h-4 w-4" />
+                <span className="hidden lg:block">Next</span>
               </label>
             </Link>
           )}
+
+          <label
+            className="flex cursor-pointer items-center gap-x-1 rounded-md transition-all"
+            onClick={handleBookmarkToggle}
+          >
+            <BookmarkIcon
+              className={cn("h-4 w-4 rounded", bookmarked && "fill-white")}
+            />
+            <span className="hidden lg:block">Bookmark</span>
+          </label>
+
+          <label
+            className="flex cursor-pointer items-center gap-x-1 rounded-md transition-all"
+            onClick={handleShare}
+          >
+            {linkCopied ? (
+              <Check className="h-4 w-4 text-green-500" />
+            ) : (
+              <Clipboard className="h-4 w-4" />
+            )}
+            <span className="hidden lg:block">Share</span>
+          </label>
         </div>
 
         {/* TV Info and Episodes */}

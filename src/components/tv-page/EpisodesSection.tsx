@@ -28,6 +28,7 @@ import { fetchSeasonInfo } from "@/lib/api-calls/tv";
 import { TVSeasonInfo } from "@/types/tmdbApi";
 import ListItem from "./ListItem";
 import clsx from "clsx";
+import { useSearchParams } from "next/navigation";
 
 type Seasons = {
   air_date: string;
@@ -51,13 +52,22 @@ export function Combobox({
   props: { id: number; seasons: Seasons[] };
 }) {
   const seasons = props.seasons;
+  const searchParams = useSearchParams();
+  const seasonFromParams = searchParams.get("season");
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState("1");
+  const [value, setValue] = React.useState(seasonFromParams || "1");
   const [order, setOrder] = React.useState(true);
   const [viewMode, setViewMode] = React.useState<"list" | "grid" | "thumbnail">(
     "list",
   );
   const [epInfo, setEpInfo] = React.useState<SeasonInfo[]>([]);
+  const [searchTerm, setSearchTerm] = React.useState("");
+
+  React.useEffect(() => {
+    if (seasonFromParams) {
+      setValue(seasonFromParams);
+    }
+  }, [seasonFromParams]);
 
   const fetchEpisodeInfo = React.useCallback(
     async (id: number, seasonNumber: number) => {
@@ -77,6 +87,16 @@ export function Combobox({
   React.useEffect(() => {
     fetchEpisodeInfo(props.id, Number(value));
   }, [value]);
+
+  const filteredEpisodes = React.useMemo(() => {
+    const episodes =
+      epInfo.filter((ep) => ep.id == Number(value))[0]?.data.episodes || [];
+    return episodes.filter(
+      (ep) =>
+        ep.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        ep.overview.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
+  }, [epInfo, value, searchTerm]);
 
   return (
     <div className="w-full">
@@ -127,37 +147,46 @@ export function Combobox({
             </Command>
           </PopoverContent>
         </Popover>
-        <div className="mr-6 flex h-10 w-10 gap-2">
-          <div>
-            {order ? (
-              <ArrowUpNarrowWide
-                onClick={() => setOrder(!order)}
-                className="cursor-pointer"
-              />
-            ) : (
-              <ArrowDownWideNarrow
-                onClick={() => setOrder(!order)}
-                className="cursor-pointer"
-              />
-            )}
-          </div>
-          <div>
-            {viewMode === "list" ? (
-              <List
-                onClick={() => setViewMode("grid")}
-                className="cursor-pointer"
-              />
-            ) : viewMode === "thumbnail" ? (
-              <GalleryThumbnails
-                onClick={() => setViewMode("list")}
-                className="cursor-pointer"
-              />
-            ) : (
-              <ListEndIcon
-                onClick={() => setViewMode("thumbnail")}
-                className="cursor-pointer"
-              />
-            )}
+        <div className="flex items-center gap-2">
+          <input
+            type="text"
+            placeholder="Search"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="mb-1 rounded border px-2 py-1"
+          />
+          <div className="mr-6 flex h-10 w-10 items-center gap-2">
+            <div>
+              {order ? (
+                <ArrowUpNarrowWide
+                  onClick={() => setOrder(!order)}
+                  className="cursor-pointer"
+                />
+              ) : (
+                <ArrowDownWideNarrow
+                  onClick={() => setOrder(!order)}
+                  className="cursor-pointer"
+                />
+              )}
+            </div>
+            <div>
+              {viewMode === "list" ? (
+                <List
+                  onClick={() => setViewMode("grid")}
+                  className="cursor-pointer"
+                />
+              ) : viewMode === "thumbnail" ? (
+                <GalleryThumbnails
+                  onClick={() => setViewMode("list")}
+                  className="cursor-pointer"
+                />
+              ) : (
+                <ListEndIcon
+                  onClick={() => setViewMode("thumbnail")}
+                  className="cursor-pointer"
+                />
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -169,19 +198,16 @@ export function Combobox({
             // icon && "space-y-4",
           )}
         >
-          {(order
-            ? epInfo.filter((ep) => ep.id == Number(value))[0]?.data.episodes
-            : epInfo
-                .filter((ep) => ep.id == Number(value))[0]
-                ?.data.episodes.toReversed()
-          )?.map((ep) => (
-            <ListItem
-              props={ep}
-              viewMode={viewMode}
-              key={ep.id}
-              tvId={props.id}
-            />
-          ))}
+          {(order ? filteredEpisodes : filteredEpisodes.toReversed()).map(
+            (ep) => (
+              <ListItem
+                props={ep}
+                viewMode={viewMode}
+                key={ep.id}
+                tvId={props.id}
+              />
+            ),
+          )}
         </div>
       </ScrollArea>
     </div>

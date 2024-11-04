@@ -95,7 +95,9 @@ const Page = async ({ params }: { params: { id: number } }) => {
                   <Plus className="pr-1" />
                   Add to watchlist
                 </Button>
-                <Download className="h-5 w-5" />
+                <Link href={`https://dl.vidsrc.vip/movie/${movieId}`}>
+                  <Download className="h-5 w-5" />
+                </Link>
               </div>
             </div>
           </div>
