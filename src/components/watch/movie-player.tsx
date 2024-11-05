@@ -26,57 +26,57 @@ const PROVIDERS = [
   {
     name: "Embedsu",
     url: "https://embed.su/embed/movie/",
-    countryUrl: `https://flagsapi.com/GB/flat/32.png`,
+    countryUrl: `https://flagsapi.com/GB/flat/24.png`,
   },
   {
     name: "VidSrc",
     url: "https://vidsrc.xyz/embed/movie/",
-    countryUrl: `https://flagsapi.com/US/flat/32.png`,
+    countryUrl: `https://flagsapi.com/US/flat/24.png`,
   },
   {
     name: "VidSrc",
     url: "https://vidsrc.xyz/embed/movie/",
-    countryUrl: `https://flagsapi.com/US/flat/32.png`,
+    countryUrl: `https://flagsapi.com/US/flat/24.png`,
   },
   {
     name: "VidSrc",
     url: "https://vidsrc.xyz/embed/movie/",
-    countryUrl: `https://flagsapi.com/US/flat/32.png`,
+    countryUrl: `https://flagsapi.com/US/flat/24.png`,
   },
   {
     name: "VidSrc",
     url: "https://vidsrc.xyz/embed/movie/",
-    countryUrl: `https://flagsapi.com/US/flat/32.png`,
+    countryUrl: `https://flagsapi.com/US/flat/24.png`,
   },
   {
     name: "VidSrc",
     url: "https://vidsrc.xyz/embed/movie/",
-    countryUrl: `https://flagsapi.com/US/flat/32.png`,
+    countryUrl: `https://flagsapi.com/US/flat/24.png`,
   },
   {
     name: "VidSrc",
     url: "https://vidsrc.xyz/embed/movie/",
-    countryUrl: `https://flagsapi.com/US/flat/32.png`,
+    countryUrl: `https://flagsapi.com/US/flat/24.png`,
   },
   {
     name: "VidSrc",
     url: "https://vidsrc.xyz/embed/movie/",
-    countryUrl: `https://flagsapi.com/US/flat/32.png`,
+    countryUrl: `https://flagsapi.com/US/flat/24.png`,
   },
   {
     name: "VidSrc",
     url: "https://vidsrc.xyz/embed/movie/",
-    countryUrl: `https://flagsapi.com/US/flat/32.png`,
+    countryUrl: `https://flagsapi.com/US/flat/24.png`,
   },
   {
     name: "VidSrc",
     url: "https://vidsrc.xyz/embed/movie/",
-    countryUrl: `https://flagsapi.com/US/flat/32.png`,
+    countryUrl: `https://flagsapi.com/US/flat/24.png`,
   },
   {
     name: "VidSrc",
     url: "https://vidsrc.xyz/embed/movie/",
-    countryUrl: `https://flagsapi.com/US/flat/32.png`,
+    countryUrl: `https://flagsapi.com/US/flat/24.png`,
   },
 ];
 
@@ -143,10 +143,10 @@ const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
           )}
         >
           <div className="flex w-full items-center justify-center gap-x-2 p-2 text-sm">
-            <Bell className="h-4 w-4 fill-white" />
-            <p>
-              Please switch to other servers if default server is not working.
-            </p>
+            <Bell className="h-3 w-3 fill-white" />
+            <span className="text-[10px] md:text-xs lg:text-sm">
+              Please switch to other servers if default server doesnt work.
+            </span>
           </div>
           <X
             className="h-8 w-8 cursor-pointer justify-end pr-2"
@@ -157,7 +157,7 @@ const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
         <div className="relative mx-auto aspect-video w-full overflow-hidden rounded-lg shadow-lg lg:w-3/4">
           <button
             onClick={() => setShowServers(!showServers)}
-            className="absolute left-0 right-0 top-0 z-20 mx-auto flex h-10 w-40 items-center justify-center gap-x-2 rounded-b-[12px] bg-red-500 text-white transition-all hover:bg-red-600"
+            className="absolute left-0 right-0 top-0 z-20 mx-auto flex h-10 w-40 items-center justify-center gap-x-2 rounded-b-[12px] bg-red-500 text-white transition-all hover:bg-[#fa1111]"
           >
             {showServers ? (
               <X />
@@ -190,10 +190,10 @@ const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
                     <button
                       key={`${provider.name}-${index}`}
                       onClick={() => handleProviderChange(provider)}
-                      className={`w-full rounded-md px-3 py-1 text-base font-semibold transition-all duration-150 ${
-                        currentProvider!.name === provider.name
-                          ? "bg-red-500"
-                          : "bg-gray-700 hover:bg-gray-600"
+                      className={`w-full rounded-md px-2 py-1 text-xs font-semibold transition-all duration-150 sm:text-[.8rem] ${
+                        currentProvider?.name === provider.name
+                          ? "bg-[#960000]"
+                          : "bg-[#232323] hover:bg-[#960000]"
                       }`}
                     >
                       <div className="flex items-center justify-center gap-x-1">

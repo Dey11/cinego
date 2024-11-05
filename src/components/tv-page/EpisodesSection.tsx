@@ -155,7 +155,7 @@ export function Combobox({
             placeholder="Search"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="mb-1 w-32 rounded-md border px-2 py-[5px] lg:w-44"
+            className="mb-1 w-32 rounded-md border bg-background px-2 py-[5px] lg:w-44"
           />
           <div className="mr-6 flex h-10 w-10 items-center gap-2">
             <div>

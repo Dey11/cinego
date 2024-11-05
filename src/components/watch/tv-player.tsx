@@ -7,7 +7,6 @@ import {
   BookmarkIcon,
   FastForward,
   X,
-  Clipboard,
   Check,
   Download,
   Forward,
@@ -28,7 +27,7 @@ const PROVIDERS = [
   {
     name: "Embedsu",
     url: "https://embed.su/embed/tv/",
-    countryUrl: `https://flagsapi.com/GB/flat/32.png`,
+    countryUrl: `https://flagsapi.com/GB/flat/24.png`,
   },
 ];
 
@@ -182,7 +181,7 @@ const TVPlayer = ({ tvId, tvInfo }: TVPlayerProps) => {
           {/* Server selection */}
           <button
             onClick={() => setShowServers(!showServers)}
-            className="absolute left-0 right-0 top-0 z-20 mx-auto flex h-10 w-40 items-center justify-center gap-x-2 rounded-b-[12px] bg-red-500 text-white transition-all hover:bg-red-600"
+            className="absolute left-0 right-0 top-0 z-20 mx-auto flex h-10 w-40 items-center justify-center gap-x-2 rounded-b-[12px] bg-red-500 text-white transition-all hover:bg-[#fa1111]"
           >
             {showServers ? (
               <X />
@@ -214,10 +213,10 @@ const TVPlayer = ({ tvId, tvInfo }: TVPlayerProps) => {
                   <button
                     key={provider.name}
                     onClick={() => handleProviderChange(provider)}
-                    className={`w-full rounded-md px-3 py-1 text-base font-semibold transition-all duration-150 ${
+                    className={`w-full rounded-md px-2 py-1 text-xs font-semibold transition-all duration-150 sm:text-[.8rem] ${
                       currentProvider?.name === provider.name
-                        ? "bg-red-500"
-                        : "bg-gray-700 hover:bg-gray-600"
+                        ? "bg-[#960000]"
+                        : "bg-[#232323] hover:bg-[#960000]"
                     }`}
                   >
                     <div className="flex items-center justify-center gap-x-1">
