@@ -112,10 +112,22 @@ const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
 
   const handleShare = () => {
     const link = window.location.href;
-    navigator.clipboard.writeText(link).then(() => {
-      setLinkCopied(true);
-      setTimeout(() => setLinkCopied(false), 2000);
-    });
+    if (navigator.share) {
+      navigator
+        .share({
+          title: movieInfo.title,
+          url: link,
+        })
+        .then(() => {
+          console.log("Thanks for sharing!");
+        })
+        .catch(console.error);
+    } else {
+      navigator.clipboard.writeText(link).then(() => {
+        setLinkCopied(true);
+        setTimeout(() => setLinkCopied(false), 2000);
+      });
+    }
   };
 
   return (
@@ -174,9 +186,9 @@ const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
             >
               <div className="scrollbar-thin scrollbar-track-gray-800 scrollbar-thumb-gray-600 max-h-[20vh] overflow-y-auto">
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-                  {PROVIDERS.map((provider) => (
+                  {PROVIDERS.map((provider, index) => (
                     <button
-                      key={provider.name}
+                      key={`${provider.name}-${index}`}
                       onClick={() => handleProviderChange(provider)}
                       className={`w-full rounded-md px-3 py-1 text-base font-semibold transition-all duration-150 ${
                         currentProvider!.name === provider.name

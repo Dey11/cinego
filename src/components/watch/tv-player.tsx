@@ -135,10 +135,22 @@ const TVPlayer = ({ tvId, tvInfo }: TVPlayerProps) => {
 
   const handleShare = () => {
     const link = window.location.href;
-    navigator.clipboard.writeText(link).then(() => {
-      setLinkCopied(true);
-      setTimeout(() => setLinkCopied(false), 2000);
-    });
+    if (navigator.share) {
+      navigator
+        .share({
+          title: tvInfo.name,
+          url: link,
+        })
+        .then(() => {
+          console.log("Thanks for sharing!");
+        })
+        .catch(console.error);
+    } else {
+      navigator.clipboard.writeText(link).then(() => {
+        setLinkCopied(true);
+        setTimeout(() => setLinkCopied(false), 2000);
+      });
+    }
   };
 
   return (
