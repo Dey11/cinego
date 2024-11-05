@@ -34,11 +34,11 @@ const Page = async (props0: { params: Promise<{ id: number }> }) => {
   return (
     <div className="relative min-h-screen pb-16 text-gray-900 dark:text-gray-100">
       {/* Background Image */}
-      <div className="relative h-dvh">
+      <div className="relative h-[100vh] w-full">
         <Image
           src={`${process.env.TMDB_IMG}${tvInfo.backdrop_path}`}
           fill
-          className="object-cover"
+          className="fixed object-cover"
           alt={tvInfo.name}
           priority
         />

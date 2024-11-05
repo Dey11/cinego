@@ -31,14 +31,14 @@ const Page = async (props: { params: Promise<{ id: number }> }) => {
   }
 
   return (
-    (<div className="relative min-h-screen pb-16 text-gray-900 dark:text-gray-100">
+    <div className="relative min-h-screen pb-16 text-gray-900 dark:text-gray-100">
       {/* Large Screens */}
       <div className="hidden font-semibold sm:block">
-        <div className="relative h-dvh">
+        <div className="relative h-[100vh] w-full">
           <Image
             src={`${process.env.TMDB_IMG}${movieInfo.backdrop_path}`}
             fill
-            className="object-cover"
+            className="fixed object-cover"
             alt={movieInfo.title}
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/60 to-white dark:via-black/20 dark:to-black"></div>
@@ -143,7 +143,7 @@ const Page = async (props: { params: Promise<{ id: number }> }) => {
             <div className="grid grid-cols-2 justify-items-center gap-4 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6">
               {recommendationsInfo.map((recommendation) => (
                 // <Card key={recommendation.id} show={recommendation} />
-                (<Card key={recommendation.id} show={recommendation} />)
+                <Card key={recommendation.id} show={recommendation} />
               ))}
             </div>
           </div>
@@ -151,12 +151,12 @@ const Page = async (props: { params: Promise<{ id: number }> }) => {
       </div>
       {/* Small Screens */}
       <div className="sm:hidden">
-        <div className="relative h-dvh">
+        <div className="relative h-[100vh] w-full">
           <Image
             src={`${process.env.TMDB_IMG}${movieInfo.poster_path}`}
             alt={movieInfo.title}
             fill
-            className="object-cover"
+            className="fixed object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white dark:to-black"></div>
         </div>
@@ -254,7 +254,7 @@ const Page = async (props: { params: Promise<{ id: number }> }) => {
           </div>
         </div>
       </div>
-    </div>)
+    </div>
   );
 };
 
