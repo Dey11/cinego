@@ -1,6 +1,7 @@
 "use client";
 
 import { usePersistedState } from "@/hooks/usePersistedState";
+import { PROVIDERS_MOVIE } from "@/lib/constants";
 import {
   cn,
   isBookmarked,
@@ -8,77 +9,9 @@ import {
   DEFAULT_MOVIE_PROVIDER,
 } from "@/lib/utils";
 import { MovieInfo } from "@/types/tmdbApi";
-import {
-  Bell,
-  BookmarkIcon,
-  Server,
-  X,
-  Clipboard,
-  Check,
-  Download,
-  Forward,
-} from "lucide-react";
+import { Bell, BookmarkIcon, X, Check, Download, Forward } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-
-const PROVIDERS = [
-  DEFAULT_MOVIE_PROVIDER,
-  {
-    name: "Embedsu",
-    url: "https://embed.su/embed/movie/",
-    countryUrl: `https://flagsapi.com/GB/flat/24.png`,
-  },
-  {
-    name: "VidSrc",
-    url: "https://vidsrc.xyz/embed/movie/",
-    countryUrl: `https://flagsapi.com/US/flat/24.png`,
-  },
-  {
-    name: "VidSrc",
-    url: "https://vidsrc.xyz/embed/movie/",
-    countryUrl: `https://flagsapi.com/US/flat/24.png`,
-  },
-  {
-    name: "VidSrc",
-    url: "https://vidsrc.xyz/embed/movie/",
-    countryUrl: `https://flagsapi.com/US/flat/24.png`,
-  },
-  {
-    name: "VidSrc",
-    url: "https://vidsrc.xyz/embed/movie/",
-    countryUrl: `https://flagsapi.com/US/flat/24.png`,
-  },
-  {
-    name: "VidSrc",
-    url: "https://vidsrc.xyz/embed/movie/",
-    countryUrl: `https://flagsapi.com/US/flat/24.png`,
-  },
-  {
-    name: "VidSrc",
-    url: "https://vidsrc.xyz/embed/movie/",
-    countryUrl: `https://flagsapi.com/US/flat/24.png`,
-  },
-  {
-    name: "VidSrc",
-    url: "https://vidsrc.xyz/embed/movie/",
-    countryUrl: `https://flagsapi.com/US/flat/24.png`,
-  },
-  {
-    name: "VidSrc",
-    url: "https://vidsrc.xyz/embed/movie/",
-    countryUrl: `https://flagsapi.com/US/flat/24.png`,
-  },
-  {
-    name: "VidSrc",
-    url: "https://vidsrc.xyz/embed/movie/",
-    countryUrl: `https://flagsapi.com/US/flat/24.png`,
-  },
-  {
-    name: "VidSrc",
-    url: "https://vidsrc.xyz/embed/movie/",
-    countryUrl: `https://flagsapi.com/US/flat/24.png`,
-  },
-];
 
 interface VideoPlayerProps {
   movieId: string;
@@ -105,7 +38,7 @@ const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
     setBookmarked(isNowBookmarked);
   };
 
-  const handleProviderChange = (provider: (typeof PROVIDERS)[0]) => {
+  const handleProviderChange = (provider: (typeof PROVIDERS_MOVIE)[0]) => {
     setCurrentProvider(provider);
     setShowServers(false);
   };
@@ -157,7 +90,7 @@ const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
         <div className="relative mx-auto aspect-video w-full overflow-hidden rounded-lg shadow-lg lg:w-3/4">
           <button
             onClick={() => setShowServers(!showServers)}
-            className="absolute left-0 right-0 top-0 z-20 mx-auto flex h-10 w-40 items-center justify-center gap-x-2 rounded-b-[12px] bg-red-500 text-white transition-all hover:bg-[#fa1111]"
+            className="absolute left-0 right-0 top-0 z-20 mx-auto flex h-10 w-40 items-center justify-center gap-x-2 rounded-b-[12px] bg-red-700 text-white transition-all hover:bg-[#fa1111]"
           >
             {showServers ? (
               <X />
@@ -186,7 +119,7 @@ const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
             >
               <div className="scrollbar-thin scrollbar-track-gray-800 scrollbar-thumb-gray-600 max-h-[20vh] overflow-y-auto">
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-                  {PROVIDERS.map((provider, index) => (
+                  {PROVIDERS_MOVIE.map((provider, index) => (
                     <button
                       key={`${provider.name}-${index}`}
                       onClick={() => handleProviderChange(provider)}
@@ -210,7 +143,7 @@ const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
           {!loading && (
             <div>
               <iframe
-                src={`${currentProvider?.url ? currentProvider.url : PROVIDERS[0].url}${movieId}`}
+                src={`${currentProvider?.url ? currentProvider.url : PROVIDERS_MOVIE[0].url}${movieId}`}
                 className="absolute left-0 top-0 h-full w-full"
                 allowFullScreen
                 allow="autoplay; encrypted-media; picture-in-picture"

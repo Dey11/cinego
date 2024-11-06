@@ -21,15 +21,7 @@ import {
   toggleTVBookmark,
   DEFAULT_TV_PROVIDER,
 } from "@/lib/utils";
-
-const PROVIDERS = [
-  DEFAULT_TV_PROVIDER,
-  {
-    name: "Embedsu",
-    url: "https://embed.su/embed/tv/",
-    countryUrl: `https://flagsapi.com/GB/flat/24.png`,
-  },
-];
+import { PROVIDERS_TV } from "@/lib/constants";
 
 interface TVPlayerProps {
   tvId: string;
@@ -113,7 +105,7 @@ const TVPlayer = ({ tvId, tvInfo }: TVPlayerProps) => {
     setBookmarked(isBookmarked(tvId, "tv"));
   }, [tvId]);
 
-  const handleProviderChange = (provider: (typeof PROVIDERS)[0]) => {
+  const handleProviderChange = (provider: (typeof PROVIDERS_TV)[0]) => {
     setCurrentProvider(provider);
     setShowServers(false);
   };
@@ -181,7 +173,7 @@ const TVPlayer = ({ tvId, tvInfo }: TVPlayerProps) => {
           {/* Server selection */}
           <button
             onClick={() => setShowServers(!showServers)}
-            className="absolute left-0 right-0 top-0 z-20 mx-auto flex h-10 w-40 items-center justify-center gap-x-2 rounded-b-[12px] bg-red-500 text-white transition-all hover:bg-[#fa1111]"
+            className="absolute left-0 right-0 top-0 z-20 mx-auto flex h-10 w-40 items-center justify-center gap-x-2 rounded-b-[12px] bg-red-700 text-white transition-all hover:bg-[#fa1111]"
           >
             {showServers ? (
               <X />
@@ -209,7 +201,7 @@ const TVPlayer = ({ tvId, tvInfo }: TVPlayerProps) => {
               }`}
             >
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                {PROVIDERS.map((provider) => (
+                {PROVIDERS_TV.map((provider) => (
                   <button
                     key={provider.name}
                     onClick={() => handleProviderChange(provider)}
