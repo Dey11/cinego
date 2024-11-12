@@ -107,6 +107,12 @@ const Search = () => {
     return isNaN(date.getTime()) ? "N/A" : date.getFullYear().toString();
   };
 
+  const handleFilterClick = () => {
+    if (window.location.pathname !== "/search") {
+      router.push("/search");
+    }
+  };
+
   return (
     <div className="relative hidden lg:block" ref={searchRef}>
       <Input
@@ -118,7 +124,10 @@ const Search = () => {
         onClick={handleInputFocus} // Add onClick handler
       />
 
-      <button className="absolute left-2 top-[6px] flex items-center gap-x-2 rounded-xl bg-black px-2 py-1">
+      <button
+        onClick={handleFilterClick}
+        className="absolute left-2 top-[6px] flex cursor-pointer items-center gap-x-2 rounded-xl bg-black px-2 py-1 hover:bg-slate-800"
+      >
         <Filter className="h-3 w-3 text-gray-500" />
         <span className="text-sm text-gray-500">Filter</span>
       </button>

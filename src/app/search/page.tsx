@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
-import { SearchIcon, Star } from "lucide-react";
+import { SearchIcon, Star, Filter } from "lucide-react";
 import debounce from "lodash/debounce";
 
 interface SearchResult {
@@ -17,6 +17,13 @@ interface SearchResult {
   vote_average: number;
   release_date?: string;
   first_air_date?: string;
+}
+
+interface FilterState {
+  type: "all" | "movie" | "tv" | "anime";
+  genre: string;
+  year: string;
+  rating: string;
 }
 
 const SearchResultCard = ({ item }: { item: SearchResult }) => {
@@ -79,6 +86,60 @@ export default function SearchPage() {
   const [searchQuery, setSearchQuery] = useState(query || "");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [filters, setFilters] = useState<FilterState>({
+    type: "all",
+    genre: "all",
+    year: "all",
+    rating: "all",
+  });
+  const [showTypeDropdown, setShowTypeDropdown] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+
+  const typeOptions = [
+    { label: "All", value: "all" },
+    { label: "Movies", value: "movie" },
+    { label: "TV Shows", value: "tv" },
+    { label: "Anime", value: "anime" },
+  ];
+
+  const filterOptions = {
+    genres: [
+      { label: "All Genres", value: "all" },
+      { label: "Action", value: "28" },
+      { label: "Comedy", value: "35" },
+      { label: "Drama", value: "18" },
+      { label: "Horror", value: "27" },
+    ],
+    years: [
+      { label: "All Years", value: "all" },
+      { label: "2024", value: "2024" },
+      { label: "2023", value: "2023" },
+      { label: "2022", value: "2022" },
+      { label: "2021", value: "2021" },
+    ],
+    ratings: [
+      { label: "All Ratings", value: "all" },
+      { label: "9+ Rating", value: "9" },
+      { label: "8+ Rating", value: "8" },
+      { label: "7+ Rating", value: "7" },
+      { label: "6+ Rating", value: "6" },
+    ],
+  };
+
+  const filteredResults = results.filter((item) => {
+    if (filters.type !== "all" && item.media_type !== filters.type)
+      return false;
+    if (filters.year !== "all") {
+      const itemYear = new Date(item.release_date || item.first_air_date || "")
+        .getFullYear()
+        .toString();
+      if (itemYear !== filters.year) return false;
+    }
+    if (filters.rating !== "all") {
+      if (item.vote_average < Number(filters.rating)) return false;
+    }
+    return true;
+  });
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -154,8 +215,127 @@ export default function SearchPage() {
       <div className="pt-20 lg:pt-24">
         {" "}
         {/* Adjusted padding top */}
-        <div className="sticky top-[72px] z-10 block bg-black p-4 lg:hidden">
-          <div className="relative">
+        <div className="sticky top-[72px] z-10 bg-black p-4">
+          <div className="mb-4 flex flex-wrap gap-2">
+            {/* Type Filter Button */}
+            <div className="relative">
+              <button
+                onClick={() => setShowTypeDropdown(!showTypeDropdown)}
+                className="flex items-center gap-x-2 rounded-xl bg-slate-800 px-3 py-2"
+              >
+                <span className="text-sm text-white">
+                  {typeOptions.find((opt) => opt.value === filters.type)?.label}
+                </span>
+              </button>
+
+              {showTypeDropdown && (
+                <div className="absolute z-50 mt-2 w-48 rounded-lg bg-slate-800 p-2">
+                  {typeOptions.map((option) => (
+                    <div
+                      key={option.value}
+                      className="cursor-pointer rounded-lg p-2 text-white hover:bg-slate-700"
+                      onClick={() => {
+                        setFilters((prev) => ({
+                          ...prev,
+                          type: option.value as FilterState["type"],
+                        }));
+                        setShowTypeDropdown(false);
+                      }}
+                    >
+                      {option.label}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Filter Options */}
+            <div className="relative">
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className="flex items-center gap-x-2 rounded-xl bg-slate-800 px-3 py-2"
+              >
+                <Filter className="h-4 w-4 text-white" />
+                <span className="text-sm text-white">Filters</span>
+              </button>
+
+              {showFilters && (
+                <div className="absolute z-50 mt-2 w-64 rounded-lg bg-slate-800 p-3">
+                  {/* Genre Filter */}
+                  <div className="mb-3">
+                    <label className="mb-1 block text-sm text-gray-400">
+                      Genre
+                    </label>
+                    <select
+                      className="w-full rounded-lg bg-slate-700 p-2 text-sm text-white"
+                      value={filters.genre}
+                      onChange={(e) =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          genre: e.target.value,
+                        }))
+                      }
+                    >
+                      {filterOptions.genres.map((genre) => (
+                        <option key={genre.value} value={genre.value}>
+                          {genre.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Year Filter */}
+                  <div className="mb-3">
+                    <label className="mb-1 block text-sm text-gray-400">
+                      Year
+                    </label>
+                    <select
+                      className="w-full rounded-lg bg-slate-700 p-2 text-sm text-white"
+                      value={filters.year}
+                      onChange={(e) =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          year: e.target.value,
+                        }))
+                      }
+                    >
+                      {filterOptions.years.map((year) => (
+                        <option key={year.value} value={year.value}>
+                          {year.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Rating Filter */}
+                  <div className="mb-3">
+                    <label className="mb-1 block text-sm text-gray-400">
+                      Rating
+                    </label>
+                    <select
+                      className="w-full rounded-lg bg-slate-700 p-2 text-sm text-white"
+                      value={filters.rating}
+                      onChange={(e) =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          rating: e.target.value,
+                        }))
+                      }
+                    >
+                      {filterOptions.ratings.map((rating) => (
+                        <option key={rating.value} value={rating.value}>
+                          {rating.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Mobile Search Input */}
+          <div className="relative block lg:hidden">
             <Input
               className="h-10 rounded-3xl border-0 bg-slate-800/80 pl-4 pr-10 font-semibold !text-white placeholder:text-gray-500"
               placeholder="Search movies & TV shows"
@@ -170,7 +350,7 @@ export default function SearchPage() {
 
             {/* Mobile Search Results Dropdown */}
             {showDropdown && searchResults.length > 0 && (
-              <div className="absolute mt-2 w-full rounded-lg bg-slate-800/90 p-2">
+              <div className="absolute z-50 mt-2 w-full rounded-lg bg-slate-800/90 p-2">
                 {searchResults.map((item) => (
                   <div
                     key={item.id}
@@ -179,6 +359,7 @@ export default function SearchPage() {
                       const path =
                         item.media_type === "movie" ? "/movie" : "/tv";
                       router.push(`${path}/${item.id}`);
+                      setShowDropdown(false);
                     }}
                   >
                     <Image
@@ -215,7 +396,7 @@ export default function SearchPage() {
             </h1>
           )}
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-            {results.map((item) => (
+            {filteredResults.map((item) => (
               <SearchResultCard key={item.id} item={item} />
             ))}
           </div>
