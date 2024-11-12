@@ -111,13 +111,13 @@ const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
 
           {!loading && (
             <div
-              className={`absolute left-0 right-0 top-12 z-20 mx-auto mt-1 w-fit max-w-[90vw] rounded-md bg-gray-800 p-4 text-white transition-all duration-200 ${
+              className={`absolute left-0 right-0 top-12 z-20 mx-auto w-fit max-w-[90vw] rounded-md bg-gray-800 p-4 text-white transition-all duration-200 ${
                 showServers
                   ? "scale-100 opacity-100"
                   : "pointer-events-none scale-95 opacity-0"
               }`}
             >
-              <div className="scrollbar-thin scrollbar-track-gray-800 scrollbar-thumb-gray-600 max-h-[20vh] overflow-y-auto">
+              <div className="scrollbar-thin scrollbar-track-gray-800 scrollbar-thumb-gray-600 max-h-[12vh] overflow-y-auto px-2 sm:max-h-[20vh]">
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
                   {PROVIDERS_MOVIE.map((provider, index) => (
                     <button
@@ -126,7 +126,7 @@ const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
                       className={`w-full rounded-md px-2 py-1 text-xs font-semibold transition-all duration-150 sm:text-[.8rem] ${
                         currentProvider?.name === provider.name
                           ? "bg-[#960000]"
-                          : "bg-[#232323] hover:bg-[#960000]"
+                          : "border border-[#444444] bg-[#3e3939] hover:bg-[#960000]"
                       }`}
                     >
                       <div className="flex items-center justify-center gap-x-1">
@@ -152,7 +152,7 @@ const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
           )}
         </div>
 
-        <div className="relative z-10 mx-auto -mt-2 flex w-full items-center justify-center gap-x-4 rounded-b-lg bg-gray-900 py-1 text-sm text-white lg:w-3/4">
+        <div className="relative z-10 mx-auto -mt-[5px] flex w-full items-center justify-center gap-x-4 rounded-b-lg bg-gray-900 py-1 text-sm text-white lg:w-3/4">
           <label
             className="flex cursor-pointer items-center gap-x-1 rounded-md transition-all"
             onClick={handleBookmarkToggle}

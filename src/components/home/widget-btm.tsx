@@ -68,7 +68,7 @@ export default function PopularList({
                 alt={item.title || item.name}
                 className="h-full w-full rounded object-cover"
               />
-              <div className="absolute -left-3 top-1/2 flex h-[1.9rem] w-[1.9rem] -translate-y-1/2 items-center justify-center rounded-full border-2 border-yellow-500 bg-gray-100 text-sm font-bold text-black group-hover:bg-yellow-500 group-hover:text-black dark:bg-gray-700 dark:text-white">
+              <div className="absolute -left-3 top-1/2 flex h-[1.9rem] w-[1.9rem] -translate-y-1/2 items-center justify-center rounded-full border-2 border-yellow-500 bg-gray-100 text-sm font-bold text-black group-hover:bg-yellow-500 group-hover:text-black dark:bg-[#2a2a30] dark:text-white">
                 {index + 1}
               </div>
             </div>
