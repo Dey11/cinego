@@ -166,7 +166,6 @@ const SearchPageContent = () => {
     }
 
     try {
-      // Change to search separately for movies and TV shows
       const [movieResponse, tvResponse] = await Promise.all([
         fetch(
           `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(
@@ -183,16 +182,21 @@ const SearchPageContent = () => {
       const movieData = await movieResponse.json();
       const tvData = await tvResponse.json();
 
-      // Combine and format results
+      // Filter results with posters first, then combine
+      const moviesWithPosters = movieData.results.filter(
+        (item: any) => item.poster_path,
+      );
+      const tvWithPosters = tvData.results.filter(
+        (item: any) => item.poster_path,
+      );
+
       const combinedResults = [
-        ...movieData.results.map((item: any) => ({
+        ...moviesWithPosters.map((item: any) => ({
           ...item,
           media_type: "movie",
         })),
-        ...tvData.results.map((item: any) => ({ ...item, media_type: "tv" })),
-      ]
-        .filter((item) => item.poster_path)
-        .slice(0, 5);
+        ...tvWithPosters.map((item: any) => ({ ...item, media_type: "tv" })),
+      ].slice(0, 5);
 
       setSearchResults(combinedResults);
     } catch (error) {
@@ -227,7 +231,6 @@ const SearchPageContent = () => {
   const fetchResults = async () => {
     try {
       if (query) {
-        // Change to search separately for movies and TV shows
         const [movieResponse, tvResponse] = await Promise.all([
           fetch(
             `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(
@@ -244,21 +247,40 @@ const SearchPageContent = () => {
         const movieData = await movieResponse.json();
         const tvData = await tvResponse.json();
 
-        // Combine results and total counts
+        // Filter results with posters first
+        const moviesWithPosters = movieData.results.filter(
+          (item: any) => item.poster_path,
+        );
+        const tvWithPosters = tvData.results.filter(
+          (item: any) => item.poster_path,
+        );
+
+        // Calculate total results only for items with posters
+        const totalMoviesWithPosters = movieData.results.filter(
+          (item: any) => item.poster_path,
+        ).length;
+        const totalTVWithPosters = tvData.results.filter(
+          (item: any) => item.poster_path,
+        ).length;
+
+        // Combine filtered results
         const combinedResults = [
-          ...movieData.results.map((item: any) => ({
+          ...moviesWithPosters.map((item: any) => ({
             ...item,
             media_type: "movie",
           })),
-          ...tvData.results.map((item: any) => ({ ...item, media_type: "tv" })),
-        ].filter((item) => item.poster_path);
+          ...tvWithPosters.map((item: any) => ({ ...item, media_type: "tv" })),
+        ];
 
         setResults(combinedResults);
-        setTotalResults(movieData.total_results + tvData.total_results);
+        setTotalResults(totalMoviesWithPosters + totalTVWithPosters);
       } else {
         const trendingResults = await fetchTrendingContent();
-        setResults(trendingResults);
-        setTotalResults(trendingResults.length);
+        const filteredTrending = trendingResults.filter(
+          (item: SearchResult) => item.poster_path,
+        );
+        setResults(filteredTrending);
+        setTotalResults(filteredTrending.length);
       }
     } catch (error) {
       console.error("Error:", error);
