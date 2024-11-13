@@ -5,8 +5,9 @@ import { useEffect, useState, Suspense } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
-import { SearchIcon, Star, Filter } from "lucide-react";
+import { SearchIcon, Star, Filter, ChevronDown, Check } from "lucide-react";
 import debounce from "lodash/debounce";
+import { cn } from "@/lib/utils";
 
 interface SearchResult {
   id: number;
@@ -144,6 +145,7 @@ const SearchPageContent = () => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
+    setShowDropdown(false); // Add this line to hide the dropdown
   };
 
   const searchTMDB = async (searchQuery: string) => {
@@ -180,26 +182,48 @@ const SearchPageContent = () => {
     return () => debouncedSearch.cancel();
   }, [searchQuery]);
 
+  const fetchTrendingContent = async () => {
+    try {
+      const response = await fetch(
+        `https://api.themoviedb.org/3/trending/all/week?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`,
+      );
+      const data = await response.json();
+      return data.results.filter(
+        (item: SearchResult) =>
+          (item.media_type === "movie" || item.media_type === "tv") &&
+          item.poster_path,
+      );
+    } catch (error) {
+      console.error("Error fetching trending content:", error);
+      return [];
+    }
+  };
+
   useEffect(() => {
     const fetchResults = async () => {
-      if (!query) return;
-
       try {
-        const response = await fetch(
-          `https://api.themoviedb.org/3/search/multi?query=${encodeURIComponent(
-            query,
-          )}&api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`,
-        );
-        const data = await response.json();
-        setResults(
-          data.results.filter(
-            (item: SearchResult) =>
-              (item.media_type === "movie" || item.media_type === "tv") &&
-              item.poster_path,
-          ),
-        );
+        let data;
+        if (query) {
+          const response = await fetch(
+            `https://api.themoviedb.org/3/search/multi?query=${encodeURIComponent(
+              query,
+            )}&api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`,
+          );
+          data = await response.json();
+          setResults(
+            data.results.filter(
+              (item: SearchResult) =>
+                (item.media_type === "movie" || item.media_type === "tv") &&
+                item.poster_path,
+            ),
+          );
+        } else {
+          // Fetch trending content when no query
+          const trendingResults = await fetchTrendingContent();
+          setResults(trendingResults);
+        }
       } catch (error) {
-        console.error("Search error:", error);
+        console.error("Error:", error);
       } finally {
         setLoading(false);
       }
@@ -211,7 +235,7 @@ const SearchPageContent = () => {
   if (loading) return <div>Loading...</div>;
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="mx-auto min-h-screen max-w-[1440px] bg-black">
       <div className="pt-20 lg:pt-24">
         {" "}
         {/* Adjusted padding top */}
@@ -221,8 +245,9 @@ const SearchPageContent = () => {
             <div className="relative">
               <button
                 onClick={() => setShowTypeDropdown(!showTypeDropdown)}
-                className="flex items-center gap-x-2 rounded-xl bg-slate-800 px-3 py-2"
+                className="flex items-center gap-x-2 rounded-xl bg-[#333333] px-3 py-2"
               >
+                <ChevronDown className="size-4 text-white" />
                 <span className="text-sm text-white">
                   {typeOptions.find((opt) => opt.value === filters.type)?.label}
                 </span>
@@ -231,19 +256,29 @@ const SearchPageContent = () => {
               {showTypeDropdown && (
                 <div className="absolute z-50 mt-2 w-48 rounded-lg bg-slate-800 p-2">
                   {typeOptions.map((option) => (
-                    <div
-                      key={option.value}
-                      className="cursor-pointer rounded-lg p-2 text-white hover:bg-slate-700"
-                      onClick={() => {
-                        setFilters((prev) => ({
-                          ...prev,
-                          type: option.value as FilterState["type"],
-                        }));
-                        setShowTypeDropdown(false);
-                      }}
-                    >
-                      {option.label}
-                    </div>
+                    <>
+                      <div
+                        key={option.value}
+                        className={cn(
+                          "cursor-pointer rounded-lg p-2 text-white hover:bg-slate-700",
+                          // option.value === filters.type && "bg-slate-700",
+                        )}
+                        onClick={() => {
+                          setFilters((prev) => ({
+                            ...prev,
+                            type: option.value as FilterState["type"],
+                          }));
+                          setShowTypeDropdown(false);
+                        }}
+                      >
+                        <div className="flex items-center justify-between">
+                          {option.label}
+                          {option.value === filters.type && (
+                            <Check className="h-4 w-4 text-white" />
+                          )}
+                        </div>
+                      </div>
+                    </>
                   ))}
                 </div>
               )}
@@ -253,7 +288,7 @@ const SearchPageContent = () => {
             <div className="relative">
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className="flex items-center gap-x-2 rounded-xl bg-slate-800 px-3 py-2"
+                className="flex items-center gap-x-2 rounded-xl bg-[#333333] bg-slate-800 px-3 py-2"
               >
                 <Filter className="h-4 w-4 text-white" />
                 <span className="text-sm text-white">Filters</span>
@@ -390,11 +425,9 @@ const SearchPageContent = () => {
           </div>
         </div>
         <div className="container mx-auto p-4">
-          {query && (
-            <h1 className="mb-6 text-2xl text-white">
-              Search results for: {query}
-            </h1>
-          )}
+          <h1 className="mb-6 text-2xl text-white">
+            {query ? `Search results for: ${query}` : "Trending This Week"}
+          </h1>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
             {filteredResults.map((item) => (
               <SearchResultCard key={item.id} item={item} />

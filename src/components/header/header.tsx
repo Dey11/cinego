@@ -55,10 +55,16 @@ const Header = () => {
     <header className="absolute top-0 z-20 mt-5 flex w-full items-center justify-between px-5 md:px-10">
       {pathname.split("/")[1] === "movie" ||
       pathname.split("/")[1] === "tv" ||
-      pathname.split("/")[1] === "watch" ? (
-        <button onClick={() => router.back()}>
-          <ArrowLeft className="text-2xl font-bold text-white hover:scale-110 hover:transform" />
-        </button>
+      pathname.split("/")[1] === "watch" ||
+      pathname.split("/")[1] === "search" ? (
+        <>
+          <div className="w-[150px]">
+            <button className="" onClick={() => router.back()}>
+              <ArrowLeft className="text-2xl font-bold text-white hover:scale-110 hover:transform" />
+            </button>
+          </div>
+          <Search />
+        </>
       ) : (
         <>
           <Link className="text-2xl font-bold text-red-500" href={"/"}>

@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import debounce from "lodash/debounce";
+import { cn } from "@/lib/utils";
 
 interface SearchResult {
   id: number;
@@ -114,9 +115,12 @@ const Search = () => {
   };
 
   return (
-    <div className="relative hidden lg:block" ref={searchRef}>
+    <div className="relative hidden md:block" ref={searchRef}>
       <Input
-        className="h-8 w-48 rounded-3xl border-0 bg-slate-800/80 pl-[85px] font-semibold capitalize !text-white placeholder:text-center placeholder:text-gray-500 focus:placeholder:opacity-0 sm:h-10 sm:w-64 md:w-72 lg:w-96"
+        className={cn(
+          "h-8 w-48 rounded-3xl border-0 bg-black/50 font-semibold capitalize !text-white placeholder:text-center placeholder:text-gray-500 focus:placeholder:opacity-0 sm:h-10 sm:w-64 md:w-72 lg:w-[450px]",
+          query && "pl-[85px]",
+        )}
         placeholder="Search"
         value={query}
         onChange={handleQueryChange}
@@ -155,13 +159,17 @@ const Search = () => {
                 </span>
                 <div className="flex items-center gap-2 text-xs text-gray-400">
                   <span className="capitalize">{item.media_type}</span>
+                  {parseInt(item.vote_average.toFixed(1)) > 0 && (
+                    <>
+                      <span>•</span>
+                      <span className="flex items-center">
+                        ⭐ {item.vote_average.toFixed(1)}
+                      </span>
+                    </>
+                  )}
                   <span>•</span>
                   <span>
                     {getYear(item.release_date || item.first_air_date)}
-                  </span>
-                  <span>•</span>
-                  <span className="flex items-center">
-                    ⭐ {item.vote_average.toFixed(1)}
                   </span>
                 </div>
               </div>

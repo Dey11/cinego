@@ -25,7 +25,6 @@ const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
     DEFAULT_MOVIE_PROVIDER,
   );
   const [bookmarked, setBookmarked] = useState(false);
-  const [autonext, setAutonext] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
   const [linkCopied, setLinkCopied] = useState(false);
 
