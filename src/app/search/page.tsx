@@ -5,7 +5,15 @@ import { useEffect, useState, Suspense } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
-import { SearchIcon, Star, Filter, ChevronDown, Check } from "lucide-react";
+import {
+  SearchIcon,
+  Star,
+  Filter,
+  ChevronDown,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import debounce from "lodash/debounce";
 import { cn } from "@/lib/utils";
 
@@ -95,6 +103,9 @@ const SearchPageContent = () => {
   });
   const [showTypeDropdown, setShowTypeDropdown] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalResults, setTotalResults] = useState(0);
+  const resultsPerPage = 20;
 
   const typeOptions = [
     { label: "All", value: "all" },
@@ -199,38 +210,39 @@ const SearchPageContent = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchResults = async () => {
-      try {
-        let data;
-        if (query) {
-          const response = await fetch(
-            `https://api.themoviedb.org/3/search/multi?query=${encodeURIComponent(
-              query,
-            )}&api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`,
-          );
-          data = await response.json();
-          setResults(
-            data.results.filter(
-              (item: SearchResult) =>
-                (item.media_type === "movie" || item.media_type === "tv") &&
-                item.poster_path,
-            ),
-          );
-        } else {
-          // Fetch trending content when no query
-          const trendingResults = await fetchTrendingContent();
-          setResults(trendingResults);
-        }
-      } catch (error) {
-        console.error("Error:", error);
-      } finally {
-        setLoading(false);
+  const fetchResults = async () => {
+    try {
+      let data;
+      if (query) {
+        const response = await fetch(
+          `https://api.themoviedb.org/3/search/multi?query=${encodeURIComponent(
+            query,
+          )}&page=${currentPage}&api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`,
+        );
+        data = await response.json();
+        setTotalResults(data.total_results);
+        setResults(
+          data.results.filter(
+            (item: SearchResult) =>
+              (item.media_type === "movie" || item.media_type === "tv") &&
+              item.poster_path,
+          ),
+        );
+      } else {
+        const trendingResults = await fetchTrendingContent();
+        setResults(trendingResults);
+        setTotalResults(trendingResults.length);
       }
-    };
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchResults();
-  }, [query]);
+  }, [query, currentPage]); // Add currentPage dependency
 
   if (loading) return <div>Loading...</div>;
 
@@ -425,9 +437,42 @@ const SearchPageContent = () => {
           </div>
         </div>
         <div className="container mx-auto p-4">
-          <h1 className="mb-6 text-2xl text-white">
-            {query ? `Search results for: ${query}` : "Trending This Week"}
-          </h1>
+          <div className="mb-6 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <h1 className="text-2xl text-white">
+                {query ? `Search results for: ${query}` : "Trending This Week"}
+              </h1>
+              {query && (
+                <span className="text-gray-400">
+                  ({totalResults.toLocaleString()} results)
+                </span>
+              )}
+            </div>
+            {totalResults > resultsPerPage && (
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  className="rounded-lg bg-slate-800 p-2 text-white disabled:opacity-50"
+                >
+                  <ChevronLeft className="h-5 w-5" />
+                </button>
+                <span className="text-white">
+                  Page {currentPage} of{" "}
+                  {Math.ceil(totalResults / resultsPerPage)}
+                </span>
+                <button
+                  onClick={() => setCurrentPage((p) => p + 1)}
+                  disabled={
+                    currentPage >= Math.ceil(totalResults / resultsPerPage)
+                  }
+                  className="rounded-lg bg-slate-800 p-2 text-white disabled:opacity-50"
+                >
+                  <ChevronRight className="h-5 w-5" />
+                </button>
+              </div>
+            )}
+          </div>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
             {filteredResults.map((item) => (
               <SearchResultCard key={item.id} item={item} />
