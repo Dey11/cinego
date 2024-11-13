@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
@@ -77,7 +77,7 @@ const SearchResultCard = ({ item }: { item: SearchResult }) => {
   );
 };
 
-export default function SearchPage() {
+const SearchPageContent = () => {
   const searchParams = useSearchParams();
   const query = searchParams.get("q");
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -215,7 +215,7 @@ export default function SearchPage() {
       <div className="pt-20 lg:pt-24">
         {" "}
         {/* Adjusted padding top */}
-        <div className="sticky top-[72px] z-10 bg-black p-4">
+        <div className="top-[72px] z-10 bg-black p-4">
           <div className="mb-4 flex flex-wrap gap-2">
             {/* Type Filter Button */}
             <div className="relative">
@@ -403,5 +403,13 @@ export default function SearchPage() {
         </div>
       </div>
     </div>
+  );
+};
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SearchPageContent />
+    </Suspense>
   );
 }
