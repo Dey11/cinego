@@ -166,21 +166,35 @@ const SearchPageContent = () => {
     }
 
     try {
-      const response = await fetch(
-        `https://api.themoviedb.org/3/search/multi?query=${encodeURIComponent(
-          searchQuery,
-        )}&api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`,
-      );
-      const data = await response.json();
-      setSearchResults(
-        data.results
-          .filter(
-            (item: SearchResult) =>
-              (item.media_type === "movie" || item.media_type === "tv") &&
-              item.poster_path,
-          )
-          .slice(0, 5),
-      );
+      // Change to search separately for movies and TV shows
+      const [movieResponse, tvResponse] = await Promise.all([
+        fetch(
+          `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(
+            searchQuery,
+          )}&api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`,
+        ),
+        fetch(
+          `https://api.themoviedb.org/3/search/tv?query=${encodeURIComponent(
+            searchQuery,
+          )}&api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`,
+        ),
+      ]);
+
+      const movieData = await movieResponse.json();
+      const tvData = await tvResponse.json();
+
+      // Combine and format results
+      const combinedResults = [
+        ...movieData.results.map((item: any) => ({
+          ...item,
+          media_type: "movie",
+        })),
+        ...tvData.results.map((item: any) => ({ ...item, media_type: "tv" })),
+      ]
+        .filter((item) => item.poster_path)
+        .slice(0, 5);
+
+      setSearchResults(combinedResults);
     } catch (error) {
       console.error("Search error:", error);
     }
@@ -212,22 +226,35 @@ const SearchPageContent = () => {
 
   const fetchResults = async () => {
     try {
-      let data;
       if (query) {
-        const response = await fetch(
-          `https://api.themoviedb.org/3/search/multi?query=${encodeURIComponent(
-            query,
-          )}&page=${currentPage}&api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`,
-        );
-        data = await response.json();
-        setTotalResults(data.total_results);
-        setResults(
-          data.results.filter(
-            (item: SearchResult) =>
-              (item.media_type === "movie" || item.media_type === "tv") &&
-              item.poster_path,
+        // Change to search separately for movies and TV shows
+        const [movieResponse, tvResponse] = await Promise.all([
+          fetch(
+            `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(
+              query,
+            )}&page=${currentPage}&api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`,
           ),
-        );
+          fetch(
+            `https://api.themoviedb.org/3/search/tv?query=${encodeURIComponent(
+              query,
+            )}&page=${currentPage}&api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`,
+          ),
+        ]);
+
+        const movieData = await movieResponse.json();
+        const tvData = await tvResponse.json();
+
+        // Combine results and total counts
+        const combinedResults = [
+          ...movieData.results.map((item: any) => ({
+            ...item,
+            media_type: "movie",
+          })),
+          ...tvData.results.map((item: any) => ({ ...item, media_type: "tv" })),
+        ].filter((item) => item.poster_path);
+
+        setResults(combinedResults);
+        setTotalResults(movieData.total_results + tvData.total_results);
       } else {
         const trendingResults = await fetchTrendingContent();
         setResults(trendingResults);
