@@ -24,6 +24,7 @@ import { useTheme } from "next-themes";
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 const options = [
   { name: "Home", href: "/", icon: Home },
@@ -60,10 +61,15 @@ const Header = () => {
         <>
           <div className="w-[150px]">
             <button className="" onClick={() => router.back()}>
-              <ArrowLeft className="text-2xl font-bold text-white hover:scale-110 hover:transform" />
+              <ArrowLeft
+                className={cn(
+                  "text-2xl font-bold text-white hover:scale-110 hover:transform",
+                  pathname.split("/")[1] === "search" &&
+                    "text-black hover:text-black dark:text-white dark:hover:text-white",
+                )}
+              />
             </button>
           </div>
-          <Search />
         </>
       ) : (
         <>
@@ -81,13 +87,30 @@ const Header = () => {
           className="bg-transparent"
         >
           {theme === "dark" ? (
-            <Sun className="h-5 w-5 text-white" />
+            <Sun
+              className={cn(
+                "h-5 w-5 text-white",
+                pathname.split("/")[1] === "search" &&
+                  "text-black hover:text-black dark:text-white dark:hover:text-white",
+              )}
+            />
           ) : (
-            <Moon className="h-5 w-5 text-white" />
+            <Moon
+              className={cn(
+                "h-5 w-5 text-white",
+                pathname.split("/")[1] === "search" &&
+                  "text-black dark:text-white",
+              )}
+            />
           )}
         </Button>
         <MenuOps />
-        <User className="text-white" />
+        <User
+          className={cn(
+            "text-white",
+            pathname.split("/")[1] === "search" && "text-black dark:text-white",
+          )}
+        />
       </div>
     </header>
   );
@@ -96,10 +119,17 @@ const Header = () => {
 export default Header;
 
 const MenuOps = () => {
+  const pathname = usePathname();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Menu className="text-white" />
+        <Menu
+          className={cn(
+            "text-white",
+            pathname.split("/")[1] === "search" && "text-black dark:text-white",
+          )}
+        />
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         {options.map((option) => (
