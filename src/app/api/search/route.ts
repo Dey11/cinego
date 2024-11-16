@@ -23,8 +23,12 @@ export async function GET(request: Request) {
       baseParams + (year ? `&primary_release_year=${year}` : "");
     const tvParams = baseParams + (year ? `&first_air_date_year=${year}` : "");
 
-    const moviePromise = fetch(baseUrl + "movie" + movieParams);
-    const tvPromise = fetch(baseUrl + "tv" + tvParams);
+    const moviePromise = fetch(baseUrl + "movie" + movieParams, {
+      cache: "force-cache",
+    });
+    const tvPromise = fetch(baseUrl + "tv" + tvParams, {
+      cache: "force-cache",
+    });
 
     const [movieRes, tvRes] = await Promise.all([moviePromise, tvPromise]);
     const [movieData, tvData] = await Promise.all([
@@ -55,7 +59,9 @@ export async function GET(request: Request) {
     if (country) url += `&with_origin_country=${country}`;
   }
 
-  const response = await fetch(url);
+  const response = await fetch(url, {
+    cache: "force-cache",
+  });
   const data = await response.json();
 
   return NextResponse.json(data);

@@ -18,8 +18,12 @@ export async function GET(request: Request) {
     const movieParams = params + (year ? `&primary_release_year=${year}` : "");
     const tvParams = params + (year ? `&first_air_date_year=${year}` : "");
 
-    const moviePromise = fetch(baseAnimeUrl + "movie" + movieParams);
-    const tvPromise = fetch(baseAnimeUrl + "tv" + tvParams);
+    const moviePromise = fetch(baseAnimeUrl + "movie" + movieParams, {
+      cache: "force-cache",
+    });
+    const tvPromise = fetch(baseAnimeUrl + "tv" + tvParams, {
+      cache: "force-cache",
+    });
 
     const [movieResponse, tvResponse] = await Promise.all([
       moviePromise,
@@ -52,7 +56,9 @@ export async function GET(request: Request) {
           : `&first_air_date_year=${year}`;
     }
 
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      cache: "force-cache",
+    });
     const data = await response.json();
     return NextResponse.json(data);
   }

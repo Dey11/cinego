@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useCallback,
+  Suspense,
+} from "react";
 import debounce from "lodash/debounce";
 import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
@@ -21,7 +27,8 @@ interface Movie {
   original_language: string;
 }
 
-const SearchPage = () => {
+// Move the current SearchPage component content into SearchContent
+const SearchContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [query, setQuery] = useState(searchParams.get("q") || "");
@@ -29,14 +36,86 @@ const SearchPage = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [filters, setFilters] = useState({
-    genre: "",
-    country: "",
-    year: "",
-    sortBy: "popularity.desc",
-    type: "",
-  });
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
+  const seenIds = useRef(new Set<number>());
+
+  // Initialize filters from URL params
+  const [filters, setFilters] = useState(() => ({
+    genre: searchParams.get("genre") || "",
+    country: searchParams.get("country") || "",
+    year: searchParams.get("year") || "",
+    sortBy: searchParams.get("sortBy") || "",
+    type: searchParams.get("type") || "",
+  }));
+
+  // Replace the old fetchResults with this updated version
+  const fetchResults = async (
+    searchQuery: string,
+    currentFilters: typeof filters,
+    pageNum: number,
+  ) => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams({
+        page: pageNum.toString(),
+        ...(searchQuery && { query: searchQuery }),
+        ...(currentFilters.type && { type: currentFilters.type }),
+        ...(currentFilters.genre && { genre: currentFilters.genre }),
+        ...(currentFilters.country && { country: currentFilters.country }),
+        ...(currentFilters.year && { year: currentFilters.year }),
+      });
+
+      const endpoint = searchQuery ? "/api/search" : "/api/discover";
+      const response = await fetch(`${endpoint}?${params}`);
+      const data = await response.json();
+
+      const filteredResults = data.results.filter(
+        (item: Movie) => item.poster_path,
+      );
+
+      if (pageNum === 1) {
+        seenIds.current.clear();
+        setResults(filteredResults);
+        filteredResults.forEach((item: Movie) => seenIds.current.add(item.id));
+
+        // Update URL only on initial load or filter changes
+        const urlParams = new URLSearchParams();
+        Object.entries(currentFilters).forEach(([key, value]) => {
+          if (value) urlParams.set(key, value);
+        });
+        if (searchQuery) urlParams.set("q", searchQuery);
+        const urlWithParams = urlParams.toString()
+          ? `?${urlParams.toString()}`
+          : "";
+        router.replace(`/search${urlWithParams}`, { scroll: false });
+      } else {
+        const newResults = filteredResults.filter((item: Movie) => {
+          if (seenIds.current.has(item.id)) return false;
+          seenIds.current.add(item.id);
+          return true;
+        });
+        setResults((prev) => [...prev, ...newResults]);
+      }
+
+      setHasMore(data.page < data.total_pages && filteredResults.length > 0);
+    } catch (error) {
+      console.error(error);
+    }
+    setLoading(false);
+  };
+
+  // Add initial fetch effect
+  useEffect(() => {
+    const initialQuery = searchParams.get("q") || "";
+    fetchResults(initialQuery, filters, 1);
+  }, []); // Run once on mount
+
+  // Update filter change effect
+  useEffect(() => {
+    if (page === 1) {
+      fetchResults(query, filters, 1);
+    }
+  }, [filters.type, filters.genre, filters.country, filters.year]);
 
   const observer = useRef<IntersectionObserver>(null);
   const lastElementRef = useCallback(
@@ -53,83 +132,74 @@ const SearchPage = () => {
     [loading, hasMore],
   );
 
-  const updateSearchParams = (newParams: Record<string, string>) => {
-    const params = new URLSearchParams(searchParams.toString());
-    Object.entries(newParams).forEach(([key, value]) => {
-      if (value) {
-        params.set(key, value);
-      } else {
-        params.delete(key);
-      }
-    });
-    router.push(`/search?${params.toString()}`);
-  };
-
-  const fetchResults = async (
-    searchQuery: string,
-    currentFilters: typeof filters,
-    pageNum: number,
+  // Update updateFiltersAndFetch to handle URL updates more carefully
+  const updateFiltersAndFetch = async (
+    newFilters: typeof filters,
+    newQuery?: string,
+    resetAll = false,
   ) => {
-    setLoading(true);
-    try {
-      let data;
-      const params = new URLSearchParams({
-        page: pageNum.toString(),
-        ...(searchQuery && { query: searchQuery }),
-        ...(currentFilters.type && { type: currentFilters.type }),
-        ...(currentFilters.genre && { genre: currentFilters.genre }),
-        ...(currentFilters.country && { country: currentFilters.country }),
-        ...(currentFilters.year && { year: currentFilters.year }),
+    setFilters(newFilters);
+    setPage(1);
+    seenIds.current.clear();
+
+    const params = new URLSearchParams();
+    if (!resetAll) {
+      Object.entries(newFilters).forEach(([key, value]) => {
+        if (value) params.set(key, value);
       });
-
-      const endpoint = searchQuery ? "/api/search" : "/api/discover";
-      const response = await fetch(`${endpoint}?${params}`);
-      data = await response.json();
-
-      const filteredResults = data.results.filter(
-        (item: Movie) => item.poster_path,
-      );
-
-      if (pageNum === 1) {
-        setResults(filteredResults);
-      } else {
-        setResults((prev) => [...prev, ...filteredResults]);
-      }
-
-      setHasMore(data.page < data.total_pages);
-    } catch (error) {
-      console.error(error);
     }
-    setLoading(false);
+    if (newQuery || query) {
+      params.set("q", newQuery || query);
+    }
+
+    await fetchResults(newQuery || query, newFilters, 1);
+
+    const urlWithParams = params.toString() ? `?${params.toString()}` : "";
+    router.replace(`/search${urlWithParams}`, { scroll: false });
   };
 
-  const debouncedSearch = debounce((searchQuery: string) => {
-    setPage(1);
-    setResults([]);
-    updateSearchParams({ q: searchQuery });
-    fetchResults(searchQuery, filters, 1);
-  }, 500);
+  const resetFilters = async () => {
+    const hasActiveFilters = Object.values(filters).some(
+      (value) => value !== "" && value !== "popularity.desc",
+    );
+
+    if (!hasActiveFilters) return;
+
+    const defaultFilters = {
+      genre: "",
+      country: "",
+      year: "",
+      sortBy: "",
+      type: "",
+    };
+
+    setActiveFilter(null);
+    await updateFiltersAndFetch(defaultFilters, query, true);
+  };
+
+  const handleFilterChange = async (type: string, value: string) => {
+    const newFilters = { ...filters, [type]: value };
+    setActiveFilter(null);
+    await updateFiltersAndFetch(newFilters);
+  };
+
+  const debouncedSearch = useCallback(
+    debounce((searchQuery: string) => {
+      updateFiltersAndFetch(filters, searchQuery);
+    }, 800),
+    [filters],
+  );
 
   useEffect(() => {
     debouncedSearch(query);
-  }, [query]);
+    return () => debouncedSearch.cancel(); // Cleanup debounce
+  }, [query, debouncedSearch]);
 
   useEffect(() => {
     if (page > 1) {
       fetchResults(query, filters, page);
     }
-  }, [page]);
-
-  useEffect(() => {
-    setPage(1);
-    setResults([]);
-    fetchResults(query, filters, 1);
-  }, [filters.type, filters.genre, filters.country, filters.year]);
-
-  const handleFilterChange = (type: string, value: string) => {
-    setFilters((prev) => ({ ...prev, [type]: value }));
-    updateSearchParams({ [type]: value });
-  };
+  }, [page, query, filters]);
 
   const getSortedResults = () => {
     const sortedResults = [...results];
@@ -168,7 +238,7 @@ const SearchPage = () => {
   };
 
   const sortOptions = [
-    { value: "popularity.desc", label: "Most Popular" },
+    // { value: "popularity.desc", label: "Most Popular" },
     { value: "release_date.desc", label: "Latest Release" },
     { value: "release_date.asc", label: "Oldest Release" },
     { value: "original_title.asc", label: "Title A-Z" },
@@ -415,7 +485,7 @@ const SearchPage = () => {
       { value: "ZW", label: "Zimbabwe" },
     ],
     sortBy: [
-      { value: "popularity.desc", label: "Most Popular" },
+      // { value: "popularity.desc", label: "Most Popular" },
       { value: "release_date.desc", label: "Latest Release" },
       { value: "release_date.asc", label: "Oldest Release" },
       { value: "original_title.asc", label: "Title A-Z" },
@@ -423,37 +493,6 @@ const SearchPage = () => {
       { value: "vote_average.desc", label: "Highest Rated" },
       { value: "vote_average.asc", label: "Lowest Rated" },
     ],
-  };
-
-  const resetFilters = () => {
-    setFilters({
-      genre: "",
-      country: "",
-      year: "",
-      sortBy: "popularity.desc",
-      type: "",
-    });
-    setActiveFilter(null);
-
-    // Maintain search query in URL
-    const params = new URLSearchParams();
-    if (query) {
-      params.set("q", query);
-    }
-    router.push(`/search${params.toString() ? `?${params.toString()}` : ""}`);
-
-    // Refetch results with reset filters but maintain search
-    fetchResults(
-      query,
-      {
-        genre: "",
-        country: "",
-        year: "",
-        sortBy: "popularity.desc",
-        type: "",
-      },
-      1,
-    );
   };
 
   return (
@@ -551,9 +590,8 @@ const SearchPage = () => {
                   <Image
                     className="rounded object-cover transition-transform hover:scale-110"
                     src={
-                      item.poster_path
-                        ? `https://image.tmdb.org/t/p/original${item.poster_path}`
-                        : "/placeholder.png"
+                      `https://image.tmdb.org/t/p/original${item.poster_path}` ||
+                      "/placeholder.png"
                     }
                     alt={item.title || item.name || ""}
                     fill
@@ -613,6 +651,21 @@ const SearchPage = () => {
         </div>
       )}
     </div>
+  );
+};
+
+// New main page component with Suspense
+const SearchPage = () => {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex h-screen items-center justify-center">
+          <div className="spinner-border inline-block h-8 w-8 animate-spin rounded-full border-4 text-blue-500" />
+        </div>
+      }
+    >
+      <SearchContent />
+    </Suspense>
   );
 };
 

@@ -28,9 +28,9 @@ import { cn } from "@/lib/utils";
 
 const options = [
   { name: "Home", href: "/", icon: Home },
-  { name: "Movies", href: "/movies", icon: Clapperboard },
-  { name: "Series", href: "/series", icon: Tv },
-  { name: "Anime", href: "/anime", icon: Sword },
+  { name: "Movies", href: "/search?type=movie", icon: Clapperboard },
+  { name: "Series", href: "/search?type=tv", icon: Tv },
+  { name: "Anime", href: "/search?type=anime", icon: Sword },
   { name: "Manga", href: "/manga", icon: Book },
 ];
 
@@ -133,12 +133,14 @@ const MenuOps = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         {options.map((option) => (
-          <DropdownMenuItem key={option.name} id={option.name}>
-            <div className="flex items-center gap-2">
-              <option.icon size={"16px"} />
-              <p>{option.name}</p>
-            </div>
-          </DropdownMenuItem>
+          <Link href={option.href} key={option.name}>
+            <DropdownMenuItem id={option.name}>
+              <div className="flex items-center gap-2">
+                <option.icon size={"16px"} />
+                <p>{option.name}</p>
+              </div>
+            </DropdownMenuItem>
+          </Link>
         ))}
       </DropdownMenuContent>
     </DropdownMenu>
