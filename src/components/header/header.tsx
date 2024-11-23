@@ -76,7 +76,11 @@ const Header = () => {
           <Link className="text-2xl font-bold text-red-500" href={"/"}>
             <Image src={"/logo.png"} alt="logo" width={150} height={100} />
           </Link>
-          <Search />
+          {pathname.split("/")[1] !== "search" && (
+            <div className="hidden md:block">
+              <Search />
+            </div>
+          )}
         </>
       )}
       <div className="flex items-center gap-x-5">

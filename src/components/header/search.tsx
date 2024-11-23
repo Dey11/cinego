@@ -8,7 +8,8 @@ import { useRouter } from "next/navigation";
 import debounce from "lodash/debounce";
 import { cn } from "@/lib/utils";
 
-interface SearchResult {
+// Extract the search result interface for reuse
+export interface SearchResult {
   id: number;
   title?: string;
   name?: string;
@@ -19,12 +20,18 @@ interface SearchResult {
   first_air_date?: string;
 }
 
-const Search = () => {
+// Extract search functionality into a custom hook for reuse
+export const useSearch = () => {
+  const [mounted, setMounted] = useState(false);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [showResults, setShowResults] = useState(false);
   const router = useRouter();
-  const searchRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
 
   const searchTMDB = async (searchQuery: string) => {
     if (!searchQuery) {
@@ -63,23 +70,6 @@ const Search = () => {
     };
   }, [query, debouncedSearch]);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        searchRef.current &&
-        !searchRef.current.contains(event.target as Node)
-      ) {
-        setShowResults(false);
-      }
-    };
-
-    if (showResults) {
-      document.addEventListener("mousedown", handleClickOutside);
-      return () =>
-        document.removeEventListener("mousedown", handleClickOutside);
-    }
-  }, [showResults]);
-
   const handleInputFocus = useCallback(() => {
     setShowResults(true);
   }, []);
@@ -114,37 +104,100 @@ const Search = () => {
     }
   };
 
+  return {
+    query,
+    setQuery,
+    results: mounted ? results : [],
+    showResults: mounted ? showResults : false,
+    setShowResults,
+    handleQueryChange,
+    handleItemClick,
+    handleSeeMore,
+    handleInputFocus,
+    handleFilterClick,
+    getYear,
+  };
+};
+
+// Add isMobile to props
+interface SearchProps {
+  isMobile?: boolean;
+}
+
+const Search = ({ isMobile }: SearchProps) => {
+  const searchRef = useRef<HTMLDivElement>(null);
+  const searchHook = useSearch();
+  const { query, showResults, results, setShowResults } = searchHook;
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
+        setShowResults(false);
+      }
+    };
+
+    if (showResults) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () =>
+        document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [showResults, setShowResults]);
+
   return (
-    <div className="relative hidden md:block" ref={searchRef}>
+    <div
+      className={cn(
+        "relative",
+        isMobile ? "w-full bg-transparent px-4 py-2" : "hidden md:block",
+      )}
+      ref={searchRef}
+    >
       <Input
         className={cn(
-          "h-8 w-48 rounded-3xl border-0 bg-black/50 font-semibold capitalize !text-white placeholder:text-center placeholder:text-gray-500 focus:placeholder:opacity-0 sm:h-10 sm:w-64 md:w-72 lg:w-[450px]",
+          "h-8 w-full rounded-3xl border-0 bg-black/50 font-semibold capitalize !text-white placeholder:text-center placeholder:text-gray-500 focus:placeholder:opacity-0 sm:h-10",
           query && "pl-[85px]",
+          !isMobile && "sm:w-64 md:w-72 lg:w-[450px]",
         )}
         placeholder="Search"
         value={query}
-        onChange={handleQueryChange}
-        onFocus={handleInputFocus}
-        onClick={handleInputFocus} // Add onClick handler
+        onChange={searchHook.handleQueryChange}
+        onFocus={searchHook.handleInputFocus}
+        onClick={searchHook.handleInputFocus} // Add onClick handler
+        autoFocus={isMobile}
       />
 
       <button
-        onClick={handleFilterClick}
-        className="absolute left-2 top-[6px] flex cursor-pointer items-center gap-x-2 rounded-xl bg-black px-2 py-1 hover:bg-slate-800"
+        onClick={searchHook.handleFilterClick}
+        className={cn(
+          "absolute left-2 top-[6px] flex cursor-pointer items-center gap-x-2 rounded-xl bg-black px-2 py-1 hover:bg-slate-800",
+          isMobile && "left-5 top-[8px]",
+        )}
       >
-        <Filter className="h-3 w-3 text-gray-500" />
+        <Filter className={cn("h-3 w-3 text-gray-500")} />
         <span className="text-sm text-gray-500">Filter</span>
       </button>
 
-      <SearchIcon className="absolute right-2 top-2 h-6 w-6 text-gray-500" />
+      <SearchIcon
+        className={cn(
+          "absolute right-2 top-2 h-6 w-6 text-gray-500",
+          isMobile && "right-5 top-3",
+        )}
+      />
 
-      {showResults && results.length > 0 && (
-        <div className="absolute mt-2 w-full rounded-lg bg-slate-800/90 p-2">
+      {showResults && results && results.length > 0 && (
+        <div
+          className={cn(
+            "absolute mt-2 w-full rounded-lg bg-slate-800/90 p-2",
+            isMobile && "left-0 right-0 z-50",
+          )}
+        >
           {results.map((item) => (
             <div
               key={item.id}
               className="flex cursor-pointer items-center gap-2 rounded-lg p-1.5 hover:bg-slate-700"
-              onClick={() => handleItemClick(item)}
+              onClick={() => searchHook.handleItemClick(item)}
             >
               <Image
                 src={`https://image.tmdb.org/t/p/w92${item.poster_path}`}
@@ -169,14 +222,16 @@ const Search = () => {
                   )}
                   <span>•</span>
                   <span>
-                    {getYear(item.release_date || item.first_air_date)}
+                    {searchHook.getYear(
+                      item.release_date || item.first_air_date,
+                    )}
                   </span>
                 </div>
               </div>
             </div>
           ))}
           <button
-            onClick={handleSeeMore}
+            onClick={searchHook.handleSeeMore}
             className="mt-2 w-full rounded-lg bg-slate-700 p-2 text-center text-sm text-white hover:bg-slate-600"
           >
             See more results
