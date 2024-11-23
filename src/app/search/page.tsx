@@ -1,672 +1,501 @@
 "use client";
 
-import React, {
-  useEffect,
-  useState,
-  useRef,
-  useCallback,
-  Suspense,
-} from "react";
+import { Input } from "@/components/ui/input";
+import { useInView } from "react-intersection-observer";
+import { useEffect, useState } from "react";
 import debounce from "lodash/debounce";
-import { useSearchParams, useRouter } from "next/navigation";
-import Image from "next/image";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-import { Check, Circle, CircleCheck, Star, ChevronDown } from "lucide-react";
+import { country } from "@/lib/constants"; // Add this import
+import { ResetIcon } from "@radix-ui/react-icons";
 
-interface Movie {
+type MediaType = "all" | "movie" | "tv"; // updated type
+type SortOption = "popularity" | "latest" | "oldest" | "a-z" | "z-a" | "rating";
+type RatingOption = "all" | "4" | "5" | "6" | "7" | "8" | "9"; // Add this type
+
+interface Result {
   id: number;
   title?: string;
   name?: string;
-  original_name?: string;
-  original_title?: string;
   poster_path: string;
-  backdrop_path?: string;
   release_date?: string;
   first_air_date?: string;
   vote_average: number;
-  original_language: string;
+  media_type?: "movie" | "tv";
 }
 
-// Move the current SearchPage component content into SearchContent
-const SearchContent = () => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const [query, setQuery] = useState(searchParams.get("q") || "");
-  const [results, setResults] = useState<Movie[]>([]);
+interface Network {
+  id: number;
+  name: string;
+  logo_path: string;
+}
+
+export default function SearchPage() {
+  const [resultsMap, setResultsMap] = useState<Map<number, Result>>(new Map());
   const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [activeFilter, setActiveFilter] = useState<string | null>(null);
-  const seenIds = useRef(new Set<number>());
+  const [searchQuery, setSearchQuery] = useState("");
+  const [genres, setGenres] = useState([]);
+  const [inputValue, setInputValue] = useState(""); // Add new state for input
+  const [networks, setNetworks] = useState<Network[]>([]);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-  // Initialize filters from URL params
-  const [filters, setFilters] = useState(() => ({
-    genre: searchParams.get("genre") || "",
-    country: searchParams.get("country") || "",
-    year: searchParams.get("year") || "",
-    sortBy: searchParams.get("sortBy") || "",
-    type: searchParams.get("type") || "",
-  }));
+  const { ref, inView } = useInView();
 
-  // Replace the old fetchResults with this updated version
-  const fetchResults = async (
-    searchQuery: string,
-    currentFilters: typeof filters,
-    pageNum: number,
-  ) => {
-    setLoading(true);
+  const currentType = (searchParams.get("type") as MediaType) || "all"; // changed default to "all"
+  const currentGenre = searchParams.get("genre") || "all";
+  const currentSort = (searchParams.get("sort") as SortOption) || "popularity";
+  const currentYear = searchParams.get("year") || "all";
+  const currentNetwork = searchParams.get("network") || "all";
+  const currentCountry = searchParams.get("country") || "all";
+  const currentRating = (searchParams.get("rating") as RatingOption) || "all"; // Add this line
+
+  const updateSearchParams = (params: { [key: string]: string }) => {
+    const current = new URLSearchParams(Array.from(searchParams.entries()));
+    Object.entries(params).forEach(([key, value]) => {
+      current.set(key, value);
+    });
+    router.push(`${pathname}?${current.toString()}`);
+  };
+
+  const fetchGenres = async () => {
     try {
-      const params = new URLSearchParams({
-        page: pageNum.toString(),
-        ...(searchQuery && { query: searchQuery }),
-        ...(currentFilters.type && { type: currentFilters.type }),
-        ...(currentFilters.genre && { genre: currentFilters.genre }),
-        ...(currentFilters.country && { country: currentFilters.country }),
-        ...(currentFilters.year && { year: currentFilters.year }),
-      });
+      if (currentType === "all") {
+        const [movieGenres, tvGenres] = await Promise.all([
+          fetch(
+            `https://api.themoviedb.org/3/genre/movie/list?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`,
+          ).then((res) => res.json()),
+          fetch(
+            `https://api.themoviedb.org/3/genre/tv/list?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`,
+          ).then((res) => res.json()),
+        ]);
 
-      const endpoint = searchQuery ? "/api/search" : "/api/discover";
-      const response = await fetch(`${endpoint}?${params}`);
-      const data = await response.json();
+        // Add null checks and default to empty arrays if genres are undefined
+        const movieGenresList = movieGenres?.genres || [];
+        const tvGenresList = tvGenres?.genres || [];
 
-      const filteredResults = data.results.filter(
-        (item: Movie) => item.poster_path,
-      );
-
-      if (pageNum === 1) {
-        seenIds.current.clear();
-        setResults(filteredResults);
-        filteredResults.forEach((item: Movie) => seenIds.current.add(item.id));
-
-        // Update URL only on initial load or filter changes
-        const urlParams = new URLSearchParams();
-        Object.entries(currentFilters).forEach(([key, value]) => {
-          if (value) urlParams.set(key, value);
-        });
-        if (searchQuery) urlParams.set("q", searchQuery);
-        const urlWithParams = urlParams.toString()
-          ? `?${urlParams.toString()}`
-          : "";
-        router.replace(`/search${urlWithParams}`, { scroll: false });
+        // Merge genres and remove duplicates
+        const mergedGenres = [...movieGenresList, ...tvGenresList];
+        const uniqueGenres = Array.from(
+          new Map(mergedGenres.map((item) => [item.id, item])).values(),
+        );
+        //@ts-ignore
+        setGenres(uniqueGenres);
       } else {
-        const newResults = filteredResults.filter((item: Movie) => {
-          if (seenIds.current.has(item.id)) return false;
-          seenIds.current.add(item.id);
-          return true;
-        });
-        setResults((prev) => [...prev, ...newResults]);
+        const response = await fetch(
+          `https://api.themoviedb.org/3/genre/${currentType}/list?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`,
+        );
+        const data = await response.json();
+        setGenres(data?.genres || []);
       }
-
-      setHasMore(data.page < data.total_pages && filteredResults.length > 0);
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching genres:", error);
+      setGenres([]); // Set empty array on error
     }
+  };
+
+  const getSortQuery = (sort: SortOption) => {
+    switch (sort) {
+      case "popularity":
+        return "popularity.desc";
+      case "latest":
+        return "primary_release_date.desc";
+      case "oldest":
+        return "primary_release_date.asc";
+      case "a-z":
+        return "original_title.asc";
+      case "z-a":
+        return "original_title.desc";
+      case "rating":
+        return "vote_average.desc";
+      default:
+        return "popularity.desc";
+    }
+  };
+
+  const getYearsList = () => {
+    const currentYear = new Date().getFullYear();
+    const years = [];
+    for (let year = currentYear; year >= 1950; year--) {
+      years.push(year);
+    }
+    return years;
+  };
+
+  const fetchNetworks = async () => {
+    try {
+      const response = await fetch(
+        `https://api.themoviedb.org/3/network/list?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`,
+      );
+      const data = await response.json();
+      setNetworks(data.networks || []);
+    } catch (error) {
+      console.error("Error fetching networks:", error);
+      setNetworks([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchNetworks();
+  }, []);
+
+  const fetchResults = async (reset = false) => {
+    setLoading(true);
+    const currentPage = reset ? 1 : page;
+    const baseUrl = "https://api.themoviedb.org/3";
+    const ratingQuery =
+      currentRating !== "all" ? `&vote_average.gte=${currentRating}` : "";
+
+    try {
+      if (searchQuery) {
+        // Use search endpoint when there's a query
+        if (currentType === "all") {
+          const response = await fetch(
+            `${baseUrl}/search/multi?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&query=${searchQuery}&page=${currentPage}`,
+          );
+          const data = await response.json();
+
+          setResultsMap((prevMap) => {
+            const newMap = reset ? new Map() : new Map(prevMap);
+            data.results.forEach((item: any) => {
+              if (
+                (item.media_type === "movie" || item.media_type === "tv") &&
+                item.poster_path
+              ) {
+                newMap.set(item.id + (item.media_type === "tv" ? "_tv" : ""), {
+                  ...item,
+                  id: item.id + (item.media_type === "tv" ? "_tv" : ""),
+                });
+              }
+            });
+            return newMap;
+          });
+        } else {
+          const response = await fetch(
+            `${baseUrl}/search/${currentType}?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&query=${searchQuery}&page=${currentPage}`,
+          );
+          const data = await response.json();
+
+          setResultsMap((prevMap) => {
+            const newMap = reset ? new Map() : new Map(prevMap);
+            data.results.forEach((item: any) => {
+              if (item.poster_path) {
+                newMap.set(item.id, { ...item, media_type: currentType });
+              }
+            });
+            return newMap;
+          });
+        }
+      } else {
+        // Use discover endpoint when no search query
+        if (currentType === "all") {
+          // Keep existing all type logic but add media_type
+          const [movieRes, tvRes] = await Promise.all([
+            fetch(
+              `${baseUrl}/discover/movie?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&page=${currentPage}&sort_by=${getSortQuery(currentSort)}${currentGenre !== "all" ? `&with_genres=${currentGenre}` : ""}${currentYear !== "all" ? `&primary_release_year=${currentYear}` : ""}${currentNetwork !== "all" ? `&with_networks=${currentNetwork}` : ""}${currentCountry !== "all" ? `&with_origin_country=${currentCountry}` : ""}${ratingQuery}`,
+            ),
+            fetch(
+              `${baseUrl}/discover/tv?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&page=${currentPage}&sort_by=${getSortQuery(currentSort)}${currentGenre !== "all" ? `&with_genres=${currentGenre}` : ""}${currentYear !== "all" ? `&first_air_date_year=${currentYear}` : ""}${currentNetwork !== "all" ? `&with_networks=${currentNetwork}` : ""}${currentCountry !== "all" ? `&with_origin_country=${currentCountry}` : ""}${ratingQuery}`,
+            ),
+          ]);
+
+          const [movieData, tvData] = await Promise.all([
+            movieRes.json(),
+            tvRes.json(),
+          ]);
+
+          setResultsMap((prevMap) => {
+            const newMap = reset ? new Map() : new Map(prevMap);
+
+            // Add movies first
+            movieData.results.forEach((item: Result) => {
+              if (item.poster_path) {
+                newMap.set(item.id, { ...item, media_type: "movie" });
+              }
+            });
+
+            // Add TV shows after
+            tvData.results.forEach((item: Result) => {
+              if (item.poster_path) {
+                newMap.set(item.id + "_tv", {
+                  ...item,
+                  media_type: "tv",
+                  id: item.id + "_tv",
+                });
+              }
+            });
+
+            return newMap;
+          });
+        } else {
+          // Original single type logic
+          const response = await fetch(
+            `${baseUrl}/discover/${currentType}?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&page=${currentPage}&sort_by=${getSortQuery(currentSort)}${currentGenre !== "all" ? `&with_genres=${currentGenre}` : ""}${currentYear !== "all" ? `&${currentType === "movie" ? "primary_release_year" : "first_air_date_year"}=${currentYear}` : ""}${currentNetwork !== "all" ? `&with_networks=${currentNetwork}` : ""}${currentCountry !== "all" ? `&with_origin_country=${currentCountry}` : ""}${ratingQuery}`,
+          );
+          const data = await response.json();
+
+          setResultsMap((prevMap) => {
+            const newMap = reset ? new Map() : new Map(prevMap);
+            data.results.forEach((item: Result) => {
+              if (item.poster_path) {
+                newMap.set(item.id, { ...item, media_type: currentType });
+              }
+            });
+            return newMap;
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching results:", error);
+    }
+
     setLoading(false);
   };
 
-  // Add initial fetch effect
+  // Move debounced search to useEffect
+  const debouncedSearch = debounce((query: string) => {
+    setSearchQuery(query);
+  }, 500);
+
+  // Add effect to handle debounced search
   useEffect(() => {
-    const initialQuery = searchParams.get("q") || "";
-    fetchResults(initialQuery, filters, 1);
-  }, []); // Run once on mount
+    debouncedSearch(inputValue);
+    // Cleanup function to cancel debounced call
+    return () => debouncedSearch.cancel();
+  }, [inputValue]);
 
-  // Update filter change effect
+  // Add new useEffect for search
   useEffect(() => {
-    if (page === 1) {
-      fetchResults(query, filters, 1);
+    if (searchQuery !== undefined) {
+      setPage(1);
+      fetchResults(true);
     }
-  }, [filters.type, filters.genre, filters.country, filters.year]);
+  }, [searchQuery]);
 
-  const observer = useRef<IntersectionObserver>(null);
-  const lastElementRef = useCallback(
-    (node: HTMLDivElement) => {
-      if (loading) return;
-      if (observer.current) observer.current.disconnect();
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && hasMore) {
-          setPage((prev) => prev + 1);
-        }
-      });
-      if (node) observer.current.observe(node);
-    },
-    [loading, hasMore],
-  );
+  // Remove searchQuery reset from filter change effect
+  useEffect(() => {
+    fetchResults(true);
+  }, [
+    currentType,
+    currentGenre,
+    currentSort,
+    currentYear,
+    currentNetwork,
+    currentCountry,
+    currentRating, // Add this
+  ]); // Add currentYear and currentNetwork
 
-  // Update updateFiltersAndFetch to handle URL updates more carefully
-  const updateFiltersAndFetch = async (
-    newFilters: typeof filters,
-    newQuery?: string,
-    resetAll = false,
-  ) => {
-    setFilters(newFilters);
-    setPage(1);
-    seenIds.current.clear();
-
-    const params = new URLSearchParams();
-    if (!resetAll) {
-      Object.entries(newFilters).forEach(([key, value]) => {
-        if (value) params.set(key, value);
-      });
-    }
-    if (newQuery || query) {
-      params.set("q", newQuery || query);
-    }
-
-    await fetchResults(newQuery || query, newFilters, 1);
-
-    const urlWithParams = params.toString() ? `?${params.toString()}` : "";
-    router.replace(`/search${urlWithParams}`, { scroll: false });
-  };
-
-  const resetFilters = async () => {
-    const hasActiveFilters = Object.values(filters).some(
-      (value) => value !== "" && value !== "popularity.desc",
-    );
-
-    if (!hasActiveFilters) return;
-
-    const defaultFilters = {
-      genre: "",
-      country: "",
-      year: "",
-      sortBy: "",
-      type: "",
+  // Optional: Add a cleanup for searchQuery only when component unmounts
+  useEffect(() => {
+    return () => {
+      setSearchQuery("");
     };
-
-    setActiveFilter(null);
-    await updateFiltersAndFetch(defaultFilters, query, true);
-  };
-
-  const handleFilterChange = async (type: string, value: string) => {
-    const newFilters = { ...filters, [type]: value };
-    setActiveFilter(null);
-    await updateFiltersAndFetch(newFilters);
-  };
-
-  const debouncedSearch = useCallback(
-    debounce((searchQuery: string) => {
-      updateFiltersAndFetch(filters, searchQuery);
-    }, 800),
-    [filters],
-  );
+  }, []);
 
   useEffect(() => {
-    debouncedSearch(query);
-    return () => debouncedSearch.cancel(); // Cleanup debounce
-  }, [query, debouncedSearch]);
+    fetchGenres();
+  }, [currentType]);
 
   useEffect(() => {
-    if (page > 1) {
-      fetchResults(query, filters, page);
+    if (inView) {
+      setPage((prev) => prev + 1);
+      fetchResults();
     }
-  }, [page, query, filters]);
+  }, [inView]);
 
-  const getSortedResults = () => {
-    const sortedResults = [...results];
-    switch (filters.sortBy) {
-      case "popularity.desc":
-        return sortedResults.sort((a, b) => {
-          return (b as any).popularity - (a as any).popularity;
-        });
-      case "release_date.desc":
-        return sortedResults.sort(
-          (a, b) =>
-            new Date(b.release_date || b.first_air_date || "").getTime() -
-            new Date(a.release_date || a.first_air_date || "").getTime(),
-        );
-      case "release_date.asc":
-        return sortedResults.sort(
-          (a, b) =>
-            new Date(a.release_date || a.first_air_date || "").getTime() -
-            new Date(b.release_date || b.first_air_date || "").getTime(),
-        );
-      case "original_title.asc":
-        return sortedResults.sort((a, b) =>
-          (a.title || a.name || "").localeCompare(b.title || b.name || ""),
-        );
-      case "original_title.desc":
-        return sortedResults.sort((a, b) =>
-          (b.title || b.name || "").localeCompare(a.title || a.name || ""),
-        );
-      case "vote_average.desc":
-        return sortedResults.sort((a, b) => b.vote_average - a.vote_average);
-      case "vote_average.asc":
-        return sortedResults.sort((a, b) => a.vote_average - b.vote_average);
-      default:
-        return sortedResults;
-    }
-  };
-
-  const sortOptions = [
-    // { value: "popularity.desc", label: "Most Popular" },
-    { value: "release_date.desc", label: "Latest Release" },
-    { value: "release_date.asc", label: "Oldest Release" },
-    { value: "original_title.asc", label: "Title A-Z" },
-    { value: "original_title.desc", label: "Title Z-A" },
-    { value: "vote_average.asc", label: "Lowest Rated" },
-    { value: "vote_average.desc", label: "Highest Rated" },
-  ];
-
-  const filterOptions = {
-    type: [
-      { value: "movie", label: "Movies" },
-      { value: "tv", label: "TV Shows" },
-      { value: "anime", label: "Anime" },
-    ],
-    year: Array.from({ length: 2024 - 1950 + 1 }, (_, i) => ({
-      value: String(2024 - i),
-      label: String(2024 - i),
-    })),
-    genre: [
-      { value: "28", label: "Action" },
-      { value: "12", label: "Adventure" },
-      { value: "16", label: "Animation" },
-      { value: "35", label: "Comedy" },
-      { value: "80", label: "Crime" },
-      { value: "99", label: "Documentary" },
-      { value: "18", label: "Drama" },
-      { value: "10751", label: "Family" },
-      { value: "14", label: "Fantasy" },
-      { value: "36", label: "History" },
-      { value: "27", label: "Horror" },
-      { value: "10402", label: "Music" },
-      { value: "9648", label: "Mystery" },
-      { value: "10749", label: "Romance" },
-      { value: "878", label: "Science Fiction" },
-      { value: "53", label: "Thriller" },
-      { value: "10752", label: "War" },
-    ],
-    country: [
-      { value: "AF", label: "Afghanistan" },
-      { value: "AL", label: "Albania" },
-      { value: "DZ", label: "Algeria" },
-      { value: "AS", label: "American Samoa" },
-      { value: "AD", label: "Andorra" },
-      { value: "AO", label: "Angola" },
-      { value: "AI", label: "Anguilla" },
-      { value: "AQ", label: "Antarctica" },
-      { value: "AG", label: "Antigua and Barbuda" },
-      { value: "AR", label: "Argentina" },
-      { value: "AM", label: "Armenia" },
-      { value: "AW", label: "Aruba" },
-      { value: "AU", label: "Australia" },
-      { value: "AT", label: "Austria" },
-      { value: "AZ", label: "Azerbaijan" },
-      { value: "BS", label: "Bahamas" },
-      { value: "BH", label: "Bahrain" },
-      { value: "BD", label: "Bangladesh" },
-      { value: "BB", label: "Barbados" },
-      { value: "BY", label: "Belarus" },
-      { value: "BE", label: "Belgium" },
-      { value: "BZ", label: "Belize" },
-      { value: "BJ", label: "Benin" },
-      { value: "BM", label: "Bermuda" },
-      { value: "BT", label: "Bhutan" },
-      { value: "BO", label: "Bolivia" },
-      { value: "BA", label: "Bosnia and Herzegovina" },
-      { value: "BW", label: "Botswana" },
-      { value: "BR", label: "Brazil" },
-      { value: "BN", label: "Brunei Darussalam" },
-      { value: "BG", label: "Bulgaria" },
-      { value: "BF", label: "Burkina Faso" },
-      { value: "BI", label: "Burundi" },
-      { value: "KH", label: "Cambodia" },
-      { value: "CM", label: "Cameroon" },
-      { value: "CA", label: "Canada" },
-      { value: "CV", label: "Cape Verde" },
-      { value: "KY", label: "Cayman Islands" },
-      { value: "CF", label: "Central African Republic" },
-      { value: "TD", label: "Chad" },
-      { value: "CL", label: "Chile" },
-      { value: "CN", label: "China" },
-      { value: "CO", label: "Colombia" },
-      { value: "KM", label: "Comoros" },
-      { value: "CG", label: "Congo" },
-      { value: "CD", label: "Congo, Democratic Republic" },
-      { value: "CR", label: "Costa Rica" },
-      { value: "CI", label: "Cote d'Ivoire" },
-      { value: "HR", label: "Croatia" },
-      { value: "CU", label: "Cuba" },
-      { value: "CY", label: "Cyprus" },
-      { value: "CZ", label: "Czech Republic" },
-      { value: "DK", label: "Denmark" },
-      { value: "DJ", label: "Djibouti" },
-      { value: "DM", label: "Dominica" },
-      { value: "DO", label: "Dominican Republic" },
-      { value: "EC", label: "Ecuador" },
-      { value: "EG", label: "Egypt" },
-      { value: "SV", label: "El Salvador" },
-      { value: "GQ", label: "Equatorial Guinea" },
-      { value: "ER", label: "Eritrea" },
-      { value: "EE", label: "Estonia" },
-      { value: "ET", label: "Ethiopia" },
-      { value: "FJ", label: "Fiji" },
-      { value: "FI", label: "Finland" },
-      { value: "FR", label: "France" },
-      { value: "GA", label: "Gabon" },
-      { value: "GM", label: "Gambia" },
-      { value: "GE", label: "Georgia" },
-      { value: "DE", label: "Germany" },
-      { value: "GH", label: "Ghana" },
-      { value: "GR", label: "Greece" },
-      { value: "GL", label: "Greenland" },
-      { value: "GD", label: "Grenada" },
-      { value: "GU", label: "Guam" },
-      { value: "GT", label: "Guatemala" },
-      { value: "GN", label: "Guinea" },
-      { value: "GW", label: "Guinea-Bissau" },
-      { value: "GY", label: "Guyana" },
-      { value: "HT", label: "Haiti" },
-      { value: "HN", label: "Honduras" },
-      { value: "HK", label: "Hong Kong" },
-      { value: "HU", label: "Hungary" },
-      { value: "IS", label: "Iceland" },
-      { value: "IN", label: "India" },
-      { value: "ID", label: "Indonesia" },
-      { value: "IR", label: "Iran" },
-      { value: "IQ", label: "Iraq" },
-      { value: "IE", label: "Ireland" },
-      { value: "IL", label: "Israel" },
-      { value: "IT", label: "Italy" },
-      { value: "JM", label: "Jamaica" },
-      { value: "JP", label: "Japan" },
-      { value: "JO", label: "Jordan" },
-      { value: "KZ", label: "Kazakhstan" },
-      { value: "KE", label: "Kenya" },
-      { value: "KI", label: "Kiribati" },
-      { value: "KP", label: "Korea, Democratic People's Republic" },
-      { value: "KR", label: "Korea, Republic" },
-      { value: "KW", label: "Kuwait" },
-      { value: "KG", label: "Kyrgyzstan" },
-      { value: "LA", label: "Lao People's Democratic Republic" },
-      { value: "LV", label: "Latvia" },
-      { value: "LB", label: "Lebanon" },
-      { value: "LS", label: "Lesotho" },
-      { value: "LR", label: "Liberia" },
-      { value: "LY", label: "Libya" },
-      { value: "LI", label: "Liechtenstein" },
-      { value: "LT", label: "Lithuania" },
-      { value: "LU", label: "Luxembourg" },
-      { value: "MO", label: "Macao" },
-      { value: "MK", label: "Macedonia" },
-      { value: "MG", label: "Madagascar" },
-      { value: "MW", label: "Malawi" },
-      { value: "MY", label: "Malaysia" },
-      { value: "MV", label: "Maldives" },
-      { value: "ML", label: "Mali" },
-      { value: "MT", label: "Malta" },
-      { value: "MH", label: "Marshall Islands" },
-      { value: "MR", label: "Mauritania" },
-      { value: "MU", label: "Mauritius" },
-      { value: "MX", label: "Mexico" },
-      { value: "FM", label: "Micronesia" },
-      { value: "MD", label: "Moldova" },
-      { value: "MC", label: "Monaco" },
-      { value: "MN", label: "Mongolia" },
-      { value: "ME", label: "Montenegro" },
-      { value: "MA", label: "Morocco" },
-      { value: "MZ", label: "Mozambique" },
-      { value: "MM", label: "Myanmar" },
-      { value: "NA", label: "Namibia" },
-      { value: "NR", label: "Nauru" },
-      { value: "NP", label: "Nepal" },
-      { value: "NL", label: "Netherlands" },
-      { value: "NZ", label: "New Zealand" },
-      { value: "NI", label: "Nicaragua" },
-      { value: "NE", label: "Niger" },
-      { value: "NG", label: "Nigeria" },
-      { value: "NO", label: "Norway" },
-      { value: "OM", label: "Oman" },
-      { value: "PK", label: "Pakistan" },
-      { value: "PW", label: "Palau" },
-      { value: "PS", label: "Palestine" },
-      { value: "PA", label: "Panama" },
-      { value: "PG", label: "Papua New Guinea" },
-      { value: "PY", label: "Paraguay" },
-      { value: "PE", label: "Peru" },
-      { value: "PH", label: "Philippines" },
-      { value: "PL", label: "Poland" },
-      { value: "PT", label: "Portugal" },
-      { value: "PR", label: "Puerto Rico" },
-      { value: "QA", label: "Qatar" },
-      { value: "RO", label: "Romania" },
-      { value: "RU", label: "Russia" },
-      { value: "RW", label: "Rwanda" },
-      { value: "KN", label: "Saint Kitts and Nevis" },
-      { value: "LC", label: "Saint Lucia" },
-      { value: "VC", label: "Saint Vincent and the Grenadines" },
-      { value: "WS", label: "Samoa" },
-      { value: "SM", label: "San Marino" },
-      { value: "ST", label: "Sao Tome and Principe" },
-      { value: "SA", label: "Saudi Arabia" },
-      { value: "SN", label: "Senegal" },
-      { value: "RS", label: "Serbia" },
-      { value: "SC", label: "Seychelles" },
-      { value: "SL", label: "Sierra Leone" },
-      { value: "SG", label: "Singapore" },
-      { value: "SK", label: "Slovakia" },
-      { value: "SI", label: "Slovenia" },
-      { value: "SB", label: "Solomon Islands" },
-      { value: "SO", label: "Somalia" },
-      { value: "ZA", label: "South Africa" },
-      { value: "SS", label: "South Sudan" },
-      { value: "ES", label: "Spain" },
-      { value: "LK", label: "Sri Lanka" },
-      { value: "SD", label: "Sudan" },
-      { value: "SR", label: "Suriname" },
-      { value: "SZ", label: "Swaziland" },
-      { value: "SE", label: "Sweden" },
-      { value: "CH", label: "Switzerland" },
-      { value: "SY", label: "Syrian Arab Republic" },
-      { value: "TW", label: "Taiwan" },
-      { value: "TJ", label: "Tajikistan" },
-      { value: "TZ", label: "Tanzania" },
-      { value: "TH", label: "Thailand" },
-      { value: "TL", label: "Timor-Leste" },
-      { value: "TG", label: "Togo" },
-      { value: "TO", label: "Tonga" },
-      { value: "TT", label: "Trinidad and Tobago" },
-      { value: "TN", label: "Tunisia" },
-      { value: "TR", label: "Turkey" },
-      { value: "TM", label: "Turkmenistan" },
-      { value: "TV", label: "Tuvalu" },
-      { value: "UG", label: "Uganda" },
-      { value: "UA", label: "Ukraine" },
-      { value: "AE", label: "United Arab Emirates" },
-      { value: "GB", label: "United Kingdom" },
-      { value: "US", label: "United States" },
-      { value: "UY", label: "Uruguay" },
-      { value: "UZ", label: "Uzbekistan" },
-      { value: "VU", label: "Vanuatu" },
-      { value: "VE", label: "Venezuela" },
-      { value: "VN", label: "Vietnam" },
-      { value: "YE", label: "Yemen" },
-      { value: "ZM", label: "Zambia" },
-      { value: "ZW", label: "Zimbabwe" },
-    ],
-    sortBy: [
-      // { value: "popularity.desc", label: "Most Popular" },
-      { value: "release_date.desc", label: "Latest Release" },
-      { value: "release_date.asc", label: "Oldest Release" },
-      { value: "original_title.asc", label: "Title A-Z" },
-      { value: "original_title.desc", label: "Title Z-A" },
-      { value: "vote_average.desc", label: "Highest Rated" },
-      { value: "vote_average.asc", label: "Lowest Rated" },
-    ],
+  const handleReset = () => {
+    setInputValue("");
+    setSearchQuery("");
+    setPage(1);
+    router.push(pathname); // This will clear all URL params
+    fetchResults(true);
   };
 
   return (
-    <div className="mx-auto max-w-[1440px] px-2 pb-20 pt-32">
-      <input
-        type="text"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="Search movies and TV shows..."
-        className="mb-4 w-full rounded-2xl border bg-gray-900 p-2 px-4 text-white"
-      />
+    <div className="container mx-auto max-w-[1440px] p-4 pt-20">
+      <div className="mb-6 flex flex-col gap-4">
+        <Input
+          placeholder="Search..."
+          className="w-full rounded-lg py-4 capitalize text-black dark:text-white"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+        />
 
-      <div className="mb-4 grid grid-cols-2 gap-2 md:flex md:flex-wrap md:items-center">
-        {Object.entries(filterOptions).map(([filterType, options]) => {
-          const selectedOption = options.find(
-            (opt) => opt.value === filters[filterType as keyof typeof filters],
-          );
-
-          return (
-            <div key={filterType} className="relative w-full md:w-40">
-              <div
-                className={`flex w-full cursor-pointer items-center justify-between rounded-lg px-2 py-2 text-white hover:bg-gray-700 ${
-                  activeFilter === filterType ? "bg-gray-800" : "bg-[#333333]"
-                }`}
-                onClick={() =>
-                  setActiveFilter(
-                    activeFilter === filterType ? null : filterType,
-                  )
-                }
-              >
-                <div>
-                  <span className="block text-xs text-gray-400">
-                    {filterType.charAt(0).toUpperCase() + filterType.slice(1)}
-                  </span>
-                  <span className="block truncate text-sm">
-                    {selectedOption ? selectedOption.label : "All"}
-                  </span>
-                </div>
-                <ChevronDown className="h-4 w-4" />
-              </div>
-              {activeFilter === filterType && (
-                <div className="absolute z-10 mt-2 w-full rounded-lg border bg-gray-200 p-1 shadow-lg dark:bg-[#2a2a30] md:w-40">
-                  <div className="no-scrollbar max-h-32 overflow-y-auto text-xs">
-                    {options.map((option) => (
-                      <div
-                        key={option.value}
-                        className={`cursor-pointer rounded p-2 hover:bg-gray-400 dark:hover:bg-gray-700 ${
-                          filters[filterType as keyof typeof filters] ===
-                          option.value
-                            ? "bg-gray-500 text-yellow-500 dark:bg-gray-900"
-                            : ""
-                        }`}
-                        onClick={() => {
-                          handleFilterChange(filterType, option.value);
-                          setActiveFilter(null);
-                        }}
-                      >
-                        <div className="flex items-center gap-x-1">
-                          {option.value ===
-                          filters[filterType as keyof typeof filters] ? (
-                            <CircleCheck className="mb-[1px] size-[14px] fill-yellow-500 text-gray-500 dark:text-gray-900" />
-                          ) : (
-                            <Circle className="mb-[1px] size-[14px] fill-gray-500 text-gray-500" />
-                          )}
-                          {option.label}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          );
-        })}
-
-        <div
-          className="flex w-full cursor-pointer items-center justify-center rounded-lg bg-red-500 px-4 py-2 text-center md:w-auto"
-          onClick={resetFilters}
-        >
-          Reset Filters
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-6">
-        {getSortedResults().map((item, index) => {
-          const type = item.title ? "movie" : "tv";
-          return (
-            <div
-              key={item.id}
-              ref={index === results.length - 1 ? lastElementRef : undefined}
-              className="relative aspect-[2/3]"
-            >
-              <Link href={`/${type}/${item.id}`}>
-                <div className="relative h-full w-full hover:text-white">
-                  <Image
-                    className="rounded object-cover transition-transform hover:scale-110"
-                    src={
-                      `https://image.tmdb.org/t/p/original${item.poster_path}` ||
-                      "/placeholder.png"
-                    }
-                    alt={item.title || item.name || ""}
-                    fill
-                    sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
-                    priority={index < 6}
-                  />
-                  <div className="absolute left-0 top-0 flex h-full w-full flex-col items-center justify-center rounded bg-gray-900 bg-opacity-60 opacity-0 transition-opacity hover:opacity-100 hover:backdrop-blur-[2px]">
-                    <Image
-                      src="/icon-play.png"
-                      alt="play"
-                      width={25}
-                      height={25}
-                    />
-                    <div className="absolute bottom-2 px-1 text-center">
-                      <h3 className="mb-2 line-clamp-2 text-xs font-semibold sm:text-sm">
-                        {item.title || item.name}
-                      </h3>
-                      <p className="-mt-2 text-[10px] text-gray-400">
-                        {type.toUpperCase()} /{" "}
-                        {
-                          (
-                            item.release_date ||
-                            item.first_air_date ||
-                            ""
-                          ).split("-")[0]
-                        }{" "}
-                        / {item.original_language.toUpperCase()}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="absolute top-2 rounded-r bg-yellow-500 px-0.5 text-xs font-semibold text-white">
-                    HD
-                  </div>
-                  <div className="absolute right-0 top-2 flex items-center gap-1 rounded-l bg-black bg-opacity-50 px-1 text-xs font-semibold text-white">
-                    <Star
-                      size={12}
-                      strokeWidth={0.5}
-                      className="fill-yellow-500"
-                    />
-                    {item.vote_average.toPrecision(2)}
-                  </div>
-                </div>
-              </Link>
-            </div>
-          );
-        })}
-      </div>
-
-      {loading && (
-        <div className="my-4 text-center">
-          <div
-            className="spinner-border inline-block h-8 w-8 animate-spin rounded-full border-4 text-blue-500"
-            role="status"
+        <div className="flex flex-col gap-4 xl:flex-row xl:flex-wrap">
+          <button
+            onClick={handleReset}
+            className="flex w-full items-center justify-center gap-x-2 rounded-md bg-red-500 px-3 py-2 text-sm font-medium text-destructive-foreground hover:bg-destructive/90 xl:w-fit"
           >
-            {/* <span className="visually-hidden">Loading...</span> */}
+            <ResetIcon />
+            Reset
+          </button>
+
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:flex xl:flex-1 xl:flex-wrap">
+            <Select
+              value={currentType}
+              onValueChange={(value: MediaType) =>
+                updateSearchParams({ type: value })
+              }
+            >
+              <SelectTrigger className="w-full xl:w-[180px]">
+                <SelectValue placeholder="Type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Type</SelectItem>
+                <SelectItem value="movie">Movies</SelectItem>
+                <SelectItem value="tv">TV Shows</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select
+              value={currentGenre}
+              onValueChange={(value) => updateSearchParams({ genre: value })}
+            >
+              <SelectTrigger className="w-full xl:w-[180px]">
+                <SelectValue placeholder="Genre" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Genre</SelectItem>
+                {genres.map((genre: any) => (
+                  <SelectItem key={genre.id} value={genre.id.toString()}>
+                    {genre.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select
+              value={currentSort}
+              onValueChange={(value: SortOption) =>
+                updateSearchParams({ sort: value })
+              }
+            >
+              <SelectTrigger className="w-full xl:w-[180px]">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="popularity">Popularity</SelectItem>
+                <SelectItem value="latest">Latest Release</SelectItem>
+                <SelectItem value="oldest">Oldest Release</SelectItem>
+                <SelectItem value="a-z">Title A-Z</SelectItem>
+                <SelectItem value="z-a">Title Z-A</SelectItem>
+                <SelectItem value="rating">Rating</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select
+              value={currentYear}
+              onValueChange={(value) => updateSearchParams({ year: value })}
+            >
+              <SelectTrigger className="w-full xl:w-[180px]">
+                <SelectValue placeholder="Year" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Year</SelectItem>
+                {getYearsList().map((year) => (
+                  <SelectItem key={year} value={year.toString()}>
+                    {year}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select
+              value={currentCountry}
+              onValueChange={(value) => updateSearchParams({ country: value })}
+            >
+              <SelectTrigger className="w-full xl:w-[180px]">
+                <SelectValue placeholder="Country" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Country</SelectItem>
+                {country.map((c) => (
+                  <SelectItem key={c.value} value={c.value}>
+                    {c.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select
+              value={currentRating}
+              onValueChange={(value: RatingOption) =>
+                updateSearchParams({ rating: value })
+              }
+            >
+              <SelectTrigger className="w-full xl:w-[180px]">
+                <SelectValue placeholder="Rating" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Ratings</SelectItem>
+                <SelectItem value="4">4+ ⭐</SelectItem>
+                <SelectItem value="5">5+ ⭐</SelectItem>
+                <SelectItem value="6">6+ ⭐</SelectItem>
+                <SelectItem value="7">7+ ⭐</SelectItem>
+                <SelectItem value="8">8+ ⭐</SelectItem>
+                <SelectItem value="9">9+ ⭐</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
-      )}
+      </div>
+
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+        {Array.from(resultsMap.values()).map((result) => (
+          <Link key={result.id} href={`/${result.media_type}/${result.id}`}>
+            <div className="relative overflow-hidden rounded-md hover:text-white">
+              <div className="relative rounded-sm">
+                <img
+                  className="object-cover"
+                  src={`https://image.tmdb.org/t/p/original${result.poster_path}`}
+                  alt={result.title || result.name}
+                  style={{ width: "100%", height: "100%" }}
+                />
+                <div className="absolute left-0 top-0 flex h-full w-full flex-col items-center justify-center rounded-sm bg-gray-900 bg-opacity-60 opacity-0 transition-opacity hover:opacity-100 hover:backdrop-blur-[2px]">
+                  <img src="/icon-play.png" alt="play" width={25} height={25} />
+                  <div className="absolute bottom-2 px-1 text-center text-sm font-semibold leading-snug sm:text-base">
+                    <h3 className="mb-2 line-clamp-2 text-xs font-semibold">
+                      {result.title || result.name}
+                    </h3>
+                    <p className="-mt-2 text-[10px] text-gray-400">
+                      {result.media_type?.toUpperCase()} /{" "}
+                      {new Date(
+                        result.release_date || result.first_air_date || "",
+                      ).getFullYear()}
+                    </p>
+                  </div>
+                </div>
+                <div className="absolute top-2 rounded-r bg-yellow-500 px-0.5 text-xs font-semibold text-white">
+                  HD
+                </div>
+                <div className="absolute right-0 top-2 flex gap-1 rounded-l bg-black bg-opacity-50 pl-1 text-xs font-semibold text-white">
+                  <svg
+                    className="h-4 w-4 fill-yellow-500"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+                  </svg>
+                  {result.vote_average.toFixed(1)}
+                </div>
+              </div>
+            </div>
+          </Link>
+        ))}
+      </div>
+
+      {loading && <div className="mt-4 text-center">Loading...</div>}
+      <div ref={ref} className="h-10" />
     </div>
   );
-};
-
-// New main page component with Suspense
-const SearchPage = () => {
-  return (
-    <Suspense
-      fallback={
-        <div className="flex h-screen items-center justify-center">
-          <div className="spinner-border inline-block h-8 w-8 animate-spin rounded-full border-4 text-blue-500" />
-        </div>
-      }
-    >
-      <SearchContent />
-    </Suspense>
-  );
-};
-
-export default SearchPage;
+}
