@@ -1,12 +1,14 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, memo } from "react";
 import SearchContent from "./SearchContent";
 
-export default function SearchPage() {
+const SearchPage = memo(function SearchPage() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <SearchContent />
     </Suspense>
   );
-}
+});
+
+export default SearchPage;
