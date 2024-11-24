@@ -11,16 +11,39 @@ import Image from "next/image";
 import { Combobox } from "../../../components/tv-page/EpisodesSection";
 import Example from "@/components/movie-page/youtube-player";
 import Link from "next/link";
+import { Metadata } from "next";
+import { generateMediaMetadata } from "@/lib/metadata-helpers";
 
-const Page = async (props0: { params: Promise<{ id: number }> }) => {
-  const params = await props0.params;
-  const tvId = params.id;
+interface Props {
+  params: { id: string };
+}
+
+// Generate metadata
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  // Fetch TV show data
+  const tvId = await params;
+  const tvData = await fetch(
+    `https://api.themoviedb.org/3/tv/${tvId.id}?api_key=${process.env.TMDB_API_KEY}`,
+  ).then((res) => res.json());
+
+  return generateMediaMetadata({
+    title: tvData.name,
+    overview: tvData.overview,
+    posterPath: tvData.poster_path,
+    releaseDate: tvData.first_air_date,
+    type: "tv",
+  });
+}
+
+const Page = async ({ params }: Props) => {
+  const tvId = await params;
+
   const [tvInfo, trailerInfo, recommendationsInfo, castInfo] =
     await Promise.all([
-      fetchTVInfo(tvId),
-      fetchTrailerInfo(tvId),
-      fetchTVRecommendations(tvId),
-      fetchCastInfo(tvId),
+      fetchTVInfo(parseInt(tvId.id)),
+      fetchTrailerInfo(parseInt(tvId.id)),
+      fetchTVRecommendations(parseInt(tvId.id)),
+      fetchCastInfo(parseInt(tvId.id)),
     ]);
 
   if (!tvInfo || !trailerInfo || !recommendationsInfo || !castInfo) {
@@ -85,7 +108,7 @@ const Page = async (props0: { params: Promise<{ id: number }> }) => {
             <p className="mb-6 text-lg">{tvInfo.overview}</p>
             <div className="hidden md:block">
               <div className="flex items-center space-x-4">
-                <Link href={`/watch/tv/${tvId}?season=1&episode=1`}>
+                <Link href={`/watch/tv/${tvId.id}?season=1&episode=1`}>
                   <Button
                     variant={"default"}
                     size={"lg"}
@@ -106,7 +129,7 @@ const Page = async (props0: { params: Promise<{ id: number }> }) => {
               </div>
             </div>
             <div className="space-y-3 md:hidden">
-              <Link href={`/watch/tv/${tvId}?season=1&episode=1`}>
+              <Link href={`/watch/tv/${tvId.id}?season=1&episode=1`}>
                 <Button
                   variant={"default"}
                   size={"lg"}

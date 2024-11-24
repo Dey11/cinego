@@ -10,16 +10,38 @@ import {
 import { Download, Play, Plus, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { Metadata } from "next";
+import { generateMediaMetadata } from "@/lib/metadata-helpers";
 
-const Page = async (props: { params: Promise<{ id: number }> }) => {
-  const params = await props.params;
-  const movieId = params.id;
+interface Props {
+  params: { id: string };
+}
+
+// Generate metadata
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  // Fetch movie data
+  const movieId = await params;
+  const movieData = await fetch(
+    `https://api.themoviedb.org/3/movie/${movieId.id}?api_key=${process.env.TMDB_API_KEY}`,
+  ).then((res) => res.json());
+
+  return generateMediaMetadata({
+    title: movieData.title,
+    overview: movieData.overview,
+    posterPath: movieData.poster_path,
+    releaseDate: movieData.release_date,
+    type: "movie",
+  });
+}
+
+const Page = async ({ params }: Props) => {
+  const movieId = await params;
   const [movieInfo, trailerInfo, recommendationsInfo, castInfo] =
     await Promise.all([
-      fetchMovieInfo(movieId),
-      fetchTrailerInfo(movieId),
-      fetchMovieRecommendations(movieId),
-      fetchCastInfo(movieId),
+      fetchMovieInfo(parseInt(movieId.id)),
+      fetchTrailerInfo(parseInt(movieId.id)),
+      fetchMovieRecommendations(parseInt(movieId.id)),
+      fetchCastInfo(parseInt(movieId.id)),
     ]);
 
   if (!movieInfo || !trailerInfo || !recommendationsInfo || !castInfo) {
@@ -96,7 +118,7 @@ const Page = async (props: { params: Promise<{ id: number }> }) => {
                   <Plus className="pr-1" />
                   Add to watchlist
                 </Button>
-                <Link href={`https://dl.vidsrc.vip/movie/${movieId}`}>
+                <Link href={`https://dl.vidsrc.vip/movie/${movieId.id}`}>
                   <Download className="h-5 w-5" />
                 </Link>
               </div>
@@ -200,13 +222,15 @@ const Page = async (props: { params: Promise<{ id: number }> }) => {
               <Plus className="pr-1" />
               Add to watchlist
             </Button>
-            <Button
-              variant="secondary"
-              className="flex w-full items-center justify-center space-x-2 border border-black"
-            >
-              <Download className="h-5 w-5" />
-              <span>Download</span>
-            </Button>
+            <Link href={`https://dl.vidsrc.vip/movie/${movieId.id}`}>
+              <Button
+                variant="secondary"
+                className="flex w-full items-center justify-center space-x-2 border border-black"
+              >
+                <Download className="h-5 w-5" />
+                <span>Download</span>
+              </Button>
+            </Link>
           </div>
 
           {/* Cast */}

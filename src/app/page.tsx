@@ -1,9 +1,23 @@
+import { Metadata } from "next";
 import { Suspense } from "react";
 import TopSlider from "@/components/home/top-slider";
 import TopWidget from "@/components/home/lists/top-widget";
 import PopularWidget from "@/components/home/lists/popular-widget";
 import ListRow from "@/components/home/lists/list-item";
-// import Loading from "./loading";
+import { defaultMetadata } from "@/lib/metadata";
+
+export const metadata: Metadata = {
+  ...defaultMetadata,
+  alternates: {
+    canonical: "https://test.flixhq.lol",
+  },
+  openGraph: {
+    ...defaultMetadata.openGraph,
+    title: "FlixHQ - Discover Movies & TV Shows Across All Platforms",
+    description:
+      "Find trending movies, TV shows, and exclusive content from Netflix, Disney+, Amazon Prime, and more. Your one-stop destination for streaming entertainment.",
+  },
+};
 
 export const revalidate = 3600; // Revalidate every hour
 
