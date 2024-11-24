@@ -172,7 +172,7 @@ const Search = ({ isMobile }: SearchProps) => {
         onClick={searchHook.handleFilterClick}
         className={cn(
           "absolute left-2 top-[6px] flex cursor-pointer items-center gap-x-2 rounded-xl bg-black px-2 py-1 hover:bg-slate-800",
-          isMobile && "left-5 top-[8px]",
+          isMobile && "left-5 top-[10px]",
         )}
       >
         <Filter className={cn("h-3 w-3 text-gray-500")} />

@@ -27,7 +27,7 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 const options = [
-  { name: "Home", href: "/", icon: Home },
+  { name: "Home", href: "/home", icon: Home },
   { name: "Movies", href: "/search?type=movie", icon: Clapperboard },
   { name: "Series", href: "/search?type=tv", icon: Tv },
   { name: "Anime", href: "/search?type=anime", icon: Sword },

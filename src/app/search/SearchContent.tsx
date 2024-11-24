@@ -38,16 +38,18 @@ interface Network {
 }
 
 export default function SearchContent() {
+  const searchParams = useSearchParams();
+  const initialQuery = searchParams.get("q") || ""; // Changed from "query" to "q"
+
   const [resultsMap, setResultsMap] = useState<Map<number, Result>>(new Map());
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(initialQuery);
+  const [inputValue, setInputValue] = useState(initialQuery);
   const [genres, setGenres] = useState([]);
-  const [inputValue, setInputValue] = useState(""); // Add new state for input
   const [networks, setNetworks] = useState<Network[]>([]);
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
 
   const { ref, inView } = useInView();
 
@@ -59,10 +61,21 @@ export default function SearchContent() {
   const currentCountry = searchParams.get("country") || "all";
   const currentRating = (searchParams.get("rating") as RatingOption) || "all"; // Add this line
 
+  // Add new useEffect to handle URL search params
+  useEffect(() => {
+    const query = searchParams.get("q") || ""; // Changed from "query" to "q"
+    setInputValue(query);
+    setSearchQuery(query);
+  }, [searchParams]);
+
   const updateSearchParams = (params: { [key: string]: string }) => {
     const current = new URLSearchParams(Array.from(searchParams.entries()));
     Object.entries(params).forEach(([key, value]) => {
-      current.set(key, value);
+      if (value === "") {
+        current.delete(key);
+      } else {
+        current.set(key, value);
+      }
     });
     router.push(`${pathname}?${current.toString()}`);
   };
@@ -131,23 +144,6 @@ export default function SearchContent() {
     return years;
   };
 
-  const fetchNetworks = async () => {
-    try {
-      const response = await fetch(
-        `https://api.themoviedb.org/3/network/list?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`,
-      );
-      const data = await response.json();
-      setNetworks(data.networks || []);
-    } catch (error) {
-      console.error("Error fetching networks:", error);
-      setNetworks([]);
-    }
-  };
-
-  useEffect(() => {
-    fetchNetworks();
-  }, []);
-
   const fetchResults = async (reset = false) => {
     setLoading(true);
     const currentPage = reset ? 1 : page;
@@ -198,48 +194,91 @@ export default function SearchContent() {
       } else {
         // Use discover endpoint when no search query
         if (currentType === "all") {
-          // Keep existing all type logic but add media_type
-          const [movieRes, tvRes] = await Promise.all([
-            fetch(
-              `${baseUrl}/discover/movie?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&page=${currentPage}&sort_by=${getSortQuery(currentSort)}${currentGenre !== "all" ? `&with_genres=${currentGenre}` : ""}${currentYear !== "all" ? `&primary_release_year=${currentYear}` : ""}${currentNetwork !== "all" ? `&with_networks=${currentNetwork}` : ""}${currentCountry !== "all" ? `&with_origin_country=${currentCountry}` : ""}${ratingQuery}`,
-            ),
-            fetch(
-              `${baseUrl}/discover/tv?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&page=${currentPage}&sort_by=${getSortQuery(currentSort)}${currentGenre !== "all" ? `&with_genres=${currentGenre}` : ""}${currentYear !== "all" ? `&first_air_date_year=${currentYear}` : ""}${currentNetwork !== "all" ? `&with_networks=${currentNetwork}` : ""}${currentCountry !== "all" ? `&with_origin_country=${currentCountry}` : ""}${ratingQuery}`,
-            ),
-          ]);
+          // Special handling for top rated
+          if (currentSort === "rating") {
+            const [movieRes, tvRes] = await Promise.all([
+              fetch(
+                `${baseUrl}/movie/top_rated?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&page=${currentPage}${currentGenre !== "all" ? `&with_genres=${currentGenre}` : ""}${currentYear !== "all" ? `&primary_release_year=${currentYear}` : ""}${currentCountry !== "all" ? `&with_origin_country=${currentCountry}` : ""}${ratingQuery}`,
+              ),
+              fetch(
+                `${baseUrl}/tv/top_rated?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&page=${currentPage}${currentGenre !== "all" ? `&with_genres=${currentGenre}` : ""}${currentYear !== "all" ? `&first_air_date_year=${currentYear}` : ""}${currentCountry !== "all" ? `&with_origin_country=${currentCountry}` : ""}${ratingQuery}`,
+              ),
+            ]);
 
-          const [movieData, tvData] = await Promise.all([
-            movieRes.json(),
-            tvRes.json(),
-          ]);
+            const [movieData, tvData] = await Promise.all([
+              movieRes.json(),
+              tvRes.json(),
+            ]);
 
-          setResultsMap((prevMap) => {
-            const newMap = reset ? new Map() : new Map(prevMap);
+            setResultsMap((prevMap) => {
+              const newMap = reset ? new Map() : new Map(prevMap);
 
-            // Add movies first
-            movieData.results.forEach((item: Result) => {
-              if (item.poster_path) {
-                newMap.set(item.id, { ...item, media_type: "movie" });
-              }
+              movieData.results.forEach((item: Result) => {
+                if (item.poster_path) {
+                  newMap.set(item.id, { ...item, media_type: "movie" });
+                }
+              });
+
+              tvData.results.forEach((item: Result) => {
+                if (item.poster_path) {
+                  newMap.set(item.id + "_tv", {
+                    ...item,
+                    media_type: "tv",
+                    id: item.id + "_tv",
+                  });
+                }
+              });
+
+              return newMap;
             });
+          } else {
+            // Keep existing all type logic but add media_type
+            const [movieRes, tvRes] = await Promise.all([
+              fetch(
+                `${baseUrl}/discover/movie?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&page=${currentPage}&sort_by=${getSortQuery(currentSort)}${currentGenre !== "all" ? `&with_genres=${currentGenre}` : ""}${currentYear !== "all" ? `&primary_release_year=${currentYear}` : ""}${currentNetwork !== "all" ? `&with_networks=${currentNetwork}` : ""}${currentCountry !== "all" ? `&with_origin_country=${currentCountry}` : ""}${ratingQuery}`,
+              ),
+              fetch(
+                `${baseUrl}/discover/tv?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&page=${currentPage}&sort_by=${getSortQuery(currentSort)}${currentGenre !== "all" ? `&with_genres=${currentGenre}` : ""}${currentYear !== "all" ? `&first_air_date_year=${currentYear}` : ""}${currentNetwork !== "all" ? `&with_networks=${currentNetwork}` : ""}${currentCountry !== "all" ? `&with_origin_country=${currentCountry}` : ""}${ratingQuery}`,
+              ),
+            ]);
 
-            // Add TV shows after
-            tvData.results.forEach((item: Result) => {
-              if (item.poster_path) {
-                newMap.set(item.id + "_tv", {
-                  ...item,
-                  media_type: "tv",
-                  id: item.id + "_tv",
-                });
-              }
+            const [movieData, tvData] = await Promise.all([
+              movieRes.json(),
+              tvRes.json(),
+            ]);
+
+            setResultsMap((prevMap) => {
+              const newMap = reset ? new Map() : new Map(prevMap);
+
+              // Add movies first
+              movieData.results.forEach((item: Result) => {
+                if (item.poster_path) {
+                  newMap.set(item.id, { ...item, media_type: "movie" });
+                }
+              });
+
+              // Add TV shows after
+              tvData.results.forEach((item: Result) => {
+                if (item.poster_path) {
+                  newMap.set(item.id + "_tv", {
+                    ...item,
+                    media_type: "tv",
+                    id: item.id + "_tv",
+                  });
+                }
+              });
+
+              return newMap;
             });
-
-            return newMap;
-          });
+          }
         } else {
-          // Original single type logic
+          // Single type logic (movie or tv)
+          const endpoint =
+            currentSort === "rating"
+              ? `/${currentType}/top_rated`
+              : `/discover/${currentType}`;
           const response = await fetch(
-            `${baseUrl}/discover/${currentType}?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&page=${currentPage}&sort_by=${getSortQuery(currentSort)}${currentGenre !== "all" ? `&with_genres=${currentGenre}` : ""}${currentYear !== "all" ? `&${currentType === "movie" ? "primary_release_year" : "first_air_date_year"}=${currentYear}` : ""}${currentNetwork !== "all" ? `&with_networks=${currentNetwork}` : ""}${currentCountry !== "all" ? `&with_origin_country=${currentCountry}` : ""}${ratingQuery}`,
+            `${baseUrl}${endpoint}?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&page=${currentPage}${currentSort !== "rating" ? `&sort_by=${getSortQuery(currentSort)}` : ""}${currentGenre !== "all" ? `&with_genres=${currentGenre}` : ""}${currentYear !== "all" ? `&${currentType === "movie" ? "primary_release_year" : "first_air_date_year"}=${currentYear}` : ""}${currentNetwork !== "all" ? `&with_networks=${currentNetwork}` : ""}${currentCountry !== "all" ? `&with_origin_country=${currentCountry}` : ""}${ratingQuery}`,
           );
           const data = await response.json();
 
@@ -316,8 +355,16 @@ export default function SearchContent() {
     setInputValue("");
     setSearchQuery("");
     setPage(1);
-    router.push(pathname); // This will clear all URL params
+    // Reset all filters by pushing a clean URL
+    router.push(pathname);
     fetchResults(true);
+  };
+
+  // Modify input onChange handler to update URL
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setInputValue(value);
+    updateSearchParams({ q: value }); // Changed from "query" to "q"
   };
 
   return (
@@ -327,7 +374,7 @@ export default function SearchContent() {
           placeholder="Search..."
           className="w-full rounded-lg py-4 capitalize text-black dark:text-white"
           value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
+          onChange={handleInputChange}
         />
 
         <div className="flex flex-col gap-4 xl:flex-row xl:flex-wrap">
@@ -383,12 +430,12 @@ export default function SearchContent() {
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="popularity">Popularity</SelectItem>
+                <SelectItem value="popularity">Sort by</SelectItem>
                 <SelectItem value="latest">Latest Release</SelectItem>
                 <SelectItem value="oldest">Oldest Release</SelectItem>
                 <SelectItem value="a-z">Title A-Z</SelectItem>
                 <SelectItem value="z-a">Title Z-A</SelectItem>
-                <SelectItem value="rating">Rating</SelectItem>
+                <SelectItem value="rating">Top Rated</SelectItem>
               </SelectContent>
             </Select>
 
