@@ -9,7 +9,7 @@ export const fetchMovieInfo = async (id: number): Promise<MovieInfo | null> => {
   const movieInfo = `https://api.themoviedb.org/3/movie/${id}?language=en-US`;
   try {
     const initResMovie = await fetch(movieInfo, {
-      cache: "force-cache",
+      next: { revalidate: 86400 }, // 24 hours
       headers: {
         accept: "application/json",
         Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`,
@@ -25,12 +25,12 @@ export const fetchMovieInfo = async (id: number): Promise<MovieInfo | null> => {
 };
 
 export const fetchTrailerInfo = async (
-  id: number
+  id: number,
 ): Promise<MovieTrailer[] | null> => {
   const trailerInfo = `https://api.themoviedb.org/3/movie/${id}/videos?language=en-US`;
   try {
     const initResTrailer = await fetch(trailerInfo, {
-      cache: "force-cache",
+      next: { revalidate: 86400 }, // 24 hours
       headers: {
         accept: "application/json",
         Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`,
@@ -45,12 +45,12 @@ export const fetchTrailerInfo = async (
 };
 
 export const fetchCastInfo = async (
-  id: number
+  id: number,
 ): Promise<MovieCastInfo[] | null> => {
   const castInfo = `https://api.themoviedb.org/3/movie/${id}/credits?language=en-US`;
   try {
     const initResCast = await fetch(castInfo, {
-      cache: "force-cache",
+      next: { revalidate: 86400 }, // 24 hours
       headers: {
         accept: "application/json",
         Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`,
@@ -65,12 +65,12 @@ export const fetchCastInfo = async (
 };
 
 export const fetchMovieRecommendations = async (
-  id: number
+  id: number,
 ): Promise<MovieRecommendations[] | null> => {
   const recommendations = `https://api.themoviedb.org/3/movie/${id}/recommendations?language=en-US&page=1`;
   try {
     const initResRec = await fetch(recommendations, {
-      cache: "force-cache",
+      next: { revalidate: 43200 }, // 12 hours
       headers: {
         accept: "application/json",
         Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`,

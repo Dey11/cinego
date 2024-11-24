@@ -10,7 +10,7 @@ export const fetchTVInfo = async (id: number): Promise<TVInfo | null> => {
   const TVInfo = `https://api.themoviedb.org/3/tv/${id}?language=en-US`;
   try {
     const initResTV = await fetch(TVInfo, {
-      cache: "force-cache",
+      next: { revalidate: 86400 }, // 24 hours
       headers: {
         accept: "application/json",
         Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`,
@@ -29,7 +29,7 @@ export const fetchCastInfo = async (id: number): Promise<TVCast[] | null> => {
   const castInfo = `https://api.themoviedb.org/3/tv/${id}/credits?language=en-US`;
   try {
     const initResCast = await fetch(castInfo, {
-      cache: "force-cache",
+      next: { revalidate: 86400 }, // 24 hours
       headers: {
         accept: "application/json",
         Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`,
@@ -44,12 +44,12 @@ export const fetchCastInfo = async (id: number): Promise<TVCast[] | null> => {
 };
 
 export const fetchTVRecommendations = async (
-  id: number
+  id: number,
 ): Promise<TVRecommendations[] | null> => {
   const recommendations = `https://api.themoviedb.org/3/tv/${id}/recommendations?language=en-US&page=1`;
   try {
     const initResRec = await fetch(recommendations, {
-      cache: "force-cache",
+      next: { revalidate: 43200 }, // 12 hours
       headers: {
         accept: "application/json",
         Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`,
@@ -65,12 +65,12 @@ export const fetchTVRecommendations = async (
 
 export const fetchSeasonInfo = async (
   id: number,
-  seasonNo: number
+  seasonNo: number,
 ): Promise<TVSeasonInfo | null> => {
   const url = `https://api.themoviedb.org/3/tv/${id}/season/${seasonNo}?language=en-US`;
   try {
     const initResSeason = await fetch(url, {
-      cache: "force-cache",
+      next: { revalidate: 86400 }, // 24 hours
       headers: {
         accept: "application/json",
         Authorization:
@@ -86,12 +86,12 @@ export const fetchSeasonInfo = async (
 };
 
 export const fetchTrailerInfo = async (
-  id: number
+  id: number,
 ): Promise<MovieTrailer[] | null> => {
   const trailerInfo = `https://api.themoviedb.org/3/tv/${id}/season/1/videos?language=en-US`;
   try {
     const initResTrailer = await fetch(trailerInfo, {
-      cache: "force-cache",
+      next: { revalidate: 86400 }, // 24 hours
       headers: {
         accept: "application/json",
         Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`,
