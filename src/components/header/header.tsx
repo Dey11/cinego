@@ -57,17 +57,20 @@ const Header = () => {
       {pathname.split("/")[1] === "movie" ||
       pathname.split("/")[1] === "tv" ||
       pathname.split("/")[1] === "watch" ||
+      pathname.split("/")[1] === "" ||
       pathname.split("/")[1] === "search" ? (
         <>
           <div className="w-[150px]">
             <button className="" onClick={() => router.back()}>
-              <ArrowLeft
-                className={cn(
-                  "text-2xl font-bold text-white hover:scale-110 hover:transform",
-                  pathname.split("/")[1] === "search" &&
-                    "text-black hover:text-black dark:text-white dark:hover:text-white",
-                )}
-              />
+              {pathname.split("/")[1] !== "" && (
+                <ArrowLeft
+                  className={cn(
+                    "text-2xl font-bold text-white hover:scale-110 hover:transform",
+                    pathname.split("/")[1] === "search" &&
+                      "text-black hover:text-black dark:text-white dark:hover:text-white",
+                  )}
+                />
+              )}
             </button>
           </div>
         </>

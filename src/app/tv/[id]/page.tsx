@@ -14,14 +14,14 @@ import Link from "next/link";
 import { Metadata } from "next";
 import { generateMediaMetadata } from "@/lib/metadata-helpers";
 
-interface Props {
-  params: { id: string };
-}
+type Props = Promise<{ id: string }>;
 
 // Generate metadata
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata(props: {
+  params: Props;
+}): Promise<Metadata> {
   // Fetch TV show data
-  const tvId = await params;
+  const tvId = await props.params;
   const tvData = await fetch(
     `https://api.themoviedb.org/3/tv/${tvId.id}?api_key=${process.env.TMDB_API_KEY}`,
   ).then((res) => res.json());
@@ -35,8 +35,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 }
 
-const Page = async ({ params }: Props) => {
-  const tvId = await params;
+const Page = async (props: { params: Props }) => {
+  const tvId = await props.params;
 
   const [tvInfo, trailerInfo, recommendationsInfo, castInfo] =
     await Promise.all([

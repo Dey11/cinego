@@ -119,12 +119,13 @@ export const useSearch = () => {
   };
 };
 
-// Add isMobile to props
+// Update the SearchProps interface
 interface SearchProps {
   isMobile?: boolean;
+  hideFilter?: boolean;
 }
 
-const Search = ({ isMobile }: SearchProps) => {
+const Search = ({ isMobile, hideFilter }: SearchProps) => {
   const searchRef = useRef<HTMLDivElement>(null);
   const searchHook = useSearch();
   const { query, showResults, results, setShowResults } = searchHook;
@@ -157,27 +158,29 @@ const Search = ({ isMobile }: SearchProps) => {
       <Input
         className={cn(
           "h-8 w-full rounded-3xl border-0 bg-black/50 font-semibold capitalize !text-white placeholder:text-center placeholder:text-gray-500 focus:placeholder:opacity-0 sm:h-10",
-          query && "pl-[85px]",
+          query && !hideFilter && "pl-[85px]",
           !isMobile && "sm:w-64 md:w-72 lg:w-[450px]",
         )}
         placeholder="Search"
         value={query}
         onChange={searchHook.handleQueryChange}
         onFocus={searchHook.handleInputFocus}
-        onClick={searchHook.handleInputFocus} // Add onClick handler
+        onClick={searchHook.handleInputFocus}
         autoFocus={isMobile}
       />
 
-      <button
-        onClick={searchHook.handleFilterClick}
-        className={cn(
-          "absolute left-2 top-[6px] flex cursor-pointer items-center gap-x-2 rounded-xl bg-black px-2 py-1 hover:bg-slate-800",
-          isMobile && "left-5 top-[10px]",
-        )}
-      >
-        <Filter className={cn("h-3 w-3 text-gray-500")} />
-        <span className="text-sm text-gray-500">Filter</span>
-      </button>
+      {!hideFilter && (
+        <button
+          onClick={searchHook.handleFilterClick}
+          className={cn(
+            "absolute left-2 top-[6px] flex cursor-pointer items-center gap-x-2 rounded-xl bg-black px-2 py-1 hover:bg-slate-800",
+            isMobile && "left-5 top-[10px]",
+          )}
+        >
+          <Filter className={cn("h-3 w-3 text-gray-500")} />
+          <span className="text-sm text-gray-500">Filter</span>
+        </button>
+      )}
 
       <SearchIcon
         className={cn(

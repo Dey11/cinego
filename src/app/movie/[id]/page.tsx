@@ -13,16 +13,14 @@ import Link from "next/link";
 import { Metadata } from "next";
 import { generateMediaMetadata } from "@/lib/metadata-helpers";
 
-interface Props {
-  params: { id: string };
-}
+type Props = Promise<{ id: string }>;
 
-// Generate metadata
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  // Fetch movie data
-  const movieId = await params;
+export async function generateMetadata(props: {
+  params: Props;
+}): Promise<Metadata> {
+  const params = await props.params;
   const movieData = await fetch(
-    `https://api.themoviedb.org/3/movie/${movieId.id}?api_key=${process.env.TMDB_API_KEY}`,
+    `https://api.themoviedb.org/3/movie/${params.id}?api_key=${process.env.TMDB_API_KEY}`,
   ).then((res) => res.json());
 
   return generateMediaMetadata({
@@ -34,14 +32,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 }
 
-const Page = async ({ params }: Props) => {
-  const movieId = await params;
+const Page = async (props: { params: Props }) => {
+  const params = await props.params;
   const [movieInfo, trailerInfo, recommendationsInfo, castInfo] =
     await Promise.all([
-      fetchMovieInfo(parseInt(movieId.id)),
-      fetchTrailerInfo(parseInt(movieId.id)),
-      fetchMovieRecommendations(parseInt(movieId.id)),
-      fetchCastInfo(parseInt(movieId.id)),
+      fetchMovieInfo(parseInt(params.id)),
+      fetchTrailerInfo(parseInt(params.id)),
+      fetchMovieRecommendations(parseInt(params.id)),
+      fetchCastInfo(parseInt(params.id)),
     ]);
 
   if (!movieInfo || !trailerInfo || !recommendationsInfo || !castInfo) {
@@ -118,7 +116,7 @@ const Page = async ({ params }: Props) => {
                   <Plus className="pr-1" />
                   Add to watchlist
                 </Button>
-                <Link href={`https://dl.vidsrc.vip/movie/${movieId.id}`}>
+                <Link href={`https://dl.vidsrc.vip/movie/${params.id}`}>
                   <Download className="h-5 w-5" />
                 </Link>
               </div>
@@ -222,7 +220,7 @@ const Page = async ({ params }: Props) => {
               <Plus className="pr-1" />
               Add to watchlist
             </Button>
-            <Link href={`https://dl.vidsrc.vip/movie/${movieId.id}`}>
+            <Link href={`https://dl.vidsrc.vip/movie/${params.id}`}>
               <Button
                 variant="secondary"
                 className="flex w-full items-center justify-center space-x-2 border border-black"

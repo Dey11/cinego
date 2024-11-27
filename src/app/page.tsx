@@ -1,10 +1,9 @@
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import { Metadata } from "next";
-import { Suspense } from "react";
-import TopSlider from "@/components/home/top-slider";
-import TopWidget from "@/components/home/lists/top-widget";
-import PopularWidget from "@/components/home/lists/popular-widget";
-import ListRow from "@/components/home/lists/list-item";
 import { defaultMetadata } from "@/lib/metadata";
+import HomeSearchBar from "@/components/home/search-bar";
+import { WEBSITE_NAME, WEBSITE_URL } from "@/lib/constants";
 
 export const metadata: Metadata = {
   ...defaultMetadata,
@@ -13,96 +12,112 @@ export const metadata: Metadata = {
   },
   openGraph: {
     ...defaultMetadata.openGraph,
-    title: "FlixHQ - Discover Movies & TV Shows Across All Platforms",
+    title: `${WEBSITE_NAME} - Watch Movies Online in HD for Free`,
     description:
-      "Find trending movies, TV shows, and exclusive content from Netflix, Disney+, Amazon Prime, and more. Your one-stop destination for streaming entertainment.",
+      "Stream the latest movies and TV shows in HD quality for free. Your ultimate destination for online entertainment.",
   },
 };
 
-export const revalidate = 3600; // Revalidate every hour
-
-export default async function Home() {
+export default function Home() {
   return (
-    <main className="bg-white pb-32 text-gray-900 dark:bg-black dark:text-white">
-      <Suspense fallback={<div>Loading</div>}>
-        <TopSlider />
-      </Suspense>
-      <div className="mx-auto max-w-[1440px] pt-28">
-        <div className="sm:grid sm:grid-cols-12">
-          <div className="pt-5 sm:col-span-8">
-            <div className="">
-              <h1 className="inline-block pl-2 text-lg font-bold text-black dark:bg-gradient-to-r dark:from-red-400 dark:to-red-800 dark:bg-clip-text dark:text-transparent sm:text-2xl lg:px-0">
-                Trending Movies
-              </h1>
-              <ListRow url="https://api.themoviedb.org/3/trending/movie/day?language=en-US" />
-            </div>
-            <div className="mt-5">
-              <h1 className="inline-block pl-2 text-lg font-bold text-black dark:bg-gradient-to-r dark:from-purple-400 dark:to-purple-800 dark:bg-clip-text dark:text-transparent sm:text-2xl lg:px-0">
-                Trending TV Shows
-              </h1>
-              <ListRow url="https://api.themoviedb.org/3/trending/tv/day?language=en-US" />
-            </div>
-            <div className="mt-5">
-              <h1 className="inline-block pl-2 text-lg font-bold text-black dark:bg-gradient-to-r dark:from-red-400 dark:to-red-800 dark:bg-clip-text dark:text-transparent sm:text-2xl lg:px-0">
-                Netflix Originals
-              </h1>
-              <ListRow url="https://api.themoviedb.org/3/discover/tv?with_networks=213" />
-            </div>
-            <div className="mt-5">
-              <h1 className="inline-block pl-2 text-lg font-bold text-black dark:bg-gradient-to-r dark:from-green-400 dark:to-green-800 dark:bg-clip-text dark:text-transparent sm:text-2xl lg:px-0">
-                Amazon Prime Shows
-              </h1>
-              <ListRow url="https://api.themoviedb.org/3/discover/tv?with_watch_providers=387&watch_region=US" />
-            </div>
-            <div className="mt-5">
-              <h1 className="inline-block pl-2 text-lg font-bold text-black dark:bg-gradient-to-r dark:from-orange-400 dark:to-orange-800 dark:bg-clip-text dark:text-transparent sm:text-2xl lg:px-0">
-                Apple TV+ Shows
-              </h1>
-              <ListRow url="https://api.themoviedb.org/3/discover/tv?with_watch_providers=9&watch_region=US" />
-            </div>
-            <div className="mt-5">
-              <h1 className="inline-block pl-2 text-lg font-bold text-black dark:bg-gradient-to-r dark:from-yellow-400 dark:to-yellow-800 dark:bg-clip-text dark:text-transparent sm:text-2xl lg:px-0">
-                Disney+ Shows
-              </h1>
-              <ListRow url="https://api.themoviedb.org/3/discover/tv?with_watch_providers=2&watch_region=US" />
-            </div>
-            <div className="mt-5">
-              <h1 className="inline-block pl-2 text-lg font-bold text-black dark:bg-gradient-to-r dark:from-pink-400 dark:to-pink-800 dark:bg-clip-text dark:text-transparent sm:text-2xl lg:px-0">
-                Indian TV Shows
-              </h1>
-              <ListRow url="https://api.themoviedb.org/3/discover/movie?include_adult=true&page=1&release_date.lte=2024-03-03&sort_by=popularity.desc&watch_region=IN&with_origin_country=IN" />
-            </div>
-            <div className="mt-5">
-              <h1 className="inline-block pl-2 text-lg font-bold text-black dark:bg-gradient-to-r dark:from-blue-400 dark:to-blue-800 dark:bg-clip-text dark:text-transparent sm:text-2xl lg:px-0">
-                Peacock Shows
-              </h1>
-              <div>
-                <ListRow url="https://api.themoviedb.org/3/discover/tv?with_watch_providers=386&watch_region=US" />
-              </div>
-            </div>
-            <div className="mt-5">
-              <h1 className="inline-block pl-2 text-lg font-bold text-black dark:bg-gradient-to-r dark:from-lime-400 dark:to-lime-800 dark:bg-clip-text dark:text-transparent sm:text-2xl lg:px-0">
-                Paramount+ Shows
-              </h1>
-              <div>
-                <ListRow url="https://api.themoviedb.org/3/discover/tv?with_watch_providers=531&watch_region=US" />
-              </div>
-            </div>
-            <div className="mt-5">
-              <h1 className="inline-block pl-2 text-lg font-bold text-black dark:bg-gradient-to-r dark:from-amber-400 dark:to-amber-800 dark:bg-clip-text dark:text-transparent sm:text-2xl lg:px-0">
-                HBO Max Shows
-              </h1>
-              <div>
-                <ListRow url="https://api.themoviedb.org/3/discover/movie?include_adult=true&language=en-US&page=1&release_date.gte=2022-01-01&release_date.lte=2024-03-03&sort_by=popularity.desc&vote_count.gte=200&watch_region=US&with_watch_providers=15" />
-              </div>
-            </div>
+    <div
+      className="min-h-screen w-full bg-cover bg-fixed bg-center"
+      style={{ backgroundImage: "url('/home-bg.jpg')" }}
+    >
+      <div className="flex min-h-screen items-center justify-center p-5">
+        <main className="w-full max-w-6xl rounded-lg bg-black/70 p-12">
+          {/* Logo Section */}
+          <div className="mb-8 text-center">
+            <h1 className="bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-4xl font-bold text-transparent md:text-5xl">
+              {WEBSITE_NAME.toUpperCase()}
+            </h1>
+            <h2 className="mt-4 text-xl text-gray-300 md:text-2xl">
+              Watch Movies Online in HD for Free!
+            </h2>
           </div>
-          <div className="sm:col-span-4">
-            <TopWidget />
-            <PopularWidget />
+
+          {/* Search Section */}
+          <HomeSearchBar />
+
+          {/* Homepage Button */}
+          <div className="mt-8 text-center">
+            <Link href="/explore">
+              <Button className="mx-auto flex items-center gap-2 rounded-lg bg-emerald-500 px-8 py-2 text-white hover:bg-emerald-600">
+                Explore Now
+                <span className="ml-1">▶</span>
+              </Button>
+            </Link>
           </div>
-        </div>
+
+          {/* Description Section */}
+          <div className="mt-16 space-y-6 text-gray-300">
+            <h2 className="mb-4 text-2xl font-semibold">
+              {WEBSITE_NAME} - Watch Movies Online in HD for Free!
+            </h2>
+
+            <p className="leading-relaxed">
+              {WEBSITE_URL} - the ultimate online movie streaming website that
+              brings the magic of cinema to your fingertips. With a vast and
+              diverse database, as well as a multitude of exciting features,
+              {WEBSITE_URL} offers an unparalleled movie-watching experience for
+              film enthusiasts worldwide.
+            </p>
+
+            <p className="leading-relaxed">
+              At {WEBSITE_URL}, we take pride in our extensive database that
+              encompasses a wide range of movies from various genres, eras, and
+              countries. From Hollywood blockbusters to independent gems, we
+              have something for everyone. Our database is continuously updated
+              with the latest releases, ensuring that you stay up-to-date with
+              the hottest films in the industry.
+            </p>
+
+            <p className="leading-relaxed">
+              One of the standout features of {WEBSITE_URL} is our personalized
+              recommendation system. Our sophisticated algorithms analyze your
+              viewing history, preferences, and ratings to curate a customized
+              list of movie recommendations tailored specifically to your
+              tastes. Discover new films you'll love and embark on exciting
+              cinematic adventures you never knew existed.
+            </p>
+
+            <p className="leading-relaxed">
+              In addition to our large database and personalized
+              recommendations, {WEBSITE_URL} offers high-quality streaming for
+              an immersive viewing experience. Enjoy movies in stunning
+              high-definition resolution, accompanied by crisp audio, bringing
+              the theater experience right to your home. Our adaptive streaming
+              technology ensures smooth playback, adjusting to your internet
+              connection for uninterrupted enjoyment.
+            </p>
+
+            <p className="leading-relaxed">
+              {WEBSITE_URL} also understands the importance of convenience and
+              accessibility. Our platform is compatible with various devices,
+              including laptops, tablets, and smartphones, allowing you to watch
+              movies anytime, anywhere. Whether you're at home or on the go,{" "}
+              {WEBSITE_URL} keeps you connected to your favorite films.
+            </p>
+
+            <p className="leading-relaxed">
+              Furthermore, {WEBSITE_URL} fosters a vibrant community of movie
+              enthusiasts. Engage in discussions, share reviews, and interact
+              with fellow cinephiles through our dedicated forums and social
+              features. Connect with like-minded individuals, exchange
+              recommendations, and dive deeper into the world of cinema.
+            </p>
+
+            <p className="leading-relaxed">
+              In summary, {WEBSITE_URL} is the ultimate online movie streaming
+              destination, offering a vast database, personalized
+              recommendations, high-quality streaming, device compatibility, and
+              an engaging community. Prepare to be captivated by the world of
+              cinema as you embark on a cinematic journey like no other. Welcome
+              to {WEBSITE_URL}, where movies come to life.
+            </p>
+          </div>
+        </main>
       </div>
-    </main>
+    </div>
   );
 }
