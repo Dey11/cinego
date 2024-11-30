@@ -129,7 +129,7 @@ const MenuOps = () => {
   const pathname = usePathname();
 
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <Menu
           className={cn(
