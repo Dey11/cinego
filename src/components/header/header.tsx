@@ -4,6 +4,7 @@ import {
   ArrowLeft,
   Book,
   Clapperboard,
+  Clock,
   Home,
   Menu,
   Moon,
@@ -25,13 +26,13 @@ import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { SignInButton, UserButton, useUser } from "@clerk/nextjs";
 
 const options = [
   { name: "Home", href: "/", icon: Home },
   { name: "Movies", href: "/search?type=movie", icon: Clapperboard },
   { name: "Series", href: "/search?type=tv", icon: Tv },
-  { name: "Anime", href: "/search?type=anime", icon: Sword },
-  { name: "Manga", href: "/manga", icon: Book },
+  { name: "History", href: "/history", icon: Clock },
 ];
 
 const Header = () => {
@@ -39,6 +40,7 @@ const Header = () => {
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
+  const { user } = useUser();
 
   // UseEffect to set the initial theme to dark
   useEffect(() => {
@@ -97,7 +99,8 @@ const Header = () => {
             <Sun
               className={cn(
                 "h-5 w-5 text-white",
-                pathname.split("/")[1] === "search" &&
+                (pathname.split("/")[1] === "search" ||
+                  pathname.split("/")[1] === "history") &&
                   "text-black hover:text-black dark:text-white dark:hover:text-white",
               )}
             />
@@ -105,19 +108,28 @@ const Header = () => {
             <Moon
               className={cn(
                 "h-5 w-5 text-white",
-                pathname.split("/")[1] === "search" &&
+                (pathname.split("/")[1] === "search" ||
+                  pathname.split("/")[1] === "history") &&
                   "text-black dark:text-white",
               )}
             />
           )}
         </Button>
         <MenuOps />
-        <User
-          className={cn(
-            "text-white",
-            pathname.split("/")[1] === "search" && "text-black dark:text-white",
-          )}
-        />
+        {user ? (
+          <UserButton />
+        ) : (
+          <SignInButton mode="modal">
+            <User
+              className={cn(
+                "text-white",
+                (pathname.split("/")[1] === "search" ||
+                  pathname.split("/")[1] === "history") &&
+                  "text-black dark:text-white",
+              )}
+            />
+          </SignInButton>
+        )}
       </div>
     </header>
   );
@@ -134,7 +146,9 @@ const MenuOps = () => {
         <Menu
           className={cn(
             "text-white",
-            pathname.split("/")[1] === "search" && "text-black dark:text-white",
+            (pathname.split("/")[1] === "search" ||
+              pathname.split("/")[1] === "history") &&
+              "text-black dark:text-white",
           )}
         />
       </DropdownMenuTrigger>

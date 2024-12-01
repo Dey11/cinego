@@ -5,6 +5,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 import Header from "@/components/header/header";
 import Footer from "@/components/footer/footer";
 import MobileNav from "@/components/footer/mobile-nav";
+import { ClerkProvider } from "@clerk/nextjs";
+import NextTopLoader from "nextjs-toploader";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,24 +21,27 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning={true}>
-      <body className={`${inter.className} scrollbar`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {/* <div className="flex"> */}
-          <Header />
-          {/* <main className="flex-grow"> */}
-          {children}
-          {/* </main> */}
-          <MobileNav />
-          <Footer backgroundImage="/footer-bg2.jpg" />
-          {/* </div> */}
-        </ThemeProvider>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en" suppressHydrationWarning={true}>
+        <body className={`${inter.className} scrollbar`}>
+          <NextTopLoader color="#EF4444" />
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {/* <div className="flex"> */}
+            <Header />
+            {/* <main className="flex-grow"> */}
+            {children}
+            {/* </main> */}
+            <MobileNav />
+            <Footer backgroundImage="/footer-bg2.jpg" />
+            {/* </div> */}
+          </ThemeProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

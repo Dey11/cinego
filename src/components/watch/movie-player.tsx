@@ -12,6 +12,9 @@ import { MovieInfo } from "@/types/tmdbApi";
 import { Bell, BookmarkIcon, X, Check, Download, Forward } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { useMediaList } from "@/hooks/use-media-list";
+import { useUser } from "@clerk/nextjs";
+import { SignInButton } from "@clerk/nextjs";
 
 interface VideoPlayerProps {
   movieId: string;
@@ -19,6 +22,22 @@ interface VideoPlayerProps {
 }
 
 const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
+  const { isSignedIn } = useUser();
+
+  // Add isPaused state
+  const [isPaused, setIsPaused] = useState<boolean>(() => {
+    const storedPauseStatus = localStorage.getItem("watchHistoryPaused");
+    return storedPauseStatus === "true"; // Return true if paused
+  });
+
+  const { addItem: addToHistory } = useMediaList("history", isPaused);
+  const {
+    addItem: addToWatchlist,
+    removeItem: removeFromWatchlist,
+    isInList: isInWatchlist,
+  } = useMediaList("watchlist", isPaused);
+
+  const [isWatchlisted, setIsWatchlisted] = useState(false);
   const [showServers, setShowServers] = useState(false);
   const [currentProvider, setCurrentProvider, loading] = usePersistedState(
     "currentProvider",
@@ -27,6 +46,41 @@ const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
   const [bookmarked, setBookmarked] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
   const [linkCopied, setLinkCopied] = useState(false);
+
+  useEffect(() => {
+    // Add to history when video starts playing
+    addToHistory({
+      mediaId: movieId,
+      mediaType: "movie",
+      title: movieInfo.title,
+      backdrop_path: movieInfo.backdrop_path,
+      watchedAt: new Date().toISOString(),
+    });
+  }, [movieId, movieInfo]);
+
+  useEffect(() => {
+    setIsWatchlisted(isInWatchlist(movieId, "movie"));
+  }, [movieId, isInWatchlist]);
+
+  const handleWatchlistToggle = () => {
+    if (!isSignedIn) {
+      return;
+    }
+
+    if (isWatchlisted) {
+      removeFromWatchlist(movieId, "movie");
+      setIsWatchlisted(false);
+    } else {
+      addToWatchlist({
+        mediaId: movieId,
+        mediaType: "movie",
+        title: movieInfo.title,
+        backdrop_path: movieInfo.backdrop_path,
+        watchedAt: new Date().toISOString(),
+      });
+      setIsWatchlisted(true);
+    }
+  };
 
   useEffect(() => {
     setBookmarked(isBookmarked(movieId, "movie"));
@@ -152,15 +206,26 @@ const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
         </div>
 
         <div className="relative z-10 mx-auto -mt-[5px] flex w-full items-center justify-center gap-x-4 rounded-b-lg bg-gray-900 py-1 text-sm text-white lg:w-3/4">
-          <label
-            className="flex cursor-pointer items-center gap-x-1 rounded-md transition-all"
-            onClick={handleBookmarkToggle}
-          >
-            <BookmarkIcon
-              className={cn("h-4 w-4 rounded", bookmarked && "fill-white")}
-            />
-            <span className="hidden lg:block">Bookmark</span>
-          </label>
+          {isSignedIn ? (
+            <label
+              className="flex cursor-pointer items-center gap-x-1 rounded-md transition-all"
+              onClick={handleWatchlistToggle}
+            >
+              <BookmarkIcon
+                className={cn("h-4 w-4 rounded", isWatchlisted && "fill-white")}
+              />
+              <span className="hidden lg:block">
+                {isWatchlisted ? "Remove from Watchlist" : "Add to Watchlist"}
+              </span>
+            </label>
+          ) : (
+            <SignInButton mode="modal">
+              <button className="flex cursor-pointer items-center gap-x-1 rounded-md transition-all">
+                <BookmarkIcon className="h-4 w-4" />
+                <span className="hidden lg:block">Sign in to Watchlist</span>
+              </button>
+            </SignInButton>
+          )}
 
           <label
             className="flex cursor-pointer items-center gap-x-1 rounded-md transition-all"

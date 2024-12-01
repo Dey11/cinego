@@ -22,6 +22,9 @@ import {
   DEFAULT_TV_PROVIDER,
 } from "@/lib/utils";
 import { PROVIDERS_TV } from "@/lib/constants";
+import { useMediaList } from "@/hooks/use-media-list";
+import { useUser } from "@clerk/nextjs";
+import { SignInButton } from "@clerk/nextjs";
 
 interface TVPlayerProps {
   tvId: string;
@@ -47,6 +50,21 @@ const TVPlayer = ({ tvId, tvInfo }: TVPlayerProps) => {
   const [currSeasonEps, setCurrSeasonEps] = useState<number>(0);
   const [isLastEp, setIsLastEp] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
+  const { isSignedIn } = useUser();
+
+  const [isPaused, setIsPaused] = useState<boolean>(() => {
+    const storedPauseStatus = localStorage.getItem("watchHistoryPaused");
+    return storedPauseStatus === "true";
+  });
+
+  const { addItem: addToHistory } = useMediaList("history", isPaused);
+  const {
+    addItem: addToWatchlist,
+    removeItem: removeFromWatchlist,
+    isInList: isInWatchlist,
+  } = useMediaList("watchlist", isPaused);
+
+  const [isWatchlisted, setIsWatchlisted] = useState(false);
 
   const canGoBack = () => {
     return !(currentSeason === 1 && currentEpisode === 1);
@@ -105,6 +123,23 @@ const TVPlayer = ({ tvId, tvInfo }: TVPlayerProps) => {
     setBookmarked(isBookmarked(tvId, "tv"));
   }, [tvId]);
 
+  useEffect(() => {
+    // Add to history when video starts playing
+    addToHistory({
+      mediaId: tvId,
+      mediaType: "tv",
+      title: tvInfo.name,
+      backdrop_path: tvInfo.backdrop_path,
+      season: currentSeason,
+      episode: currentEpisode,
+      watchedAt: new Date().toISOString(),
+    });
+  }, [tvId, tvInfo, currentSeason, currentEpisode]);
+
+  useEffect(() => {
+    setIsWatchlisted(isInWatchlist(tvId, "tv"));
+  }, [tvId, isInWatchlist]);
+
   const handleProviderChange = (provider: (typeof PROVIDERS_TV)[0]) => {
     setCurrentProvider(provider);
     setShowServers(false);
@@ -122,6 +157,27 @@ const TVPlayer = ({ tvId, tvInfo }: TVPlayerProps) => {
       currentEpisode,
     );
     setBookmarked(isNowBookmarked);
+  };
+
+  const handleWatchlistToggle = () => {
+    if (!isSignedIn) {
+      // Show sign-in dialog
+      return;
+    }
+
+    if (isWatchlisted) {
+      removeFromWatchlist(tvId, "tv");
+      setIsWatchlisted(false);
+    } else {
+      addToWatchlist({
+        mediaId: tvId,
+        mediaType: "tv",
+        title: tvInfo.name,
+        backdrop_path: tvInfo.backdrop_path,
+        watchedAt: new Date().toISOString(),
+      });
+      setIsWatchlisted(true);
+    }
   };
 
   const handleShare = () => {
@@ -256,15 +312,26 @@ const TVPlayer = ({ tvId, tvInfo }: TVPlayerProps) => {
             </Link>
           )}
 
-          <label
-            className="flex cursor-pointer items-center gap-x-1 rounded-md transition-all"
-            onClick={handleBookmarkToggle}
-          >
-            <BookmarkIcon
-              className={cn("h-4 w-4 rounded", bookmarked && "fill-white")}
-            />
-            <span className="hidden lg:block">Bookmark</span>
-          </label>
+          {isSignedIn ? (
+            <label
+              className="flex cursor-pointer items-center gap-x-1 rounded-md transition-all"
+              onClick={handleWatchlistToggle}
+            >
+              <BookmarkIcon
+                className={cn("h-4 w-4 rounded", isWatchlisted && "fill-white")}
+              />
+              <span className="hidden lg:block">
+                {isWatchlisted ? "Remove from Watchlist" : "Add to Watchlist"}
+              </span>
+            </label>
+          ) : (
+            <SignInButton mode="modal">
+              <button className="flex cursor-pointer items-center gap-x-1 rounded-md transition-all">
+                <BookmarkIcon className="h-4 w-4" />
+                <span className="hidden lg:block">Sign in to Watchlist</span>
+              </button>
+            </SignInButton>
+          )}
 
           <label
             className="flex cursor-pointer items-center gap-x-1 rounded-md transition-all"

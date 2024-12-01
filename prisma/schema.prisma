@@ -21,6 +21,8 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  watchlist     Watchlist[]
+  history       History[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -55,4 +57,32 @@ model Session {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Watchlist {
+  id        String   @id @default(cuid())
+  userId    String
+  mediaId   String
+  mediaType String   // "movie" or "tv"
+  title     String
+  backdrop_path    String?
+  addedAt   DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, mediaId, mediaType])
+}
+
+model History {
+  id          String   @id @default(cuid())
+  userId      String
+  mediaId     String
+  mediaType   String   // "movie" or "tv"
+  title       String
+  backdrop_path      String?
+  season      Int?     // For TV shows
+  episode     Int?     // For TV shows
+  watchedAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, mediaId, mediaType, season, episode])
 }
