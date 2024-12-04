@@ -6,6 +6,7 @@ import {
   Clapperboard,
   Clock,
   Home,
+  List,
   Menu,
   Moon,
   Sun,
@@ -33,6 +34,7 @@ const options = [
   { name: "Movies", href: "/search?type=movie", icon: Clapperboard },
   { name: "Series", href: "/search?type=tv", icon: Tv },
   { name: "History", href: "/history", icon: Clock },
+  { name: "Watchlist", href: "/watchlist", icon: List },
 ];
 
 const Header = () => {
@@ -62,7 +64,8 @@ const Header = () => {
       pathname.split("/")[1] === "" ||
       pathname.split("/")[1] === "search" ||
       pathname.split("/")[1] === "history" ||
-      pathname.split("/")[1] === "watchlist" ? (
+      pathname.split("/")[1] === "watchlist" ||
+      pathname.split("/")[1] === "anime" ? (
         <>
           <div className="w-[150px]">
             <button className="" onClick={() => router.back()}>
