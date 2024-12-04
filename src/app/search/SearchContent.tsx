@@ -31,6 +31,7 @@ interface FilterSectionProps {
   currentNetwork: string;
   genres: Array<{ id: number; name: string }>;
   updateSearchParams: (params: { [key: string]: string }) => void;
+  handleReset: () => void;
 }
 
 const ResultCard = memo(({ result }: { result: Result }) => (
@@ -120,6 +121,7 @@ const FilterSection = memo(
     currentRating,
     currentNetwork,
     genres,
+    handleReset,
     updateSearchParams,
   }: FilterSectionProps) => (
     <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:flex xl:items-center xl:gap-0 xl:space-x-2">
@@ -245,6 +247,14 @@ const FilterSection = memo(
           <SelectItem value="9">9+ ⭐</SelectItem>
         </SelectContent>
       </Select>
+
+      <button
+        onClick={handleReset}
+        className="flex items-center justify-center gap-x-2 rounded-md bg-red-500 px-3 py-2 text-sm font-medium text-destructive-foreground hover:bg-destructive/90"
+      >
+        <ResetIcon />
+        Reset
+      </button>
     </div>
   ),
 );
@@ -295,14 +305,6 @@ export default function SearchContent() {
         />
 
         <div className="flex flex-col gap-4 xl:flex-row xl:items-center">
-          <button
-            onClick={handleReset}
-            className="flex w-full items-center justify-center gap-x-2 rounded-md bg-red-500 px-3 py-2 text-sm font-medium text-destructive-foreground hover:bg-destructive/90 xl:w-fit"
-          >
-            <ResetIcon />
-            Reset
-          </button>
-
           <FilterSection
             currentType={currentType}
             currentGenre={currentGenre}
@@ -313,6 +315,7 @@ export default function SearchContent() {
             currentNetwork={currentNetwork}
             genres={genres}
             updateSearchParams={updateSearchParams}
+            handleReset={handleReset}
           />
         </div>
       </div>
