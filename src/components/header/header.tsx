@@ -60,7 +60,9 @@ const Header = () => {
       pathname.split("/")[1] === "tv" ||
       pathname.split("/")[1] === "watch" ||
       pathname.split("/")[1] === "" ||
-      pathname.split("/")[1] === "search" ? (
+      pathname.split("/")[1] === "search" ||
+      pathname.split("/")[1] === "history" ||
+      pathname.split("/")[1] === "watchlist" ? (
         <>
           <div className="w-[150px]">
             <button className="" onClick={() => router.back()}>

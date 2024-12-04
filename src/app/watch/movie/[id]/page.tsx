@@ -15,12 +15,12 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
 
   if (!movieInfo) {
     return {
-      title: `Watch - Hope`,
+      title: `Watch `,
     };
   }
 
   return {
-    title: `Watch ${movieInfo.title} - Hope`,
+    title: `Watch ${movieInfo.title} `,
     description: movieInfo.overview,
   };
 }
