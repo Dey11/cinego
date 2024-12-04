@@ -28,6 +28,7 @@ interface FilterSectionProps {
   currentYear: string;
   currentCountry: string;
   currentRating: RatingOption;
+  currentNetwork: string;
   genres: Array<{ id: number; name: string }>;
   updateSearchParams: (params: { [key: string]: string }) => void;
 }
@@ -86,6 +87,29 @@ const getYearsList = () => {
   return years;
 };
 
+const networks = [
+  { id: 213, name: "Netflix" },
+  { id: 49, name: "HBO" },
+  { id: 2739, name: "Disney+" },
+  { id: 1024, name: "Amazon Prime Video" },
+  { id: 453, name: "Hulu" },
+  { id: 2552, name: "Apple TV+" },
+  { id: 6, name: "NBC" },
+  { id: 4, name: "BBC One" },
+  { id: 71, name: "The CW" },
+  { id: 16, name: "CBS" },
+  { id: 67, name: "Showtime" },
+  { id: 34, name: "Starz" },
+  { id: 174, name: "AMC" },
+  { id: 88, name: "FX" },
+  { id: 56, name: "Cartoon Network" },
+  { id: 13, name: "Nickelodeon" },
+  { id: 813, name: "HBO Max" },
+  { id: 3353, name: "Peacock" },
+  { id: 5, name: "BBC Two" },
+  { id: 15, name: "TBS" },
+];
+
 const FilterSection = memo(
   ({
     currentType,
@@ -94,10 +118,11 @@ const FilterSection = memo(
     currentYear,
     currentCountry,
     currentRating,
+    currentNetwork,
     genres,
     updateSearchParams,
   }: FilterSectionProps) => (
-    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:flex xl:flex-1 xl:flex-wrap">
+    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:flex xl:items-center xl:gap-0 xl:space-x-2">
       <Select
         value={currentType}
         onValueChange={(value: MediaType) =>
@@ -162,6 +187,23 @@ const FilterSection = memo(
           {getYearsList().map((year) => (
             <SelectItem key={year} value={year.toString()}>
               {year}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      <Select
+        value={currentNetwork}
+        onValueChange={(value) => updateSearchParams({ network: value })}
+      >
+        <SelectTrigger className="w-full xl:w-[180px]">
+          <SelectValue placeholder="Network" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">Network</SelectItem>
+          {networks.map((network) => (
+            <SelectItem key={network.id} value={network.id.toString()}>
+              {network.name}
             </SelectItem>
           ))}
         </SelectContent>
@@ -252,7 +294,7 @@ export default function SearchContent() {
           onChange={(e) => handleInputChange(e.target.value)}
         />
 
-        <div className="flex flex-col gap-4 xl:flex-row xl:flex-wrap">
+        <div className="flex flex-col gap-4 xl:flex-row xl:items-center">
           <button
             onClick={handleReset}
             className="flex w-full items-center justify-center gap-x-2 rounded-md bg-red-500 px-3 py-2 text-sm font-medium text-destructive-foreground hover:bg-destructive/90 xl:w-fit"
@@ -268,6 +310,7 @@ export default function SearchContent() {
             currentYear={currentYear}
             currentCountry={currentCountry}
             currentRating={currentRating}
+            currentNetwork={currentNetwork}
             genres={genres}
             updateSearchParams={updateSearchParams}
           />
