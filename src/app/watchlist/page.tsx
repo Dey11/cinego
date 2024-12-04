@@ -13,9 +13,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
+import { RedirectToSignIn } from "@clerk/nextjs";
 
 interface WatchlistItem {
-  // id: string;
   mediaType: "movie" | "tv";
   mediaId: string;
   title: string;
@@ -37,7 +38,6 @@ export default function WatchlistPage() {
     }
   };
 
-  // Filter watchlist based on search query
   const filteredWatchlist = items
     .sort(
       (a, b) =>
@@ -48,91 +48,96 @@ export default function WatchlistPage() {
     );
 
   return (
-    <div className="container mx-auto max-w-[1440px] bg-white px-4 py-20 dark:bg-transparent">
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr,400px]">
-        {/* Left side - Watchlist */}
-        <div className="order-2 lg:order-1">
-          <ul className="space-y-4">
-            {filteredWatchlist.map((item) => {
-              const addedDate = new Date(item.watchedAt);
-              const formattedDate = `Added ${formatDistanceToNow(addedDate)} ago`;
+    <div>
+      <SignedIn>
+        <div className="container mx-auto h-screen max-w-[1440px] bg-white px-4 py-20 dark:bg-transparent">
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr,400px]">
+            <div className="order-2 lg:order-1">
+              <ul className="space-y-4">
+                {filteredWatchlist.map((item) => {
+                  const addedDate = new Date(item.watchedAt);
+                  const formattedDate = `Added ${formatDistanceToNow(addedDate)} ago`;
 
-              return (
-                <li key={item.mediaId} className="relative">
-                  <Link
-                    href={`/${item.mediaType}/${item.mediaId}`}
-                    className="group flex w-full items-center space-x-4 rounded-md bg-gray-100 transition-all hover:bg-[#960000] dark:bg-gray-900 dark:hover:bg-[#b03030]"
-                  >
-                    <img
-                      src={
-                        item.backdrop_path
-                          ? `https://image.tmdb.org/t/p/w500${item.backdrop_path}`
-                          : "/placeholder.png"
-                      }
-                      alt={item.title}
-                      className="h-[80px] w-[120px] rounded-md object-cover lg:h-[100px] lg:w-[150px]"
-                    />
-                    <div className="flex-1 pr-12">
-                      <h3 className="line-clamp-2 text-lg font-semibold text-gray-800 group-hover:text-white dark:text-white">
-                        {item.title}
-                      </h3>
-                      <p className="text-sm text-gray-600 group-hover:text-gray-300 dark:text-gray-300">
-                        {item.mediaType.toUpperCase()}
-                      </p>
-                      <p className="mt-1 text-xs text-gray-500 group-hover:text-gray-400 dark:text-gray-400">
-                        {formattedDate}
-                      </p>
-                    </div>
-                  </Link>
-                  <div className="absolute right-2 top-2">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                          <MoreVertical className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => handleShare(item)}>
-                          <Share2 className="mr-2 h-4 w-4" />
-                          Share
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() =>
-                            removeItem(item.mediaId, item.mediaType)
+                  return (
+                    <li key={item.mediaId} className="relative">
+                      <Link
+                        href={`/${item.mediaType}/${item.mediaId}`}
+                        className="group flex w-full items-center space-x-4 rounded-md bg-gray-100 transition-all hover:bg-[#960000] dark:bg-gray-900 dark:hover:bg-[#b03030]"
+                      >
+                        <img
+                          src={
+                            item.backdrop_path
+                              ? `https://image.tmdb.org/t/p/w500${item.backdrop_path}`
+                              : "/placeholder.png"
                           }
-                          className="text-red-600 focus:text-red-600"
-                        >
-                          <Trash className="mr-2 h-4 w-4" />
-                          Remove
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
+                          alt={item.title}
+                          className="h-[80px] w-[120px] rounded-md object-cover lg:h-[100px] lg:w-[150px]"
+                        />
+                        <div className="flex-1 pr-12">
+                          <h3 className="line-clamp-2 text-lg font-semibold text-gray-800 group-hover:text-white dark:text-white">
+                            {item.title}
+                          </h3>
+                          <p className="text-sm text-gray-600 group-hover:text-gray-300 dark:text-gray-300">
+                            {item.mediaType.toUpperCase()}
+                          </p>
+                          <p className="mt-1 text-xs text-gray-500 group-hover:text-gray-400 dark:text-gray-400">
+                            {formattedDate}
+                          </p>
+                        </div>
+                      </Link>
+                      <div className="absolute right-2 top-2">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => handleShare(item)}>
+                              <Share2 className="mr-2 h-4 w-4" />
+                              Share
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() =>
+                                removeItem(item.mediaId, item.mediaType)
+                              }
+                              className="text-red-600 focus:text-red-600"
+                            >
+                              <Trash className="mr-2 h-4 w-4" />
+                              Remove
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
 
-          {filteredWatchlist.length === 0 && (
-            <div className="mt-10 text-center">
-              <p className="text-gray-500 dark:text-gray-400">
-                Your watchlist is empty.
-              </p>
+              {filteredWatchlist.length === 0 && (
+                <div className="mt-10 text-center">
+                  <p className="text-gray-500 dark:text-gray-400">
+                    Your watchlist is empty.
+                  </p>
+                </div>
+              )}
             </div>
-          )}
-        </div>
 
-        {/* Right side - Controls */}
-        <div className="order-1 h-full space-y-4 lg:order-2 lg:pt-8">
-          <Input
-            type="text"
-            placeholder="Search watchlist"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full"
-          />
+            <div className="order-1 h-full space-y-4 lg:order-2 lg:pt-8">
+              <Input
+                type="text"
+                placeholder="Search watchlist"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full"
+              />
+            </div>
+          </div>
         </div>
-      </div>
+      </SignedIn>
+      <SignedOut>
+        <RedirectToSignIn />
+      </SignedOut>
     </div>
   );
 }
