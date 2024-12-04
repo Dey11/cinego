@@ -68,6 +68,7 @@ export function useAnimeSearch() {
   const [hasMore, setHasMore] = useState(true);
   const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [inputValue, setInputValue] = useState(initialQuery);
+  const [selectedFormat, setSelectedFormat] = useState("all");
 
   const currentSeason = (searchParams.get("season") as AnimeSeason) || "WINTER";
   const currentSort =
@@ -211,11 +212,13 @@ export function useAnimeSearch() {
     currentFormat,
     currentGenre,
     currentYear,
+    selectedFormat,
     setInputValue,
     updateSearchParams,
     setPage,
     handleReset,
     loadMore,
     handleInputChange,
+    setSelectedFormat,
   };
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useInView } from "react-intersection-observer";
-import { useEffect, memo } from "react";
+import { useEffect, memo, Suspense } from "react";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -85,12 +85,14 @@ export default function AnimeSearchContent() {
     currentSeason,
     currentGenre,
     currentYear,
+    selectedFormat,
     setInputValue,
     updateSearchParams,
     setPage,
     handleReset,
     loadMore,
     handleInputChange,
+    setSelectedFormat,
   } = useAnimeSearch();
 
   useEffect(() => {
@@ -182,8 +184,11 @@ export default function AnimeSearchContent() {
           </Select>
 
           <Select
-            value="all"
-            onValueChange={(value) => updateSearchParams({ format: value })}
+            value={selectedFormat}
+            onValueChange={(value) => {
+              setSelectedFormat(value);
+              updateSearchParams({ format: value });
+            }}
           >
             <SelectTrigger className="w-full xl:w-[180px]">
               <SelectValue placeholder="Format" />

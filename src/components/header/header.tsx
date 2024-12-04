@@ -33,6 +33,7 @@ const options = [
   { name: "Home", href: "/", icon: Home },
   { name: "Movies", href: "/search?type=movie", icon: Clapperboard },
   { name: "Series", href: "/search?type=tv", icon: Tv },
+  { name: "Anime", href: "/search/anime", icon: Sword },
   { name: "History", href: "/history", icon: Clock },
   { name: "Watchlist", href: "/watchlist", icon: List },
 ];
