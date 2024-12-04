@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import debounce from "lodash/debounce";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 
-export type MediaType = "all" | "movie" | "tv";
+export type MediaType = "all" | "movie" | "tv" | "anime";
 export type SortOption =
   | "popularity"
   | "latest"

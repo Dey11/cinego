@@ -20,6 +20,7 @@ import {
   SortOption,
   RatingOption,
 } from "@/hooks/use-search";
+import { useRouter } from "next/navigation";
 
 interface FilterSectionProps {
   currentType: MediaType;
@@ -123,140 +124,149 @@ const FilterSection = memo(
     genres,
     handleReset,
     updateSearchParams,
-  }: FilterSectionProps) => (
-    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:flex xl:items-center xl:gap-0 xl:space-x-2">
-      <Select
-        value={currentType}
-        onValueChange={(value: MediaType) =>
-          updateSearchParams({ type: value })
-        }
-      >
-        <SelectTrigger className="w-full xl:w-[180px]">
-          <SelectValue placeholder="Type" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">Type</SelectItem>
-          <SelectItem value="movie">Movies</SelectItem>
-          <SelectItem value="tv">TV Shows</SelectItem>
-        </SelectContent>
-      </Select>
+  }: FilterSectionProps) => {
+    const router = useRouter();
 
-      <Select
-        value={currentGenre}
-        onValueChange={(value) => updateSearchParams({ genre: value })}
-      >
-        <SelectTrigger className="w-full xl:w-[180px]">
-          <SelectValue placeholder="Genre" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">Genre</SelectItem>
-          {genres.map((genre: any) => (
-            <SelectItem key={genre.id} value={genre.id.toString()}>
-              {genre.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+    return (
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:flex xl:items-center xl:gap-0 xl:space-x-2">
+        <Select
+          value={currentType}
+          onValueChange={(value: MediaType) => {
+            if (value === "anime") {
+              router.push("/search/anime");
+              return;
+            }
+            updateSearchParams({ type: value });
+          }}
+        >
+          <SelectTrigger className="w-full xl:w-[180px]">
+            <SelectValue placeholder="Type" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Type</SelectItem>
+            <SelectItem value="movie">Movies</SelectItem>
+            <SelectItem value="tv">TV Shows</SelectItem>
+            <SelectItem value="anime">Anime</SelectItem>
+          </SelectContent>
+        </Select>
 
-      <Select
-        value={currentSort}
-        onValueChange={(value: SortOption) =>
-          updateSearchParams({ sort: value })
-        }
-      >
-        <SelectTrigger className="w-full xl:w-[180px]">
-          <SelectValue placeholder="Sort by" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="popularity">Sort by</SelectItem>
-          <SelectItem value="latest">Latest Release</SelectItem>
-          <SelectItem value="oldest">Oldest Release</SelectItem>
-          <SelectItem value="a-z">Title A-Z</SelectItem>
-          <SelectItem value="z-a">Title Z-A</SelectItem>
-          <SelectItem value="rating">Top Rated</SelectItem>
-        </SelectContent>
-      </Select>
+        <Select
+          value={currentGenre}
+          onValueChange={(value) => updateSearchParams({ genre: value })}
+        >
+          <SelectTrigger className="w-full xl:w-[180px]">
+            <SelectValue placeholder="Genre" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Genre</SelectItem>
+            {genres.map((genre: any) => (
+              <SelectItem key={genre.id} value={genre.id.toString()}>
+                {genre.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-      <Select
-        value={currentYear}
-        onValueChange={(value) => updateSearchParams({ year: value })}
-      >
-        <SelectTrigger className="w-full xl:w-[180px]">
-          <SelectValue placeholder="Year" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">Year</SelectItem>
-          {getYearsList().map((year) => (
-            <SelectItem key={year} value={year.toString()}>
-              {year}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+        <Select
+          value={currentSort}
+          onValueChange={(value: SortOption) =>
+            updateSearchParams({ sort: value })
+          }
+        >
+          <SelectTrigger className="w-full xl:w-[180px]">
+            <SelectValue placeholder="Sort by" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="popularity">Sort by</SelectItem>
+            <SelectItem value="latest">Latest Release</SelectItem>
+            <SelectItem value="oldest">Oldest Release</SelectItem>
+            <SelectItem value="a-z">Title A-Z</SelectItem>
+            <SelectItem value="z-a">Title Z-A</SelectItem>
+            <SelectItem value="rating">Top Rated</SelectItem>
+          </SelectContent>
+        </Select>
 
-      <Select
-        value={currentNetwork}
-        onValueChange={(value) => updateSearchParams({ network: value })}
-      >
-        <SelectTrigger className="w-full xl:w-[180px]">
-          <SelectValue placeholder="Network" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">Network</SelectItem>
-          {networks.map((network) => (
-            <SelectItem key={network.id} value={network.id.toString()}>
-              {network.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+        <Select
+          value={currentYear}
+          onValueChange={(value) => updateSearchParams({ year: value })}
+        >
+          <SelectTrigger className="w-full xl:w-[180px]">
+            <SelectValue placeholder="Year" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Year</SelectItem>
+            {getYearsList().map((year) => (
+              <SelectItem key={year} value={year.toString()}>
+                {year}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-      <Select
-        value={currentCountry}
-        onValueChange={(value) => updateSearchParams({ country: value })}
-      >
-        <SelectTrigger className="w-full xl:w-[180px]">
-          <SelectValue placeholder="Country" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">Country</SelectItem>
-          {country.map((c) => (
-            <SelectItem key={c.value} value={c.value}>
-              {c.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+        <Select
+          value={currentNetwork}
+          onValueChange={(value) => updateSearchParams({ network: value })}
+        >
+          <SelectTrigger className="w-full xl:w-[180px]">
+            <SelectValue placeholder="Network" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Network</SelectItem>
+            {networks.map((network) => (
+              <SelectItem key={network.id} value={network.id.toString()}>
+                {network.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-      <Select
-        value={currentRating}
-        onValueChange={(value: RatingOption) =>
-          updateSearchParams({ rating: value })
-        }
-      >
-        <SelectTrigger className="w-full xl:w-[180px]">
-          <SelectValue placeholder="Rating" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">Ratings</SelectItem>
-          <SelectItem value="4">4+ ⭐</SelectItem>
-          <SelectItem value="5">5+ ⭐</SelectItem>
-          <SelectItem value="6">6+ ⭐</SelectItem>
-          <SelectItem value="7">7+ ⭐</SelectItem>
-          <SelectItem value="8">8+ ⭐</SelectItem>
-          <SelectItem value="9">9+ ⭐</SelectItem>
-        </SelectContent>
-      </Select>
+        <Select
+          value={currentCountry}
+          onValueChange={(value) => updateSearchParams({ country: value })}
+        >
+          <SelectTrigger className="w-full xl:w-[180px]">
+            <SelectValue placeholder="Country" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Country</SelectItem>
+            {country.map((c) => (
+              <SelectItem key={c.value} value={c.value}>
+                {c.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-      <button
-        onClick={handleReset}
-        className="flex items-center justify-center gap-x-2 rounded-md bg-red-500 px-3 py-2 text-sm font-medium text-destructive-foreground hover:bg-destructive/90"
-      >
-        <ResetIcon />
-        Reset
-      </button>
-    </div>
-  ),
+        <Select
+          value={currentRating}
+          onValueChange={(value: RatingOption) =>
+            updateSearchParams({ rating: value })
+          }
+        >
+          <SelectTrigger className="w-full xl:w-[180px]">
+            <SelectValue placeholder="Rating" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Ratings</SelectItem>
+            <SelectItem value="4">4+ ⭐</SelectItem>
+            <SelectItem value="5">5+ ⭐</SelectItem>
+            <SelectItem value="6">6+ ⭐</SelectItem>
+            <SelectItem value="7">7+ ⭐</SelectItem>
+            <SelectItem value="8">8+ ⭐</SelectItem>
+            <SelectItem value="9">9+ ⭐</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <button
+          onClick={handleReset}
+          className="flex items-center justify-center gap-x-2 rounded-md bg-red-500 px-3 py-2 text-sm font-medium text-destructive-foreground hover:bg-destructive/90"
+        >
+          <ResetIcon />
+          Reset
+        </button>
+      </div>
+    );
+  },
 );
 
 FilterSection.displayName = "FilterSection";
