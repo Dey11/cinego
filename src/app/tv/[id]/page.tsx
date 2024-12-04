@@ -180,7 +180,7 @@ const Page = async (props: { params: Props }) => {
         </div>
 
         {/* Episodes Section */}
-        <div className="mt-16">
+        <div className="mb-8 mt-16">
           <Combobox props={tvInfo} />
         </div>
 

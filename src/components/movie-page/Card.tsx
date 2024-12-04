@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 type CardProps = {
+  type?: "anime";
   id: number;
   name?: string;
   title?: string;
@@ -30,17 +31,23 @@ const Card = ({ show }: { show: CardProps }) => {
     type = "TV";
   }
   return (
-    <Link href={`/${type.toLowerCase()}/${show.id}`}>
+    <Link
+      href={
+        !show.type ? `/${type.toLowerCase()}/${show.id}` : `/anime/${show.id}`
+      }
+    >
       <div className="relative overflow-hidden hover:text-white">
         <div className="relative h-40 w-[104px] overflow-hidden rounded-sm sm:h-52 sm:w-32 md:h-44 md:w-28 lg:h-48 lg:w-32 xl:h-64 xl:w-44">
           <Image
             className="object-cover transition-transform hover:scale-110"
             src={
-              show.poster_path || show.backdrop_path
-                ? `https://image.tmdb.org/t/p/original${
-                    show.poster_path ? show.poster_path : show.backdrop_path
-                  }`
-                : "/placeholder.png"
+              !show.type
+                ? show.poster_path || show.backdrop_path
+                  ? `https://image.tmdb.org/t/p/original${
+                      show.poster_path ? show.poster_path : show.backdrop_path
+                    }`
+                  : "/placeholder.png"
+                : show.poster_path!
             }
             alt={(show.name ? show.name : show.title)!}
             sizes="fill"
@@ -56,8 +63,14 @@ const Card = ({ show }: { show: CardProps }) => {
               </h3>
               {/* <p className="line-clamp-1 text-[10px] text-gray-400">{name}</p> */}
               <p className="-mt-2 text-[10px] text-gray-400">
-                {type} / {date.split("-")[0]} /{" "}
-                {show.original_language.toUpperCase()}
+                {!show.type ? type : show.type}
+                {!show.type && (
+                  <>
+                    {" "}
+                    / {date ?? ""} /{" "}
+                    {show.original_language.toUpperCase() ?? ""}
+                  </>
+                )}
               </p>
             </div>
           </div>

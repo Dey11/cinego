@@ -8,6 +8,18 @@ const nextConfig = {
         port: "",
         pathname: "/*/**",
       },
+      {
+        protocol: "https",
+        hostname: "s4.anilist.co",
+        port: "",
+        pathname: "/*/**",
+      },
+      {
+        protocol: "https",
+        hostname: "media.kitsu.app",
+        port: "",
+        pathname: "/*/**",
+      },
     ],
   },
 };
