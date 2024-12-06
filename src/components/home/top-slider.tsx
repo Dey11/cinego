@@ -17,6 +17,7 @@ import { Button } from "../ui/button";
 import { Calendar, Info, Play, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import next from "next";
 
 type SlideInfo = {
   id: string;
@@ -59,16 +60,11 @@ export default function TopSlider() {
   const [tvGenres, setTVGenres] = useState<GenreIds[]>([]);
 
   const fetchGenres = async () => {
-    const movieGenresUrl =
-      "https://api.themoviedb.org/3/genre/movie/list?language=en-US";
-    const tvGenresUrl =
-      "https://api.themoviedb.org/3/genre/tv/list?language=en-US";
+    const movieGenresUrl = `https://api.themoviedb.org/3/genre/movie/list?language=en-US&api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`;
+    const tvGenresUrl = `https://api.themoviedb.org/3/genre/tv/list?language=en-US&api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`;
     const options = {
       method: "GET",
-      headers: {
-        accept: "application/json",
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMDB_ACCESS_TOKEN}`,
-      },
+      next: { revalidate: 3600 }, // 1 hours
     };
     try {
       const movieGenresResponse = await fetch(movieGenresUrl, options);
@@ -83,14 +79,10 @@ export default function TopSlider() {
   };
 
   const fetchSliderData = async () => {
-    const url =
-      "https://api.themoviedb.org/3/trending/all/day?language=en-US&page=1";
+    const url = `https://api.themoviedb.org/3/trending/all/day?language=en-US&api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`;
     const options = {
       method: "GET",
-      headers: {
-        accept: "application/json",
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMDB_ACCESS_TOKEN}`,
-      },
+      next: { revalidate: 3600 }, // 1 hours
     };
     try {
       const response = await fetch(url, options);
@@ -115,14 +107,10 @@ export default function TopSlider() {
   };
 
   const fetchThumbnailData = async () => {
-    const url =
-      "https://api.themoviedb.org/3/trending/all/week?language=en-US&page=1";
+    const url = `https://api.themoviedb.org/3/trending/all/week?language=en-US&api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`;
     const options = {
       method: "GET",
-      headers: {
-        accept: "application/json",
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMDB_ACCESS_TOKEN}`,
-      },
+      next: { revalidate: 3600 }, // 1 hours
     };
     try {
       const response = await fetch(url, options);
@@ -152,9 +140,9 @@ export default function TopSlider() {
       method: "GET",
       headers: {
         accept: "application/json",
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0YzY4ZTRjYjBhMDM4OTk0MTliNmVmYTZiOGJjOGJiZSIsIm5iZiI6MTcyNzUwNjM2NS40NDQxNjUsInN1YiI6IjY2NWQ5YmMwYTVlMDU0MzUwMTQ5MWUwNSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.8OL7WQIZGWr9tRfmSkRFIsaf1Wy0ksrOGDCB4KcocW4",
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMDB_API_KEY!}`,
       },
+      next: { revalidate: 3600 }, // 1 hours
     };
     try {
       const response = await fetch(url, options);

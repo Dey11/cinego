@@ -7,14 +7,10 @@ import {
 } from "@/types/tmdbApi";
 
 export const fetchTVInfo = async (id: number): Promise<TVInfo | null> => {
-  const TVInfo = `https://api.themoviedb.org/3/tv/${id}?language=en-US`;
+  const TVInfo = `https://api.themoviedb.org/3/tv/${id}?language=en-US&api_key=${process.env.TMDB_API_KEY}`;
   try {
     const initResTV = await fetch(TVInfo, {
-      next: { revalidate: 86400 }, // 24 hours
-      headers: {
-        accept: "application/json",
-        Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`,
-      },
+      next: { revalidate: 3600 }, // 24 hours
     });
     const tvResponse = await initResTV.json();
 
@@ -26,14 +22,10 @@ export const fetchTVInfo = async (id: number): Promise<TVInfo | null> => {
 };
 
 export const fetchCastInfo = async (id: number): Promise<TVCast[] | null> => {
-  const castInfo = `https://api.themoviedb.org/3/tv/${id}/credits?language=en-US`;
+  const castInfo = `https://api.themoviedb.org/3/tv/${id}/credits?language=en-US&api_key=${process.env.TMDB_API_KEY}`;
   try {
     const initResCast = await fetch(castInfo, {
-      next: { revalidate: 86400 }, // 24 hours
-      headers: {
-        accept: "application/json",
-        Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`,
-      },
+      next: { revalidate: 3600 }, // 24 hours
     });
     const castResponse = await initResCast.json();
     return castResponse.cast;
@@ -46,14 +38,10 @@ export const fetchCastInfo = async (id: number): Promise<TVCast[] | null> => {
 export const fetchTVRecommendations = async (
   id: number,
 ): Promise<TVRecommendations[] | null> => {
-  const recommendations = `https://api.themoviedb.org/3/tv/${id}/recommendations?language=en-US&page=1`;
+  const recommendations = `https://api.themoviedb.org/3/tv/${id}/recommendations?language=en-US&api_key=${process.env.TMDB_API_KEY}`;
   try {
     const initResRec = await fetch(recommendations, {
-      next: { revalidate: 43200 }, // 12 hours
-      headers: {
-        accept: "application/json",
-        Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`,
-      },
+      next: { revalidate: 3600 }, // 12 hours
     });
     const recResponse = await initResRec.json();
     return recResponse.results;
@@ -67,15 +55,10 @@ export const fetchSeasonInfo = async (
   id: number,
   seasonNo: number,
 ): Promise<TVSeasonInfo | null> => {
-  const url = `https://api.themoviedb.org/3/tv/${id}/season/${seasonNo}?language=en-US`;
+  const url = `https://api.themoviedb.org/3/tv/${id}/season/${seasonNo}?language=en-US&api_key=${process.env.TMDB_API_KEY}`;
   try {
     const initResSeason = await fetch(url, {
-      next: { revalidate: 86400 }, // 24 hours
-      headers: {
-        accept: "application/json",
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0YzY4ZTRjYjBhMDM4OTk0MTliNmVmYTZiOGJjOGJiZSIsInN1YiI6IjY2NWQ5YmMwYTVlMDU0MzUwMTQ5MWUwNSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.5f_cwrVa5tcJitWk--nzhAVIVWB__cFJl21JRGTbnJo",
-      },
+      next: { revalidate: 3600 }, // 24 hours
     });
     const seasonInfoResponse = await initResSeason.json();
     return seasonInfoResponse;
@@ -88,14 +71,10 @@ export const fetchSeasonInfo = async (
 export const fetchTrailerInfo = async (
   id: number,
 ): Promise<MovieTrailer[] | null> => {
-  const trailerInfo = `https://api.themoviedb.org/3/tv/${id}/season/1/videos?language=en-US`;
+  const trailerInfo = `https://api.themoviedb.org/3/tv/${id}/season/1/videos?language=en-US&api_key=${process.env.TMDB_API_KEY}`;
   try {
     const initResTrailer = await fetch(trailerInfo, {
-      next: { revalidate: 86400 }, // 24 hours
-      headers: {
-        accept: "application/json",
-        Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`,
-      },
+      next: { revalidate: 3600 }, // 24 hours
     });
     const trailerResponse = await initResTrailer.json();
     return trailerResponse.results;

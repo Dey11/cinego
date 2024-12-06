@@ -1,6 +1,15 @@
 "use client";
 
-import { Home, Search, PlayCircle, Layers, Settings } from "lucide-react";
+import {
+  Home,
+  Search,
+  PlayCircle,
+  Layers,
+  Settings,
+  Clapperboard,
+  Tv,
+  Sword,
+} from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
@@ -29,12 +38,12 @@ export default function MobileNav() {
         </div>
       )}
       {pathname !== "/" && (
-        <nav className="fixed bottom-0 left-0 right-0 z-50 bg-gray-900/70 px-4 py-2 md:hidden">
+        <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white px-4 py-2 text-black dark:bg-black dark:text-white md:hidden">
           <ul className="flex items-center justify-between">
             <li>
               <Link href="/" className="flex flex-col items-center">
-                <Home className="h-6 w-6 text-red-500" />
-                <span className="mt-1 text-xs text-gray-400">Home</span>
+                <Home className="h-6 w-6" />
+                <span className="mt-1 text-xs">Home</span>
               </Link>
             </li>
             <li>
@@ -42,27 +51,33 @@ export default function MobileNav() {
                 onClick={() => setShowSearch(!showSearch)}
                 className="flex flex-col items-center"
               >
-                <Search className="h-6 w-6 text-red-500" />
-                <span className="mt-1 text-xs text-gray-400">Search</span>
+                <Search className="h-6 w-6" />
+                <span className="mt-1 text-xs">Search</span>
               </button>
             </li>
             <li>
-              <a href="#" className="flex flex-col items-center">
-                <PlayCircle className="h-6 w-6 text-red-500" />
-                <span className="mt-1 text-xs text-gray-400">Watch</span>
-              </a>
+              <Link
+                href="/search?type=movie"
+                className="flex flex-col items-center"
+              >
+                <Clapperboard className="h-6 w-6" />
+                <span className="mt-1 text-xs">Movies</span>
+              </Link>
             </li>
             <li>
-              <a href="#" className="flex flex-col items-center">
-                <Layers className="h-6 w-6 text-red-500" />
-                <span className="mt-1 text-xs text-gray-400">Library</span>
-              </a>
+              <Link
+                href="/search?type=tv"
+                className="flex flex-col items-center"
+              >
+                <Tv className="h-6 w-6" />
+                <span className="mt-1 text-xs">Series</span>
+              </Link>
             </li>
             <li>
-              <a href="#" className="flex flex-col items-center">
-                <Settings className="h-6 w-6 text-red-500" />
-                <span className="mt-1 text-xs text-gray-400">Settings</span>
-              </a>
+              <Link href="/search/anime" className="flex flex-col items-center">
+                <Sword className="h-6 w-6" />
+                <span className="mt-1 text-xs">Anime</span>
+              </Link>
             </li>
           </ul>
         </nav>

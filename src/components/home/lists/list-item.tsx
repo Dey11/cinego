@@ -1,16 +1,13 @@
 import { CarouselComponent } from "../carousel";
-import { fetchShows } from "@/lib/api-calls/homeApiCalls";
 import { Shows } from "@/types/tmdbApi";
 
-const ListRow = async ({ url }: { url: string }) => {
-  const peacock = await fetchShows(url);
-
+const ListRow = async ({ items }: { items: Shows[] }) => {
   return (
     <div>
       <div className="flex pt-4">
         <CarouselComponent
           shows={
-            peacock! as Pick<
+            items! as Pick<
               Shows,
               | "id"
               | "title"

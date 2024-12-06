@@ -6,10 +6,10 @@ import PopularList from "../widget-btm";
 
 const PopularWidget = async () => {
   const topMovies = await fetchPopularMovies(
-    "https://api.themoviedb.org/3/movie/popular",
+    "https://api.themoviedb.org/3/movie/popular?language=en-US&page=1",
   );
   const topTVShows = await fetchPopularTV(
-    "https://api.themoviedb.org/3/tv/popular",
+    "https://api.themoviedb.org/3/tv/popular?language=en-US&page=1",
   );
 
   if (topMovies == null) {

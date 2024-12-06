@@ -2,7 +2,6 @@
 import { useRouter, usePathname } from "next/navigation";
 import {
   ArrowLeft,
-  Book,
   Clapperboard,
   Clock,
   Home,
@@ -58,7 +57,7 @@ const Header = () => {
   if (!mounted) return null;
 
   return (
-    <header className="absolute top-0 z-20 mt-5 flex w-full items-center justify-between px-5 md:px-10">
+    <header className="absolute top-0 z-20 flex w-full items-center justify-between px-5 pt-5 md:px-10">
       {pathname.split("/")[1] === "movie" ||
       pathname.split("/")[1] === "tv" ||
       pathname.split("/")[1] === "watch" ||
@@ -85,7 +84,7 @@ const Header = () => {
       ) : (
         <>
           <Link className="text-2xl font-bold text-red-500" href={"/"}>
-            <Image src={"/logo.png"} alt="logo" width={150} height={100} />
+            <Image src={"/logo.png"} alt="logo" width={150} height={36} />
           </Link>
           {pathname.split("/")[1] !== "search" && (
             <div className="hidden md:block">

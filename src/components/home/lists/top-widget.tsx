@@ -5,8 +5,12 @@ import {
 import TopList from "../widget";
 
 const TopWidget = async () => {
-  const topMovies = await fetchPopularMovies(process.env.POPULAR_MOVIES!);
-  const topTVShows = await fetchPopularTV(process.env.POPULAR_TV!);
+  const topMovies = await fetchPopularMovies(
+    "https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1",
+  );
+  const topTVShows = await fetchPopularTV(
+    "https://api.themoviedb.org/3/tv/top_rated?language=en-US&page=1",
+  );
 
   if (topMovies == null) {
     return (

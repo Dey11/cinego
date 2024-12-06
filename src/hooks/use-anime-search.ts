@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import debounce from "lodash/debounce";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
-import { revalidate } from "@/app/explore/page";
 
 export type AnimeSeason = "WINTER" | "SPRING" | "SUMMER" | "FALL";
 export type AnimeFormat =
@@ -102,8 +101,7 @@ export function useAnimeSearch() {
             Accept: "application/json",
             "Content-Type": "application/json",
           },
-          //   cache: "force-cache",
-          next: { revalidate: 7200 },
+          next: { revalidate: 3600 },
         },
       );
 
