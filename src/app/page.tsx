@@ -21,14 +21,8 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <div className="min-h-screen w-full bg-cover bg-fixed bg-center md:bg-[url('/home-bg.jpg')]">
-      <div className="flex min-h-screen items-center justify-center p-5">
+      <div className="flex min-h-screen items-center justify-center p-0 pt-8 md:p-5">
         <main className="relative w-full max-w-6xl rounded-lg bg-white/95 p-6 dark:bg-black/70 md:p-12">
-          {/* Background circular hues for light mode */}
-          <div className="pointer-events-none absolute inset-0">
-            <div className="absolute left-0 top-0 h-80 w-80 rounded-full bg-purple-200 opacity-50 blur-3xl dark:hidden"></div>
-            <div className="absolute right-10 top-10 h-80 w-80 rounded-full bg-violet-200 opacity-50 blur-3xl dark:hidden"></div>
-            <div className="absolute left-40 top-80 h-96 w-96 rounded-full bg-purple-300 opacity-50 blur-3xl dark:hidden"></div>
-          </div>
           {/* Logo Section */}
           <div className="mb-8 text-center">
             <h1 className="bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-4xl font-bold text-transparent md:text-5xl">

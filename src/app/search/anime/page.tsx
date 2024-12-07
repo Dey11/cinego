@@ -3,7 +3,7 @@ import AnimeSearchContent from "./AnimeSearchContent";
 
 export default function AnimeSearchPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div className="">Loading...</div>}>
       <AnimeSearchContent />
     </Suspense>
   );

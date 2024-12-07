@@ -30,13 +30,16 @@ export default function MobileNav() {
 
   return (
     <>
-      {mounted && pathname !== "/search" && (
-        <div className="fixed left-0 right-0 top-[70px] z-50">
-          <div className={showSearch ? "block md:hidden" : "hidden"}>
-            <SearchComponent isMobile />
+      {mounted &&
+        pathname !== "/search" &&
+        pathname !== "/search/anime" &&
+        pathname !== "/" && (
+          <div className="fixed left-0 right-0 top-[70px] z-50">
+            <div className={showSearch ? "block md:hidden" : "hidden"}>
+              <SearchComponent isMobile />
+            </div>
           </div>
-        </div>
-      )}
+        )}
       {pathname !== "/" && (
         <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white px-4 py-2 text-black dark:bg-black dark:text-white md:hidden">
           <ul className="flex items-center justify-between">

@@ -105,7 +105,8 @@ const Header = () => {
               className={cn(
                 "h-5 w-5 text-white",
                 (pathname.split("/")[1] === "search" ||
-                  pathname.split("/")[1] === "history") &&
+                  pathname.split("/")[1] === "history" ||
+                  pathname.split("/")[1] === "/") &&
                   "text-black hover:text-black dark:text-white dark:hover:text-white",
               )}
             />
@@ -114,7 +115,8 @@ const Header = () => {
               className={cn(
                 "h-5 w-5 text-white",
                 (pathname.split("/")[1] === "search" ||
-                  pathname.split("/")[1] === "history") &&
+                  pathname.split("/")[1] === "history" ||
+                  pathname.split("/")[1] === "") &&
                   "text-black dark:text-white",
               )}
             />
@@ -129,7 +131,8 @@ const Header = () => {
               className={cn(
                 "text-white",
                 (pathname.split("/")[1] === "search" ||
-                  pathname.split("/")[1] === "history") &&
+                  pathname.split("/")[1] === "history" ||
+                  pathname.split("/")[1] === "") &&
                   "text-black dark:text-white",
               )}
             />
@@ -151,8 +154,9 @@ const MenuOps = () => {
         <Menu
           className={cn(
             "text-white",
-            (pathname.split("/")[1] === "search" ||
-              pathname.split("/")[1] === "history") &&
+            pathname.split("/")[1] === "search" ||
+              pathname.split("/")[1] === "history" ||
+              pathname.split("/")[1] === "/" ||
               "text-black dark:text-white",
           )}
         />
