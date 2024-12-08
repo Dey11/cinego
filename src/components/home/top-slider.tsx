@@ -135,13 +135,13 @@ export default function TopSlider() {
   };
 
   const fetchSlideInfo = async (id: string, media_type: string) => {
-    const url = `https://api.themoviedb.org/3/${media_type}/${id}/images`;
+    const url = `https://api.themoviedb.org/3/${media_type}/${id}/images?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`;
     const options = {
       method: "GET",
-      headers: {
-        accept: "application/json",
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMDB_API_KEY!}`,
-      },
+      // headers: {
+      //   accept: "application/json",
+      //   Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMDB_API_KEY!}`,
+      // },
       next: { revalidate: 3600 }, // 1 hours
     };
     try {

@@ -55,7 +55,7 @@ export const fetchSeasonInfo = async (
   id: number,
   seasonNo: number,
 ): Promise<TVSeasonInfo | null> => {
-  const url = `https://api.themoviedb.org/3/tv/${id}/season/${seasonNo}?language=en-US&api_key=${process.env.TMDB_API_KEY}`;
+  const url = `https://api.themoviedb.org/3/tv/${id}/season/${seasonNo}?language=en-US&api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`;
   try {
     const initResSeason = await fetch(url, {
       next: { revalidate: 3600 }, // 24 hours

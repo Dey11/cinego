@@ -77,6 +77,8 @@ export function Combobox({
           id,
           seasonNumber,
         )) as TVSeasonInfo;
+        console.log(fetchEpsInfo);
+
         setEpInfo([...epInfo, { id: seasonNumber, data: fetchEpsInfo }]);
       } catch (err) {
         console.log(err);

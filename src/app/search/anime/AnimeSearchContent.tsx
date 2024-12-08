@@ -103,7 +103,7 @@ export default function AnimeSearchContent() {
   }, [inView, loading, hasMore, loadMore]);
 
   return (
-    <div className="container mx-auto h-screen max-w-[1440px] p-4 pt-20">
+    <div className="container mx-auto max-w-[1440px] p-4 pt-20">
       <div className="mb-6 flex flex-col gap-4">
         <Input
           placeholder="Search anime..."
