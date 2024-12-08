@@ -20,9 +20,9 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <div className="min-h-screen w-full bg-cover bg-fixed bg-center md:bg-[url('/home-bg.jpg')]">
+    <div className="min-h-screen w-full bg-cover bg-fixed bg-center dark:bg-[#1a1a1c] md:bg-[url('/home-bg.jpg')]">
       <div className="flex min-h-screen items-center justify-center p-0 pt-8 md:p-5">
-        <main className="relative w-full max-w-6xl rounded-lg bg-white/95 p-6 dark:bg-black/70 md:p-12">
+        <main className="relative w-full max-w-6xl rounded-lg bg-white/95 p-6 dark:bg-[#1a1a1c] md:p-12 md:dark:bg-black/70">
           {/* Logo Section */}
           <div className="mb-8 text-center">
             <h1 className="bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-4xl font-bold text-transparent md:text-5xl">

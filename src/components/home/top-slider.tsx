@@ -100,7 +100,7 @@ export default function TopSlider() {
         overview: movie.overview,
         media_type: movie.media_type,
       }));
-      setSlideInfo(slides);
+      setSlideInfo(slides.filter((slide: any) => slide.logo_path === ""));
     } catch (error) {
       console.error("Error fetching slider data:", error);
     }
@@ -138,10 +138,6 @@ export default function TopSlider() {
     const url = `https://api.themoviedb.org/3/${media_type}/${id}/images?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`;
     const options = {
       method: "GET",
-      // headers: {
-      //   accept: "application/json",
-      //   Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMDB_API_KEY!}`,
-      // },
       next: { revalidate: 3600 }, // 1 hours
     };
     try {
@@ -151,7 +147,14 @@ export default function TopSlider() {
         (logo: any) => logo.iso_639_1 === "en",
       )?.file_path;
       if (!logo) {
-        logo = data.logos[0].file_path;
+        logo = data.logos[0]?.file_path || null;
+        if (!logo) {
+          setSlideInfo(
+            slideInfo.filter((slide) => {
+              return slide.id !== id;
+            }),
+          );
+        }
       }
       return logo || "";
     } catch (error) {

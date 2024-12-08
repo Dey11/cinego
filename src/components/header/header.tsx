@@ -154,9 +154,9 @@ const MenuOps = () => {
         <Menu
           className={cn(
             "text-white",
-            pathname.split("/")[1] === "search" ||
+            (pathname.split("/")[1] === "search" ||
               pathname.split("/")[1] === "history" ||
-              pathname.split("/")[1] === "/" ||
+              pathname === "/") &&
               "text-black dark:text-white",
           )}
         />
