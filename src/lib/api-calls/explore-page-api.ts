@@ -63,10 +63,6 @@ export async function fetchExplorePageDataFirst() {
 export async function fetchExplorePageDataSecond() {
   try {
     const [
-      // trendingMovies,
-      // trendingTV,
-      // netflixShows,
-      // amazonShows,
       appleTVShows,
       disneyShows,
       indianShows,
@@ -74,14 +70,6 @@ export async function fetchExplorePageDataSecond() {
       paramountShows,
       maxShows,
     ] = await Promise.all([
-      // fetchShows(
-      //   "https://api.themoviedb.org/3/trending/movie/day?language=en-US",
-      // ),
-      // fetchShows("https://api.themoviedb.org/3/trending/tv/day?language=en-US"),
-      // fetchShows("https://api.themoviedb.org/3/discover/tv?with_networks=213"),
-      // fetchShows(
-      //   "https://api.themoviedb.org/3/discover/tv?with_watch_providers=387&watch_region=US",
-      // ),
       fetchShows(
         "https://api.themoviedb.org/3/discover/tv?with_watch_providers=9&watch_region=US",
       ),
@@ -103,10 +91,6 @@ export async function fetchExplorePageDataSecond() {
     ]);
 
     return {
-      // trendingMovies,
-      // trendingTV,
-      // netflixShows,
-      // amazonShows,
       appleTVShows,
       disneyShows,
       indianShows,
