@@ -328,7 +328,7 @@ const TVPlayer = ({ tvId, tvInfo }: TVPlayerProps) => {
             <SignInButton mode="modal">
               <button className="flex cursor-pointer items-center gap-x-1 rounded-md transition-all">
                 <BookmarkIcon className="h-4 w-4" />
-                <span className="hidden lg:block">Sign in to Watchlist</span>
+                <span className="hidden lg:block">Add to Watchlist</span>
               </button>
             </SignInButton>
           )}
@@ -364,6 +364,8 @@ const TVPlayer = ({ tvId, tvInfo }: TVPlayerProps) => {
                 id: Number(tvId),
                 seasons: tvInfo.seasons,
                 backdrop_path: tvInfo.backdrop_path,
+                overview: tvInfo.overview,
+                poster_path: tvInfo.poster_path,
               }}
             />
           </div>

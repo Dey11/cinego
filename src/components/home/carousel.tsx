@@ -46,9 +46,6 @@ export function CarouselComponent({ shows }: { shows: CarouselProps[] }) {
           },
         }}
         navigation
-        // pagination={{ clickable: true }}
-        // scrollbar={{ draggable: true }}
-        // onSwiper={(swiper) => console.log(swiper)}
       >
         {shows.map((show) => (
           <SwiperSlide key={show.id} className="">

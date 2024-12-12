@@ -42,7 +42,7 @@ const Header = () => {
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
 
   // UseEffect to set the initial theme to dark
   useEffect(() => {
@@ -123,6 +123,17 @@ const Header = () => {
           )}
         </Button>
         <MenuOps />
+        {!isLoaded && (
+          <User
+            className={cn(
+              "text-white",
+              (pathname.split("/")[1] === "search" ||
+                pathname.split("/")[1] === "history" ||
+                pathname.split("/")[1] === "") &&
+                "text-black dark:text-white",
+            )}
+          />
+        )}
         {user ? (
           <UserButton />
         ) : (

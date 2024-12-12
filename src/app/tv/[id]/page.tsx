@@ -6,7 +6,7 @@ import {
   fetchTVRecommendations,
   fetchTrailerInfo,
 } from "@/lib/api-calls/tv";
-import { Download, Play, Plus, Star } from "lucide-react";
+import { Play, Plus, Star } from "lucide-react";
 import Image from "next/image";
 import { Combobox } from "../../../components/tv-page/EpisodesSection";
 import Example from "@/components/movie-page/youtube-player";
@@ -59,7 +59,7 @@ const Page = async (props: { params: Props }) => {
       {/* Background Image */}
       <div className="relative h-[100vh] w-full">
         <Image
-          src={`${process.env.TMDB_IMG}${tvInfo.backdrop_path}`}
+          src={`${process.env.TMDB_IMG}${tvInfo.backdrop_path || tvInfo.poster_path}`}
           fill
           className="fixed object-cover"
           alt={tvInfo.name}

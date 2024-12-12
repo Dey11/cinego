@@ -61,6 +61,9 @@ export default async function WatchPage(props: PageProps) {
       {animeInfo.episodes && animeInfo.episodes.length > 0 && (
         <div className="relative z-10 mx-auto max-w-7xl px-4 py-8">
           <AnimeEpisodesList
+            image={animeInfo.image}
+            coverImage={animeInfo.cover}
+            description={animeInfo.description}
             episodes={animeInfo.episodes}
             animeId={params.id}
           />

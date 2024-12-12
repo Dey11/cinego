@@ -49,7 +49,13 @@ type SeasonInfo = {
 export function Combobox({
   props,
 }: {
-  props: { id: number; seasons: Seasons[]; backdrop_path: string };
+  props: {
+    id: number;
+    seasons: Seasons[];
+    backdrop_path: string;
+    overview: string;
+    poster_path: string;
+  };
 }) {
   const seasons = props.seasons;
   const searchParams = useSearchParams();
@@ -210,6 +216,8 @@ export function Combobox({
                 key={ep.id}
                 tvId={props.id}
                 backdrop={props.backdrop_path}
+                poster={props.poster_path}
+                description={props.overview}
                 isWrappedInAnchor={true} // Pass a prop to indicate if it's wrapped in an anchor
               />
             ),

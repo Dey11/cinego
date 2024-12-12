@@ -3,7 +3,11 @@
 @tailwind utilities;
 
 html {
+  overflow-y: auto;
   scrollbar-gutter: stable;
+}
+body[data-scroll-locked] {
+  min-width: 100%;
 }
 
 @layer utilities {

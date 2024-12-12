@@ -98,16 +98,31 @@ const Page = async (props: { params: Props }) => {
     );
   }
 
+  const animeDescription = animeInfo.description
+    .replaceAll("<br>", "")
+    .replaceAll("\n", "")
+    .replaceAll("<i>", "")
+    .replaceAll("</i>", "")
+    .replaceAll("<b>", "")
+    .replaceAll("</b>", "")
+    .replaceAll("<p>", "")
+    .replaceAll("</p>", "")
+    .replaceAll("</p>", "")
+    .replaceAll("&amp;", "&")
+    .replaceAll("<br>", "");
+
   return (
     <div className="relative min-h-screen pb-16 text-gray-900 dark:text-gray-100">
       {/* Background Image */}
       <div className="relative h-[100vh] w-full">
         <Image
-          src={animeInfo.cover}
+          src={animeInfo.cover || animeInfo.image}
           fill
           className="fixed object-cover"
           alt={animeInfo.title.english || animeInfo.title.romaji}
           priority
+          quality={65}
+          placeholder="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg=="
         />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/60 to-white dark:via-black/60 dark:to-black"></div>
       </div>
@@ -123,6 +138,7 @@ const Page = async (props: { params: Props }) => {
               alt={animeInfo.title.english || animeInfo.title.romaji}
               width={300}
               height={450}
+              quality={65}
             />
           </div>
 
@@ -148,7 +164,7 @@ const Page = async (props: { params: Props }) => {
                 </span>
               ))}
             </div>
-            <p className="mb-6 text-lg">{animeInfo.description}</p>
+            <p className="mb-6 text-lg">{animeDescription}</p>
             <div className="hidden md:block">
               <div className="flex items-center space-x-4">
                 <Link href={`/watch/anime/${params.id}`}>
@@ -230,7 +246,10 @@ const Page = async (props: { params: Props }) => {
             <AnimeEpisodesList
               animeId="1"
               episodes={animeInfo.episodes}
+              description={animeDescription}
               key={animeInfo.id}
+              coverImage={animeInfo.coverImage}
+              image={animeInfo.image}
             />
           </div>
         )}

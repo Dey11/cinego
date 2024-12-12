@@ -56,7 +56,7 @@ const Page = async (props: { params: Props }) => {
       <div className="hidden font-semibold sm:block">
         <div className="relative h-[100vh] w-full">
           <Image
-            src={`${process.env.TMDB_IMG}${movieInfo.backdrop_path}`}
+            src={`${process.env.TMDB_IMG}${movieInfo.backdrop_path || movieInfo.poster_path}`}
             fill
             className="fixed object-cover"
             alt={movieInfo.title}
@@ -173,7 +173,7 @@ const Page = async (props: { params: Props }) => {
       <div className="sm:hidden">
         <div className="relative h-[100vh] w-full">
           <Image
-            src={`${process.env.TMDB_IMG}${movieInfo.poster_path}`}
+            src={`${process.env.TMDB_IMG}${movieInfo.poster_path || movieInfo.backdrop_path}`}
             alt={movieInfo.title}
             fill
             className="fixed object-cover"

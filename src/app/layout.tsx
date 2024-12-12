@@ -23,23 +23,21 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning={true}>
-        <body className={`${inter.className} scrollbar`}>
-          <NextTopLoader color="#EF4444" />
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            {/* <div className="flex"> */}
-            <Header />
-            {/* <main className="flex-grow"> */}
-            {children}
-            {/* </main> */}
-            <MobileNav />
-            <Footer backgroundImage="/footer-bg2.jpg" />
-            {/* </div> */}
-          </ThemeProvider>
+        <body>
+          <div className={`${inter.className} scrollbar`}>
+            <NextTopLoader color="#EF4444" />
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="dark"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <Header />
+              {children}
+              <MobileNav />
+              <Footer backgroundImage="/footer-bg2.jpg" />
+            </ThemeProvider>
+          </div>
         </body>
       </html>
     </ClerkProvider>

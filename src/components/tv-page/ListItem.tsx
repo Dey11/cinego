@@ -12,7 +12,11 @@ const ListItem = ({
   viewMode,
   backdrop,
   isWrappedInAnchor,
+  description,
+  poster,
 }: {
+  poster: string;
+  description: string;
   backdrop: string;
   viewMode: "list" | "grid" | "thumbnail";
   tvId: number;
@@ -65,7 +69,7 @@ const ListItem = ({
             src={
               props.still_path
                 ? `https://image.tmdb.org/t/p/original${props.still_path}`
-                : `https://image.tmdb.org/t/p/original${backdrop}`
+                : `https://image.tmdb.org/t/p/original${backdrop || poster}`
             }
             fill
             alt={props.name}
@@ -93,7 +97,7 @@ const ListItem = ({
         <div className="flex flex-1 flex-col justify-center p-2">
           <h2 className="text-sm font-semibold">{props.name}</h2>
           <p className="line-clamp-2 text-xs text-gray-600 dark:text-gray-400">
-            {props.overview}
+            {props.overview || description}
           </p>
         </div>
         <Link
@@ -131,17 +135,17 @@ const ListItem = ({
     return (
       <div
         onClick={handleNavigate}
-        className="relative cursor-pointer transition-opacity hover:opacity-80"
+        className="relative aspect-video cursor-pointer transition-opacity hover:opacity-80"
       >
         <Image
           className={`rounded-md ${isActive ? "blur-[1.3px]" : ""}`}
           src={
             props.still_path
               ? `https://image.tmdb.org/t/p/original${props.still_path}`
-              : `https://image.tmdb.org/t/p/original${backdrop}`
+              : `https://image.tmdb.org/t/p/original${backdrop || poster}`
           }
-          height={300}
-          width={300}
+          fill
+          sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
           alt={props.name}
         />
         <div className="absolute inset-0">

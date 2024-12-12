@@ -24,11 +24,17 @@ interface AnimeEpisode {
 interface AnimeEpisodesListProps {
   episodes: AnimeEpisode[];
   animeId: string;
+  description: string;
+  coverImage: string;
+  image: string;
 }
 
 export function AnimeEpisodesList({
   episodes,
   animeId,
+  description,
+  coverImage,
+  image,
 }: AnimeEpisodesListProps) {
   const [order, setOrder] = React.useState(true);
   const [viewMode, setViewMode] = React.useState<"list" | "grid" | "thumbnail">(
@@ -109,6 +115,8 @@ export function AnimeEpisodesList({
                   episode={episode}
                   viewMode={viewMode}
                   animeId={animeId}
+                  description={description}
+                  image={coverImage || image}
                 />
               ),
             )}
@@ -129,6 +137,8 @@ export function AnimeEpisodesList({
                   episode={episode}
                   viewMode={viewMode}
                   animeId={animeId}
+                  description={description}
+                  image={coverImage || image}
                 />
               ),
             )}
@@ -143,9 +153,17 @@ interface EpisodeItemProps {
   episode: AnimeEpisode;
   viewMode: "list" | "grid" | "thumbnail";
   animeId: string;
+  description?: string;
+  image: string;
 }
 
-function EpisodeItem({ episode, viewMode, animeId }: EpisodeItemProps) {
+function EpisodeItem({
+  episode,
+  viewMode,
+  animeId,
+  description,
+  image,
+}: EpisodeItemProps) {
   const router = useRouter();
 
   const handleNavigate = () => {
@@ -161,7 +179,7 @@ function EpisodeItem({ episode, viewMode, animeId }: EpisodeItemProps) {
         <div className="relative h-full min-w-36">
           <Image
             className="rounded-l-md object-cover"
-            src={episode.image}
+            src={episode.image || image}
             fill
             alt={`Episode ${episode.number} - ${episode.title}`}
           />
@@ -176,7 +194,7 @@ function EpisodeItem({ episode, viewMode, animeId }: EpisodeItemProps) {
             {episode.title ?? `Episode ${episode.number}`}
           </h2>
           <p className="line-clamp-2 text-xs text-gray-600 dark:text-gray-400">
-            {episode.description}
+            {episode.description || description}
           </p>
         </div>
       </div>
@@ -207,7 +225,7 @@ function EpisodeItem({ episode, viewMode, animeId }: EpisodeItemProps) {
       <div className="relative aspect-video w-full overflow-hidden">
         <Image
           className="rounded-md object-cover"
-          src={episode.image}
+          src={episode.image || image}
           fill
           sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
           priority={episode.number <= 4}

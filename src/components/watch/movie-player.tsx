@@ -222,7 +222,7 @@ const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
             <SignInButton mode="modal">
               <button className="flex cursor-pointer items-center gap-x-1 rounded-md transition-all">
                 <BookmarkIcon className="h-4 w-4" />
-                <span className="hidden lg:block">Sign in to Watchlist</span>
+                <span className="hidden lg:block">Add to Watchlist</span>
               </button>
             </SignInButton>
           )}
