@@ -50,8 +50,11 @@ const Header = () => {
 
   // UseEffect to set the initial theme to dark
   useEffect(() => {
-    setTheme("dark");
     setMounted(true);
+    // Only set theme to dark if it hasn't been set before
+    if (!localStorage.getItem("theme")) {
+      setTheme("dark");
+    }
   }, []);
 
   const toggleTheme = () => {
