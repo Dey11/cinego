@@ -169,7 +169,11 @@ const Page = async (props: { params: Props }) => {
                     <div className="relative rounded-sm">
                       <img
                         className="object-cover"
-                        src={`https://image.tmdb.org/t/p/original${recommendation.poster_path}`}
+                        src={
+                          recommendation.poster_path
+                            ? `https://image.tmdb.org/t/p/original${recommendation.poster_path}`
+                            : "/placeholder.png"
+                        }
                         alt={recommendation.title || ""}
                         style={{ width: "100%", height: "100%" }}
                       />
@@ -330,7 +334,11 @@ const Page = async (props: { params: Props }) => {
                     <div className="relative rounded-sm">
                       <img
                         className="object-cover"
-                        src={`https://image.tmdb.org/t/p/original${recommendation.poster_path}`}
+                        src={
+                          recommendation.poster_path
+                            ? `https://image.tmdb.org/t/p/original${recommendation.poster_path}`
+                            : "/placeholder.png"
+                        }
                         alt={recommendation.title || ""}
                         style={{ width: "100%", height: "100%" }}
                       />
