@@ -48,15 +48,15 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider appearance={{ baseTheme: dark }}>
-      <html lang="en" suppressHydrationWarning={true}>
+      <html lang="en" className="scrollbar" suppressHydrationWarning={true}>
         <body>
-          <div className={`${inter.className} scrollbar`}>
+          <div className={`${inter.className}`}>
             <NextTopLoader color="#EF4444" />
             <ThemeProvider
               attribute="class"
               defaultTheme="dark"
-              enableSystem
-              disableTransitionOnChange
+              // enableSystem
+              // disableTransitionOnChange
             >
               <Header />
               {children}

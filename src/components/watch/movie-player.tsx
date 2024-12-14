@@ -128,16 +128,12 @@ const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
     switch (provider.name) {
       case "Max":
       case "Spanish":
+      case "Lima":
+      case "Gama":
+      case "Nova":
         return `${provider.url}${tmdbId}`;
       case "Echo":
         return `${provider.url}${imdbId}?primaryColor=white&secondaryColor=white&iconColor=white&title=false&poster=true&autoplay=true`;
-      case "Asia":
-      case "French":
-        return `${provider.url}${imdbId}`;
-      case "Gama":
-        return `${provider.url}${tmdbId}`;
-      case "Jade":
-        return `${provider.url}${imdbId}`;
       default:
         return `${provider.url}${imdbId}`;
     }

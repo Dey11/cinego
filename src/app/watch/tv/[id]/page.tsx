@@ -28,7 +28,10 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
 export default async function WatchPage(props: PageProps) {
   const params = await props.params;
   const tvInfo = await fetchTVInfo(parseInt(params.id));
-  // console.log(tvInfo);
+  const data = await fetch(
+    `https://api.themoviedb.org/3/tv/${params.id}/external_ids?api_key=${process.env.TMDB_API_KEY}`,
+  );
+  const imdbId = (await data.json()).imdb_id;
 
   if (!tvInfo) {
     return (
@@ -56,7 +59,7 @@ export default async function WatchPage(props: PageProps) {
 
       {/* Player */}
       <div className="relative z-10">
-        <TVPlayer tvId={params.id} tvInfo={tvInfo} />
+        <TVPlayer tvId={params.id} tvInfo={tvInfo} imdbId={imdbId} />
       </div>
     </main>
   );

@@ -76,7 +76,7 @@ const Header = () => {
         "donate",
         "contact",
         "android-movies-apk",
-        "faqs"
+        "faqs",
       ].includes(pathname.split("/")[1]) ? (
         <>
           <div className="w-[150px]">
@@ -85,7 +85,17 @@ const Header = () => {
                 <ArrowLeft
                   className={cn(
                     "text-2xl font-bold text-white hover:scale-110 hover:transform",
-                    ["search", "history", "", "faqs", "android-movies-apk", "contact", "privacy-policy", "terms", "donate"].includes(pathname.split("/")[1]) &&
+                    [
+                      "search",
+                      "history",
+                      "",
+                      "faqs",
+                      "android-movies-apk",
+                      "contact",
+                      "privacy-policy",
+                      "terms",
+                      "donate",
+                    ].includes(pathname.split("/")[1]) &&
                       "text-black hover:text-black dark:text-white dark:hover:text-white",
                   )}
                 />
@@ -111,7 +121,17 @@ const Header = () => {
             <Smartphone
               className={cn(
                 "h-5 w-5 text-white",
-                ["search", "history", "", "faqs", "android-movies-apk", "contact", "privacy-policy", "terms", "donate"].includes(pathname.split("/")[1]) &&
+                [
+                  "search",
+                  "history",
+                  "",
+                  "faqs",
+                  "android-movies-apk",
+                  "contact",
+                  "privacy-policy",
+                  "terms",
+                  "donate",
+                ].includes(pathname.split("/")[1]) &&
                   "text-black dark:text-white",
               )}
             />
@@ -122,7 +142,17 @@ const Header = () => {
             <Sun
               className={cn(
                 "h-5 w-5 text-white",
-                (["search", "history", "", "faqs", "android-movies-apk", "contact", "privacy-policy", "terms", "donate"].includes(pathname.split("/")[1]) ) &&
+                [
+                  "search",
+                  "history",
+                  "",
+                  "faqs",
+                  "android-movies-apk",
+                  "contact",
+                  "privacy-policy",
+                  "terms",
+                  "donate",
+                ].includes(pathname.split("/")[1]) &&
                   "text-black hover:text-black dark:text-white dark:hover:text-white",
               )}
             />
@@ -130,7 +160,17 @@ const Header = () => {
             <Moon
               className={cn(
                 "h-5 w-5 text-white",
-                (["search", "history", "", "faqs", "android-movies-apk", "contact", "privacy-policy", "terms", "donate"].includes(pathname.split("/")[1]) ) &&
+                [
+                  "search",
+                  "history",
+                  "",
+                  "faqs",
+                  "android-movies-apk",
+                  "contact",
+                  "privacy-policy",
+                  "terms",
+                  "donate",
+                ].includes(pathname.split("/")[1]) &&
                   "text-black dark:text-white",
               )}
             />
@@ -141,7 +181,17 @@ const Header = () => {
           <User
             className={cn(
               "text-white",
-              (["search", "history", "", "faqs", "android-movies-apk", "contact", "privacy-policy", "terms", "donate"].includes(pathname.split("/")[1]) ) &&
+              [
+                "search",
+                "history",
+                "",
+                "faqs",
+                "android-movies-apk",
+                "contact",
+                "privacy-policy",
+                "terms",
+                "donate",
+              ].includes(pathname.split("/")[1]) &&
                 "text-black dark:text-white",
             )}
           />
@@ -153,7 +203,17 @@ const Header = () => {
             <User
               className={cn(
                 "text-white",
-                ["search", "history", "", "faqs", "android-movies-apk", "contact", "privacy-policy", "terms", "donate"].includes(pathname.split("/")[1]) &&
+                [
+                  "search",
+                  "history",
+                  "",
+                  "faqs",
+                  "android-movies-apk",
+                  "contact",
+                  "privacy-policy",
+                  "terms",
+                  "donate",
+                ].includes(pathname.split("/")[1]) &&
                   "text-black dark:text-white",
               )}
             />
@@ -175,8 +235,17 @@ const MenuOps = () => {
         <Menu
           className={cn(
             "text-white",
-            ["search", "history", "", "faqs", "android-movies-apk", "contact", "privacy-policy", "terms", "donate"].includes(pathname.split("/")[1]) &&
-              "text-black dark:text-white",
+            [
+              "search",
+              "history",
+              "",
+              "faqs",
+              "android-movies-apk",
+              "contact",
+              "privacy-policy",
+              "terms",
+              "donate",
+            ].includes(pathname.split("/")[1]) && "text-black dark:text-white",
           )}
         />
       </DropdownMenuTrigger>

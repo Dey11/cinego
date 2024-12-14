@@ -29,9 +29,10 @@ import { SignInButton } from "@clerk/nextjs";
 interface TVPlayerProps {
   tvId: string;
   tvInfo: TVInfo;
+  imdbId: string;
 }
 
-const TVPlayer = ({ tvId, tvInfo }: TVPlayerProps) => {
+const TVPlayer = ({ tvId, tvInfo, imdbId }: TVPlayerProps) => {
   const tmdbId = tvInfo.id;
   const searchParams = useSearchParams();
   const [showServers, setShowServers] = useState(false);
@@ -213,18 +214,21 @@ const TVPlayer = ({ tvId, tvInfo }: TVPlayerProps) => {
       case "Max":
       case "Spanish":
         return `${provider.url}${tmdbId}/${season}-${episode}`;
+      case "Bravo":
+      case "Lima":
+      case "Nova":
+      case "Jade":
+        return `${provider.url}${tmdbId}/${season}/${episode}`;
       case "Echo":
         return `${provider.url}${tmdbId}/${season}/${episode}?primaryColor=white&secondaryColor=white&iconColor=white&title=false&poster=true&autoplay=true`;
       case "Asia":
-        return `${provider.url}${tvId}&s=${season}&e=${episode}`;
+        return `${provider.url}${imdbId}&s=${season}&e=${episode}`;
       case "Gama":
         return `${provider.url}${tmdbId}&s=${season}&e=${episode}`;
       case "French":
-        return `${provider.url}${tvId}&sa=${season}&epi=${episode}`;
-      case "Jade":
-        return `${provider.url}${tmdbId}/${season}/${episode}`;
+        return `${provider.url}${imdbId}&sa=${season}&epi=${episode}`;
       default:
-        return `${provider.url}${tvId}/${season}/${episode}`;
+        return `${provider.url}${imdbId}/${season}/${episode}`;
     }
   };
 

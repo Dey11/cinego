@@ -50,7 +50,7 @@ const Card = memo(({ show }: { show: CardProps }) => {
             priority={false}
             loading="lazy"
             fill
-            quality={75}
+            quality={40}
             onLoad={() => setImageLoading(false)}
           />
           <div className="absolute left-0 top-0 flex h-full w-full flex-col items-center justify-center rounded-sm bg-gray-900/60 opacity-0 backdrop-blur-[2px] transition-opacity duration-300 group-hover:opacity-100">

@@ -4,10 +4,7 @@ import ListRow from "@/components/home/lists/list-item";
 import TopSlider from "@/components/home/top-slider";
 import TopWidget from "@/components/home/lists/top-widget";
 import PopularWidget from "@/components/home/lists/popular-widget";
-import {
-  fetchExplorePageDataFirst,
-  fetchExplorePageDataSecond,
-} from "@/lib/api-calls/explore-page-api";
+import { fetchExplorePageDataFirst } from "@/lib/api-calls/explore-page-api";
 import { defaultMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = {
@@ -26,17 +23,18 @@ export const metadata: Metadata = {
 export const revalidate = 3600;
 
 export default async function ExplorePage() {
-  const { trendingMovies, trendingTV, netflixShows, amazonShows } =
-    await fetchExplorePageDataFirst();
-
   const {
+    trendingMovies,
+    trendingTV,
+    netflixShows,
+    amazonShows,
     appleTVShows,
     disneyShows,
     indianShows,
     peacockShows,
     paramountShows,
     maxShows,
-  } = await fetchExplorePageDataSecond();
+  } = await fetchExplorePageDataFirst();
 
   return (
     <main className="bg-white pb-32 text-gray-900 dark:bg-black dark:text-white">

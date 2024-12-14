@@ -204,10 +204,13 @@ export default function TopSlider() {
         {slideInfo.map((slide, index) => (
           <SwiperSlide key={slide.id}>
             <div className="relative h-full w-full">
-              <img
+              <Image
+                fill
                 src={`https://image.tmdb.org/t/p/original${slide.backdrop_path}`}
                 alt={slide.title ? slide.title : slide.name!}
                 className="absolute inset-0 h-full w-full object-cover"
+                quality={50}
+                priority={true}
               />
               <div className="absolute inset-0 bg-black bg-opacity-50" />
               <div className="absolute bottom-[20%] left-1/2 z-10 w-[90%] -translate-x-1/2 text-white sm:left-5 sm:-translate-x-0 sm:px-5">
@@ -217,6 +220,8 @@ export default function TopSlider() {
                   width={300}
                   height={300}
                   className="pb-10"
+                  priority={true}
+                  quality={50}
                 />
                 <div className="mx-auto mb-2 flex items-center">
                   <span className="mr-3 flex items-center capitalize text-gray-300">
@@ -317,9 +322,7 @@ export default function TopSlider() {
                     objectFit: "cover",
                     backgroundPosition: "center",
                     backgroundRepeat: "no-repeat",
-                    // backdropFilter: "brightness(0.7)",
                     filter: "brightness(0.8)",
-                    // filter: "blur(2px)",
                   }}
                 >
                   <div className="absolute inset-0 h-full w-full items-center justify-center rounded-2xl px-5 text-white transition duration-300 ease-in-out hover:text-red-500 hover:backdrop-blur-[2px]">
