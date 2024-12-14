@@ -25,7 +25,7 @@ const AnimeResultCard = memo(({ result }: { result: AnimeResult }) => (
       <div className="relative rounded-sm">
         <img
           className="object-cover"
-          src={result.image}
+          src={result.image || "/placeholder.png"}
           alt={result.title.english || result.title.romaji}
           style={{ width: "100%", height: "100%" }}
         />

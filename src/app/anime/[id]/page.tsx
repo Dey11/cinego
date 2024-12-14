@@ -279,7 +279,7 @@ const Page = async (props: { params: Props }) => {
                       <div className="relative rounded-sm">
                         <img
                           className="object-cover"
-                          src={show.image}
+                          src={show.image || "/placeholder.png"}
                           alt={show.title || show.name}
                           style={{ width: "100%", height: "100%" }}
                         />

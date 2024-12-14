@@ -60,7 +60,11 @@ export default function TopList({ movieItems, tvItems, type }: TopListProps) {
           >
             <div className="relative h-16 w-12 flex-shrink-0">
               <img
-                src={`https://image.tmdb.org/t/p/original${item.poster_path}`}
+                src={
+                  item.poster_path
+                    ? `https://image.tmdb.org/t/p/original${item.poster_path}`
+                    : "/placeholder.png"
+                }
                 alt={item.title || item.name}
                 className="h-full w-full rounded object-cover"
               />

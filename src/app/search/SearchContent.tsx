@@ -41,7 +41,11 @@ const ResultCard = memo(({ result }: { result: Result }) => (
       <div className="relative rounded-sm">
         <img
           className="object-cover"
-          src={`https://image.tmdb.org/t/p/original${result.poster_path}`}
+          src={
+            result.poster_path
+              ? `https://image.tmdb.org/t/p/original${result.poster_path}`
+              : "/placeholder.png"
+          }
           alt={result.title || result.name}
           style={{ width: "100%", height: "100%" }}
         />
@@ -249,12 +253,15 @@ const FilterSection = memo(
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Ratings</SelectItem>
-            <SelectItem value="4">4+ ⭐</SelectItem>
-            <SelectItem value="5">5+ ⭐</SelectItem>
-            <SelectItem value="6">6+ ⭐</SelectItem>
-            <SelectItem value="7">7+ ⭐</SelectItem>
-            <SelectItem value="8">8+ ⭐</SelectItem>
             <SelectItem value="9">9+ ⭐</SelectItem>
+            <SelectItem value="8">8+ ⭐</SelectItem>
+            <SelectItem value="7">7+ ⭐</SelectItem>
+            <SelectItem value="6">6+ ⭐</SelectItem>
+            <SelectItem value="5">5+ ⭐</SelectItem>
+            <SelectItem value="4">4+ ⭐</SelectItem>
+            <SelectItem value="3">3+ ⭐</SelectItem>
+            <SelectItem value="2">2+ ⭐</SelectItem>
+            <SelectItem value="1">1+ ⭐</SelectItem>
           </SelectContent>
         </Select>
 
