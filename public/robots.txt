@@ -1,3 +1,8 @@
 User-agent: *
 Allow: /
-Sitemap: https://flixhq.com/sitemap.xml 
+Disallow: /api/*
+Disallow: /auth/*
+Disallow: /dashboard/*
+Crawl-delay: 10
+Revisit-after: 1 day
+Sitemap: https://flixhq.lol/sitemap.xml 

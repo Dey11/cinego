@@ -201,6 +201,33 @@ const TVPlayer = ({ tvId, tvInfo }: TVPlayerProps) => {
     }
   };
 
+  const getProviderUrl = (
+    provider: (typeof PROVIDERS_TV)[0],
+    tvId: string,
+    season: number,
+    episode: number,
+  ) => {
+    const tmdbId = tvInfo.id;
+
+    switch (provider.name) {
+      case "Max":
+      case "Spanish":
+        return `${provider.url}${tmdbId}/${season}-${episode}`;
+      case "Echo":
+        return `${provider.url}${tmdbId}/${season}/${episode}?primaryColor=white&secondaryColor=white&iconColor=white&title=false&poster=true&autoplay=true`;
+      case "Asia":
+        return `${provider.url}${tvId}&s=${season}&e=${episode}`;
+      case "Gama":
+        return `${provider.url}${tmdbId}&s=${season}&e=${episode}`;
+      case "French":
+        return `${provider.url}${tvId}&sa=${season}&epi=${episode}`;
+      case "Jade":
+        return `${provider.url}${tmdbId}/${season}/${episode}`;
+      default:
+        return `${provider.url}${tvId}/${season}/${episode}`;
+    }
+  };
+
   return (
     <div className="min-h-screen pt-16">
       <div className="mx-auto max-w-screen-xl px-4">
@@ -284,7 +311,12 @@ const TVPlayer = ({ tvId, tvInfo }: TVPlayerProps) => {
           {!loading && (
             <div>
               <iframe
-                src={`${currentProvider?.url}${tvId}/${currentSeason}/${currentEpisode}`}
+                src={getProviderUrl(
+                  currentProvider || PROVIDERS_TV[0],
+                  tvId,
+                  currentSeason,
+                  currentEpisode,
+                )}
                 className="absolute left-0 top-0 h-full w-full"
                 allowFullScreen
                 allow="autoplay; encrypted-media; picture-in-picture"

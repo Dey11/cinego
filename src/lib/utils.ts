@@ -17,13 +17,13 @@ export interface MovieBookmark {
 
 export const DEFAULT_MOVIE_PROVIDER = {
   name: "Max",
-  url: "https://vidsrc.xyz/embed/movie/",
+  url: "https://ythd.org/embed/",
   countryUrl: `https://flagsapi.com/US/flat/24.png`,
 };
 
 export const DEFAULT_TV_PROVIDER = {
   name: "Max",
-  url: "https://vidsrc.xyz/embed/tv/",
+  url: "https://ythd.org/embed/",
   countryUrl: `https://flagsapi.com/US/flat/24.png`,
 };
 

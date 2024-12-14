@@ -118,6 +118,31 @@ const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
     }
   };
 
+  const getProviderUrl = (
+    provider: (typeof PROVIDERS_MOVIE)[0],
+    movieId: string,
+  ) => {
+    const imdbId = movieInfo.imdb_id;
+    const tmdbId = movieInfo.id;
+
+    switch (provider.name) {
+      case "Max":
+      case "Spanish":
+        return `${provider.url}${tmdbId}`;
+      case "Echo":
+        return `${provider.url}${imdbId}?primaryColor=white&secondaryColor=white&iconColor=white&title=false&poster=true&autoplay=true`;
+      case "Asia":
+      case "French":
+        return `${provider.url}${imdbId}`;
+      case "Gama":
+        return `${provider.url}${tmdbId}`;
+      case "Jade":
+        return `${provider.url}${imdbId}`;
+      default:
+        return `${provider.url}${imdbId}`;
+    }
+  };
+
   return (
     <div className="min-h-screen pt-16">
       <div className="mx-auto max-w-screen-xl px-4">
@@ -198,7 +223,10 @@ const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
           {!loading && (
             <div>
               <iframe
-                src={`${currentProvider?.url ? currentProvider.url : PROVIDERS_MOVIE[0].url}${movieId}`}
+                src={getProviderUrl(
+                  currentProvider || PROVIDERS_MOVIE[0],
+                  movieId,
+                )}
                 className="absolute left-0 top-0 h-full w-full"
                 allowFullScreen
                 allow="autoplay; encrypted-media; picture-in-picture"
