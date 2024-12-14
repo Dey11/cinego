@@ -258,25 +258,7 @@ const Page = async (props: { params: Props }) => {
         {animeInfo.recommendations && animeInfo.recommendations.length > 0 && (
           <div className="mt-16">
             <h2 className="mb-4 text-2xl font-bold">You may also like</h2>
-            <div className="hidden grid-cols-3 justify-items-center gap-4 sm:grid sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6">
-              {animeInfo.recommendations.map((recommendation) => {
-                const show = {
-                  type: recommendation.type,
-                  image: recommendation.image,
-                  id: parseInt(recommendation.id),
-                  originalTitle: recommendation.title.romaji,
-                  title:
-                    recommendation.title.userPreffered ||
-                    recommendation.title.english ||
-                    recommendation.title.romaji,
-                  poster_path: recommendation.image,
-                  original_language: recommendation.countryOfOrigin,
-                  vote_average: recommendation.rating,
-                };
-                return <Card key={recommendation.id} show={show} />;
-              })}
-            </div>
-            <div className="grid grid-cols-2 justify-items-center gap-4 sm:hidden">
+            <div className="grid grid-cols-3 justify-items-center gap-4 sm:grid sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6">
               {animeInfo.recommendations.map((recommendation) => {
                 const show = {
                   type: recommendation.type,

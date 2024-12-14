@@ -1,12 +1,13 @@
 "use client";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
+import { Navigation, A11y, FreeMode } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
-import "swiper/css/pagination";
-import "swiper/css/scrollbar";
+import "swiper/css/free-mode";
 import Card from "./card";
+import { useCallback, useEffect, useState } from "react";
+import { debounce } from "lodash";
 
 type CarouselProps = {
   id: number;
@@ -19,36 +20,53 @@ type CarouselProps = {
 };
 
 export function CarouselComponent({ shows }: { shows: CarouselProps[] }) {
+  const [slidesPerView, setSlidesPerView] = useState<number>(3);
+
+  const updateSlidesPerView = useCallback(() => {
+    const width = window.innerWidth;
+    if (width < 640) {
+      setSlidesPerView(2.2);
+    } else if (width < 768) {
+      setSlidesPerView(3.2);
+    } else if (width < 1024) {
+      setSlidesPerView(4.2);
+    } else if (width < 1280) {
+      setSlidesPerView(5.2);
+    } else {
+      setSlidesPerView(6.2);
+    }
+  }, []);
+
+  useEffect(() => {
+    const debouncedUpdate = debounce(updateSlidesPerView, 100);
+
+    updateSlidesPerView();
+    window.addEventListener("resize", debouncedUpdate);
+
+    return () => {
+      window.removeEventListener("resize", debouncedUpdate);
+      debouncedUpdate.cancel();
+    };
+  }, [updateSlidesPerView]);
+
   return (
     <div className="mx-auto w-full min-w-[350px] overflow-hidden px-2 md:px-0 lg:max-w-screen-xl xl:overflow-visible">
       <Swiper
-        modules={[Navigation, Pagination, Scrollbar, A11y]}
-        spaceBetween={80}
-        // slidesPerView={"auto"}
-        breakpoints={{
-          320: {
-            slidesPerView: 3,
-          },
-          450: {
-            slidesPerView: 3,
-          },
-          600: {
-            slidesPerView: 4,
-          },
-          950: {
-            slidesPerView: 5,
-          },
-          1100: {
-            slidesPerView: 6,
-          },
-          1350: {
-            slidesPerView: 7,
-          },
-        }}
+        modules={[Navigation, A11y, FreeMode]}
+        // spaceBetween={12}
+        slidesPerView={slidesPerView}
         navigation
+        freeMode={{
+          enabled: true,
+          sticky: false,
+          momentumBounce: false,
+          minimumVelocity: 0.02,
+          momentum: true,
+        }}
+        className=""
       >
         {shows.map((show) => (
-          <SwiperSlide key={show.id} className="">
+          <SwiperSlide key={show.id} className="!w-auto">
             <Card show={show} />
           </SwiperSlide>
         ))}

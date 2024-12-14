@@ -15,6 +15,7 @@ export default function Footer({ backgroundImage }: FooterProps) {
       ></div>
       <div className="relative z-10">
         <div className="container mx-auto px-4 py-10 pt-20">
+          <Link href="/home">
           <div className="mb-4 w-full">
             <Image
               src="/logo.png"
@@ -23,20 +24,20 @@ export default function Footer({ backgroundImage }: FooterProps) {
               height={40}
               className="mx-auto h-10 w-auto sm:m-0"
             />
-          </div>
+          </div></Link>
           <div className="mb-2 flex flex-row items-center justify-center gap-x-5 text-xs sm:flex-row sm:justify-between">
             <nav className="flex flex-col space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0">
               <Link
-                href="/request"
+                href="/terms"
                 className="transition-colors hover:text-red-500"
               >
-                Request
+                Terms of Service
               </Link>
               <Link
-                href="/contact"
+                href="/privacy-policy"
                 className="transition-colors hover:text-red-500"
               >
-                Contact
+                Policy
               </Link>
               <Link
                 href="/faqs"
@@ -45,27 +46,33 @@ export default function Footer({ backgroundImage }: FooterProps) {
                 FAQs
               </Link>
               <Link
-                href="/policy"
+                href="/contact"
                 className="transition-colors hover:text-red-500"
               >
-                Policy
+                Contact
               </Link>
             </nav>
             <nav className="flex flex-col space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0">
               <Link
-                href="/movies"
+                href="/search?type=movie"
                 className="transition-colors hover:text-red-500"
               >
                 Movies
               </Link>
               <Link
-                href="/tv-shows"
+                href="/search?type=tv"
                 className="transition-colors hover:text-red-500"
               >
-                TV-Shows
+                Tv shows
               </Link>
               <Link
-                href="/favorites"
+                href="/search/anime"
+                className="transition-colors hover:text-red-500"
+              >
+                Animes
+              </Link>
+              <Link
+                href="/watchlist"
                 className="transition-colors hover:text-red-500"
               >
                 Favorites

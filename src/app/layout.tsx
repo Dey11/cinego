@@ -7,6 +7,7 @@ import Footer from "@/components/footer/footer";
 import MobileNav from "@/components/footer/mobile-nav";
 import { ClerkProvider } from "@clerk/nextjs";
 import NextTopLoader from "nextjs-toploader";
+import { dark } from "@clerk/themes";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,7 +22,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
+    <ClerkProvider appearance={{ baseTheme: dark }}>
       <html lang="en" suppressHydrationWarning={true}>
         <body>
           <div className={`${inter.className} scrollbar`}>

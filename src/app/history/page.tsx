@@ -123,7 +123,7 @@ export default function HistoryPage() {
                       <li key={index} className="relative">
                         <Link
                           href={`/${item.mediaType}/${item.mediaId}`}
-                          className="group flex w-full items-center space-x-4 rounded-md bg-gray-100 transition-all hover:bg-[#960000] dark:bg-gray-900 dark:hover:bg-[#b03030]"
+                          className="group flex w-full items-center space-x-4 rounded-md bg-gray-100 transition-all hover:bg-gray-200 dark:bg-[#2a2a30] dark:hover:bg-gray-700"
                         >
                           <img
                             src={
@@ -135,17 +135,17 @@ export default function HistoryPage() {
                             className="h-[80px] w-[120px] rounded-md object-cover lg:h-[100px] lg:w-[150px]"
                           />
                           <div className="flex-1 pr-12">
-                            <h3 className="line-clamp-2 text-lg font-semibold text-gray-800 group-hover:text-white dark:text-white">
+                            <h3 className="line-clamp-2 text-lg font-semibold text-gray-800 dark:text-white">
                               {item.title}
                             </h3>
-                            <p className="text-sm text-gray-600 group-hover:text-gray-300 dark:text-gray-300">
+                            <p className="text-sm text-gray-600 dark:text-gray-300">
                               {item.mediaType === "tv" &&
                               item.season &&
                               item.episode
                                 ? `S${item.season} E${item.episode}`
                                 : item.mediaType.toUpperCase()}
                             </p>
-                            <p className="mt-1 text-xs text-gray-500 group-hover:text-gray-400 dark:text-gray-400">
+                            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                               {formattedDate}
                             </p>
                           </div>

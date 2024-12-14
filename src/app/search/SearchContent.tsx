@@ -178,6 +178,7 @@ const FilterSection = memo(
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="popularity">Sort by</SelectItem>
+            <SelectItem value="popularity">Popular</SelectItem>
             <SelectItem value="latest">Latest Release</SelectItem>
             <SelectItem value="oldest">Oldest Release</SelectItem>
             <SelectItem value="a-z">Title A-Z</SelectItem>

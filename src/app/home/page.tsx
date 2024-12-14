@@ -43,9 +43,9 @@ export default async function ExplorePage() {
       <Suspense fallback={<div>Loading</div>}>
         <TopSlider />
       </Suspense>
-      <div className="mx-auto max-w-[1440px] pt-28">
-        <div className="sm:grid sm:grid-cols-12">
-          <div className="pt-5 sm:col-span-8">
+      <div className="mx-auto max-w-[1440px] px-2 pt-28">
+        <div className="md:grid md:grid-cols-12">
+          <div className="pt-5 md:col-span-8">
             <div className="">
               <h1 className="inline-block pl-2 text-lg font-bold text-black dark:bg-gradient-to-r dark:from-blue-400 dark:to-blue-800 dark:bg-clip-text dark:text-transparent sm:text-2xl lg:px-0">
                 Trending Movies
@@ -127,7 +127,7 @@ export default async function ExplorePage() {
               </Suspense>
             </div>
           </div>
-          <div className="sm:col-span-4">
+          <div className="md:col-span-4">
             <TopWidget />
             <PopularWidget />
           </div>

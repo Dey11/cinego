@@ -23,6 +23,8 @@ interface VideoPlayerProps {
 
 const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
   const { isSignedIn } = useUser();
+  const imdbId = movieInfo.imdb_id;
+  const tmdbId = movieInfo.id;
 
   // Add isPaused state
   const [isPaused, setIsPaused] = useState<boolean>(() => {

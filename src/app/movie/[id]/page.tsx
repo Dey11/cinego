@@ -1,4 +1,3 @@
-import Card from "@/components/movie-page/Card";
 import Example from "@/components/movie-page/youtube-player";
 import { Button } from "@/components/ui/button";
 import {
@@ -162,8 +161,54 @@ const Page = async (props: { params: Props }) => {
             <h2 className="mb-6 text-2xl font-bold">You may also like</h2>
             <div className="grid grid-cols-2 justify-items-center gap-4 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6">
               {recommendationsInfo.map((recommendation) => (
-                // <Card key={recommendation.id} show={recommendation} />
-                <Card key={recommendation.id} show={recommendation} />
+                <Link
+                  href={`/movie/${recommendation.id}`}
+                  key={recommendation.id}
+                >
+                  <div className="relative overflow-hidden rounded-md hover:text-white">
+                    <div className="relative rounded-sm">
+                      <img
+                        className="object-cover"
+                        src={`https://image.tmdb.org/t/p/original${recommendation.poster_path}`}
+                        alt={recommendation.title || ""}
+                        style={{ width: "100%", height: "100%" }}
+                      />
+                      <div className="absolute left-0 top-0 flex h-full w-full flex-col items-center justify-center rounded-sm bg-gray-900 bg-opacity-60 opacity-0 transition-opacity hover:opacity-100 hover:backdrop-blur-[2px]">
+                        <img
+                          src="/icon-play.png"
+                          alt="play"
+                          width={25}
+                          height={25}
+                        />
+                        <div className="absolute bottom-2 px-1 text-center text-sm font-semibold leading-snug sm:text-base">
+                          <h3 className="mb-2 line-clamp-2 text-xs font-semibold">
+                            {recommendation.title || ""}
+                          </h3>
+                          <p className="-mt-2 text-[10px] text-gray-400">
+                            Movie /{" "}
+                            {new Date(
+                              recommendation.release_date || "",
+                            ).getFullYear()}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="absolute top-2 rounded-r bg-yellow-500 px-0.5 text-xs font-semibold text-white">
+                        HD
+                      </div>
+                      <div className="absolute right-0 top-2 flex gap-1 rounded-l bg-black bg-opacity-50 pl-1 text-xs font-semibold text-white">
+                        <svg
+                          className="h-4 w-4 fill-yellow-500"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+                        </svg>
+                        {recommendation.vote_average.toFixed(1)}
+                      </div>
+                    </div>
+                  </div>
+                </Link>
               ))}
             </div>
           </div>
@@ -275,9 +320,8 @@ const Page = async (props: { params: Props }) => {
           {/* Recommendations */}
           <div className="mt-8">
             <h2 className="mb-4 text-xl font-bold">You may also like</h2>
-            <div className="grid grid-cols-2 justify-items-center gap-3">
+            <div className="grid grid-cols-3 justify-items-center gap-3">
               {recommendationsInfo.map((recommendation) => (
-                // <Card key={recommendation.id} show={recommendation} />
                 <Link
                   href={`/movie/${recommendation.id}`}
                   key={recommendation.id}

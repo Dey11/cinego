@@ -157,7 +157,7 @@ const Search = ({ isMobile, hideFilter }: SearchProps) => {
     >
       <Input
         className={cn(
-          "h-8 w-full rounded-3xl border-0 bg-black/50 font-semibold capitalize !text-white placeholder:text-center placeholder:text-gray-500 focus:placeholder:opacity-0 sm:h-10",
+          "h-8 w-full rounded-3xl border-0 bg-black/50 capitalize !text-white placeholder:text-center placeholder:text-gray-500 focus:placeholder:opacity-0 md:h-10",
           query && !hideFilter && "pl-[85px]",
           !isMobile && "sm:w-64 md:w-72 lg:w-[450px]",
         )}
@@ -192,14 +192,14 @@ const Search = ({ isMobile, hideFilter }: SearchProps) => {
       {showResults && results && results.length > 0 && (
         <div
           className={cn(
-            "absolute mt-2 w-full rounded-lg bg-slate-800/90 p-2",
+            "absolute mt-1 w-full rounded-lg bg-white p-2 dark:bg-black",
             isMobile && "left-0 right-0 z-50",
           )}
         >
           {results.map((item) => (
             <div
               key={item.id}
-              className="flex cursor-pointer items-center gap-2 rounded-lg p-1.5 hover:bg-slate-700"
+              className="group my-1 flex cursor-pointer items-center gap-2 rounded-lg bg-gray-100 p-1.5 hover:bg-yellow-500 dark:bg-[#2a2a30] dark:hover:bg-yellow-500"
               onClick={() => searchHook.handleItemClick(item)}
             >
               <Image
@@ -210,10 +210,10 @@ const Search = ({ isMobile, hideFilter }: SearchProps) => {
                 className="rounded object-cover"
               />
               <div className="flex flex-col">
-                <span className="text-sm text-white">
+                <span className="text-sm dark:text-white dark:group-hover:text-black">
                   {item.title || item.name}
                 </span>
-                <div className="flex items-center gap-2 text-xs text-gray-400">
+                <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400 dark:group-hover:text-black">
                   <span className="capitalize">{item.media_type}</span>
                   {parseInt(item.vote_average.toFixed(1)) > 0 && (
                     <>
@@ -235,7 +235,7 @@ const Search = ({ isMobile, hideFilter }: SearchProps) => {
           ))}
           <button
             onClick={searchHook.handleSeeMore}
-            className="mt-2 w-full rounded-lg bg-slate-700 p-2 text-center text-sm text-white hover:bg-slate-600"
+            className="mt-2 w-full rounded-lg bg-gray-100 p-2 text-center text-sm text-black hover:bg-gray-400 dark:bg-[#2a2a30] dark:text-white dark:hover:bg-gray-600"
           >
             See more results
           </button>

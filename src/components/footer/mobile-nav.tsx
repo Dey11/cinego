@@ -9,6 +9,7 @@ import {
   Clapperboard,
   Tv,
   Sword,
+  Ellipsis,
 } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -79,6 +80,12 @@ export default function MobileNav() {
             <li>
               <Link href="/search/anime" className="flex flex-col items-center">
                 <Sword className="h-6 w-6" />
+                <span className="mt-1 text-xs">Anime</span>
+              </Link>
+            </li>
+            <li>
+              <Link href="/search/anime" className="flex flex-col items-center">
+                <Ellipsis className="h-6 w-6" />
                 <span className="mt-1 text-xs">Anime</span>
               </Link>
             </li>

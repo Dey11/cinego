@@ -24,7 +24,7 @@ export default function HomeSearchBar() {
         <Input
           type="search"
           placeholder="Search..."
-          className="w-full rounded-lg border-gray-700 bg-gray-800/50 py-3 pl-20 pr-4 capitalize placeholder:text-gray-600 dark:placeholder:text-gray-600"
+          className="w-full rounded-lg border-[#D6D6D6] bg-[#FFFFFF] py-3 pl-20 pr-4 capitalize text-black placeholder:text-gray-600 dark:border-gray-700 dark:bg-gray-800/50 dark:text-white dark:placeholder:text-gray-600"
           value={query}
           onChange={handleQueryChange}
         />
@@ -41,11 +41,11 @@ export default function HomeSearchBar() {
 
       {/* Search Results Dropdown */}
       {showResults && results && results.length > 0 && (
-        <div className="absolute mt-2 w-full rounded-lg bg-slate-800/90 p-2">
+        <div className="absolute mt-2 w-full rounded-lg bg-white p-2 dark:bg-black">
           {results.map((item) => (
             <div
               key={item.id}
-              className="flex cursor-pointer items-center gap-2 rounded-lg p-1.5 hover:bg-slate-700"
+              className="group my-1 flex cursor-pointer items-center gap-2 rounded-lg bg-gray-100 p-1.5 hover:bg-yellow-500 dark:bg-[#2a2a30] dark:hover:bg-yellow-500"
               onClick={() => handleItemClick(item)}
             >
               <Image
@@ -56,10 +56,10 @@ export default function HomeSearchBar() {
                 className="rounded object-cover"
               />
               <div className="flex flex-col">
-                <span className="text-sm text-white">
+                <span className="text-sm dark:text-white dark:group-hover:text-black">
                   {item.title || item.name}
                 </span>
-                <div className="flex items-center gap-2 text-xs text-gray-400">
+                <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400 dark:group-hover:text-black">
                   <span className="capitalize">{item.media_type}</span>
                   {parseInt(item.vote_average.toFixed(1)) > 0 && (
                     <>
@@ -79,7 +79,7 @@ export default function HomeSearchBar() {
           ))}
           <button
             onClick={handleSeeMore}
-            className="mt-2 w-full rounded-lg bg-slate-700 p-2 text-center text-sm text-white hover:bg-slate-600"
+            className="mt-2 w-full rounded-lg bg-gray-100 p-2 text-center text-sm text-black hover:bg-gray-400 dark:bg-[#2a2a30] dark:text-white dark:hover:bg-gray-600"
           >
             See more results
           </button>

@@ -32,6 +32,7 @@ interface TVPlayerProps {
 }
 
 const TVPlayer = ({ tvId, tvInfo }: TVPlayerProps) => {
+  const tmdbId = tvInfo.id;
   const searchParams = useSearchParams();
   const [showServers, setShowServers] = useState(false);
   const [currentProvider, setCurrentProvider, loading] = usePersistedState(

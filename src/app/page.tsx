@@ -4,6 +4,7 @@ import { Metadata } from "next";
 import { defaultMetadata } from "@/lib/metadata";
 import HomeSearchBar from "@/components/home/search-bar";
 import { WEBSITE_NAME, WEBSITE_URL } from "@/lib/constants";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   ...defaultMetadata,
@@ -26,7 +27,13 @@ export default function Home() {
           {/* Logo Section */}
           <div className="mb-8 text-center">
             <h1 className="bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-4xl font-bold text-transparent md:text-5xl">
-              {WEBSITE_NAME.toUpperCase()}
+              <Image
+                src={"/logo.png"}
+                alt="Logo"
+                width={150}
+                height={40}
+                className="mx-auto drop-shadow-xl"
+              />
             </h1>
             <h2 className="mt-4 text-xl text-gray-700 dark:text-gray-300 md:text-2xl">
               Watch Movies Online in HD for Free!
@@ -38,8 +45,8 @@ export default function Home() {
 
           {/* Homepage Button */}
           <div className="mt-8 text-center">
-            <Link href="/explore">
-              <Button className="mx-auto flex items-center gap-2 rounded-lg bg-emerald-500 px-8 py-2 text-white hover:bg-emerald-600">
+            <Link href="/home">
+              <Button className="mx-auto flex items-center gap-2 rounded-lg bg-black px-8 py-2 text-white dark:bg-emerald-500 dark:hover:bg-emerald-600">
                 Explore Now
                 <span className="ml-1">▶</span>
               </Button>

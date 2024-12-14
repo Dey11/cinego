@@ -3,6 +3,8 @@ import { DEFAULT_MOVIE_PROVIDER, DEFAULT_TV_PROVIDER } from "./utils";
 export const WEBSITE_NAME = "Flixhq";
 export const WEBSITE_URL = "test.flixhq.lol";
 export const WEBSITE_FULL_URL = `https://${WEBSITE_URL}`;
+export const DISCORD_URL = "https://discord.gg/";
+export const DOWNLOAD_APK = "";
 
 export const PROVIDERS_TV = [
   DEFAULT_TV_PROVIDER,

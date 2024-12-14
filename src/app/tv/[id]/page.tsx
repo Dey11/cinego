@@ -1,4 +1,3 @@
-import Card from "@/components/movie-page/Card";
 import { Button } from "@/components/ui/button";
 import {
   fetchCastInfo,
@@ -197,12 +196,7 @@ const Page = async (props: { params: Props }) => {
         {/* Recommendations */}
         <div className="mt-16">
           <h2 className="mb-4 text-2xl font-bold">You may also like</h2>
-          <div className="hidden grid-cols-3 justify-items-center gap-4 sm:grid sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6">
-            {recommendationsInfo.slice(0, 12).map((recommendation) => (
-              <Card key={recommendation.id} show={recommendation} />
-            ))}
-          </div>
-          <div className="grid grid-cols-2 justify-items-center gap-3 sm:hidden">
+          <div className="grid grid-cols-3 justify-items-center gap-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6">
             {recommendationsInfo.slice(0, 12).map((recommendation) => (
               <Link href={`/tv/${recommendation.id}`} key={recommendation.id}>
                 <div className="relative overflow-hidden rounded-md hover:text-white">
