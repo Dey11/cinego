@@ -257,7 +257,7 @@ const TVPlayer = ({ tvId, tvInfo, imdbId }: TVPlayerProps) => {
           />
         </div>
 
-        <div className="relative mx-auto aspect-video w-full overflow-hidden rounded-lg shadow-lg lg:w-3/4">
+        <div className="relative mx-auto h-[400px] w-full overflow-hidden rounded-lg shadow-lg md:aspect-video md:h-full lg:w-3/4">
           {/* Server selection */}
           <button
             onClick={() => setShowServers(!showServers)}
@@ -288,7 +288,7 @@ const TVPlayer = ({ tvId, tvInfo, imdbId }: TVPlayerProps) => {
                   : "pointer-events-none scale-95 opacity-0"
               }`}
             >
-              <div className="scrollbar-thin scrollbar-track-gray-800 scrollbar-thumb-gray-600 max-h-[12vh] overflow-y-auto px-2 sm:max-h-[20vh]">
+              <div className="scrollbar scrollbar-track-gray-800 scrollbar-thumb-gray-600 max-h-[200px] overflow-auto px-2 sm:max-h-[200px]">
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
                   {PROVIDERS_TV.map((provider, index) => (
                     <button

@@ -163,7 +163,7 @@ const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
           />
         </div>
 
-        <div className="relative mx-auto aspect-video w-full overflow-hidden rounded-lg shadow-lg lg:w-3/4">
+        <div className="relative mx-auto h-[400px] w-full overflow-hidden rounded-lg shadow-lg md:aspect-video md:h-full lg:w-3/4">
           <button
             onClick={() => setShowServers(!showServers)}
             className="absolute left-0 right-0 top-0 z-20 mx-auto flex h-10 w-40 items-center justify-center gap-x-2 rounded-b-[12px] bg-red-700 text-white transition-all hover:bg-[#fa1111]"
@@ -193,7 +193,7 @@ const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
                   : "pointer-events-none scale-95 opacity-0"
               }`}
             >
-              <div className="scrollbar-thin scrollbar-track-gray-800 scrollbar-thumb-gray-600 max-h-[12vh] overflow-y-auto px-2 sm:max-h-[20vh]">
+              <div className="scrollbar scrollbar-track-gray-800 scrollbar-thumb-gray-600 max-h-[200px] overflow-auto px-2 sm:max-h-[200px]">
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
                   {PROVIDERS_MOVIE.map((provider, index) => (
                     <button
