@@ -252,7 +252,7 @@ const MenuOps = () => {
           )}
         />
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent className="mr-2">
         {options.map((option) => (
           <Link href={option.href} key={option.name}>
             <DropdownMenuItem id={option.name}>
