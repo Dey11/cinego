@@ -20,49 +20,40 @@ type CarouselProps = {
 };
 
 export function CarouselComponent({ shows }: { shows: CarouselProps[] }) {
-  const [slidesPerView, setSlidesPerView] = useState<number>(3);
+  const [slideWidth, setSlideWidth] = useState("28vw");
 
-  const updateSlidesPerView = useCallback(() => {
+  const getSlideWidth = () => {
     const width = window.innerWidth;
-    if (width < 640) {
-      setSlidesPerView(2.2);
-    } else if (width < 768) {
-      setSlidesPerView(3.2);
-    } else if (width < 1024) {
-      setSlidesPerView(4.2);
-    } else if (width < 1280) {
-      setSlidesPerView(5.2);
-    } else {
-      setSlidesPerView(6.2);
-    }
-  }, []);
+
+    if (width >= 1400) return "12vw";
+    if (width >= 1100) return "16vw";
+    if (width >= 800) return "22vw";
+    if (width >= 550) return "28vw";
+    if (width >= 450) return "40vw";
+    return "47vw";
+  };
 
   useEffect(() => {
-    const debouncedUpdate = debounce(updateSlidesPerView, 100);
+    setSlideWidth(getSlideWidth());
 
-    updateSlidesPerView();
-    window.addEventListener("resize", debouncedUpdate);
+    const handleResize = () => {
+      setSlideWidth(getSlideWidth());
+    };
+
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener("resize", debouncedUpdate);
-      debouncedUpdate.cancel();
+      window.removeEventListener("resize", handleResize);
     };
-  }, [updateSlidesPerView]);
+  }, []);
 
   return (
     <div className="mx-auto w-full min-w-[350px] overflow-hidden px-2 md:px-0 lg:max-w-screen-xl xl:overflow-visible">
       <Swiper
         modules={[Navigation, A11y, FreeMode]}
         // spaceBetween={12}
-        slidesPerView={slidesPerView}
-        navigation
-        freeMode={{
-          enabled: true,
-          sticky: false,
-          momentumBounce: false,
-          minimumVelocity: 0.02,
-          momentum: true,
-        }}
+        slidesPerView="auto"
+        navigation={true}
         className=""
       >
         {shows.map((show) => (
