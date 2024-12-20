@@ -23,6 +23,12 @@ export interface Result {
   media_type?: "movie" | "tv";
 }
 
+export interface WatchProvider {
+  provider_id: number;
+  provider_name: string;
+  logo_path: string;
+}
+
 export function useSearch() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -35,14 +41,16 @@ export function useSearch() {
   const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [inputValue, setInputValue] = useState(initialQuery);
   const [genres, setGenres] = useState([]);
+  const [watchProviders, setWatchProviders] = useState<WatchProvider[]>([]);
 
   const currentType = (searchParams.get("type") as MediaType) || "all";
   const currentGenre = searchParams.get("genre") || "all";
   const currentSort = (searchParams.get("sort") as SortOption) || "popularity";
   const currentYear = searchParams.get("year") || "all";
-  const currentNetwork = searchParams.get("network") || "all";
-  const currentCountry = searchParams.get("country") || "all";
+  const currentWatchProvider = searchParams.get("watch_provider") || "all";
+  const currentCountry = searchParams.get("country") || "US";
   const currentRating = (searchParams.get("rating") as RatingOption) || "all";
+  const watchRegion = currentCountry === "all" ? "US" : currentCountry;
 
   const getSortQuery = (sort: SortOption) => {
     switch (sort) {
@@ -93,6 +101,39 @@ export function useSearch() {
     } catch (error) {
       console.error("Error fetching genres:", error);
       setGenres([]);
+    }
+  };
+
+  const fetchWatchProviders = async () => {
+    try {
+      const [movieProviders, tvProviders] = await Promise.all([
+        fetch(
+          `https://api.themoviedb.org/3/watch/providers/movie?language=en-US&watch_region=${watchRegion}&api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`,
+        ).then((res) => res.json()),
+        fetch(
+          `https://api.themoviedb.org/3/watch/providers/tv?language=en-US&watch_region=${watchRegion}&api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`,
+        ).then((res) => res.json()),
+      ]);
+
+      const allProviders = [...movieProviders.results, ...tvProviders.results];
+      const uniqueProviders = Array.from(
+        new Map(allProviders.map((item) => [item.provider_id, item])).values(),
+      );
+      
+      setWatchProviders(uniqueProviders);
+
+      // If current watch provider is not available in the new region, reset it
+      if (
+        currentWatchProvider !== "all" &&
+        !uniqueProviders.some(
+          (provider) => provider.provider_id.toString() === currentWatchProvider,
+        )
+      ) {
+        updateSearchParams({ watch_provider: "all" });
+      }
+    } catch (error) {
+      console.error("Error fetching watch providers:", error);
+      setWatchProviders([]);
     }
   };
 
@@ -150,10 +191,10 @@ export function useSearch() {
           if (currentSort === "rating") {
             const [movieRes, tvRes] = await Promise.all([
               fetch(
-                `${baseUrl}/movie/top_rated?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US&page=${currentPage}${currentGenre !== "all" ? `&with_genres=${currentGenre}` : ""}${currentYear !== "all" ? `&primary_release_year=${currentYear}` : ""}${currentNetwork !== "all" ? `&with_networks=${currentNetwork}` : ""}${currentCountry !== "all" ? `&with_origin_country=${currentCountry}` : ""}${ratingQuery}`,
+                `${baseUrl}/movie/top_rated?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US&page=${currentPage}${currentGenre !== "all" ? `&with_genres=${currentGenre}` : ""}${currentYear !== "all" ? `&primary_release_year=${currentYear}` : ""}${currentWatchProvider !== "all" ? `&with_watch_providers=${currentWatchProvider}&watch_region=${watchRegion}` : ""}${currentCountry !== "all" ? `&with_origin_country=${currentCountry}` : ""}${ratingQuery}`,
               ),
               fetch(
-                `${baseUrl}/tv/top_rated?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US&page=${currentPage}${currentGenre !== "all" ? `&with_genres=${currentGenre}` : ""}${currentYear !== "all" ? `&first_air_date_year=${currentYear}` : ""}${currentNetwork !== "all" ? `&with_networks=${currentNetwork}` : ""}${currentCountry !== "all" ? `&with_origin_country=${currentCountry}` : ""}${ratingQuery}`,
+                `${baseUrl}/tv/top_rated?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US&page=${currentPage}${currentGenre !== "all" ? `&with_genres=${currentGenre}` : ""}${currentYear !== "all" ? `&first_air_date_year=${currentYear}` : ""}${currentWatchProvider !== "all" ? `&with_watch_providers=${currentWatchProvider}&watch_region=${watchRegion}` : ""}${currentCountry !== "all" ? `&with_origin_country=${currentCountry}` : ""}${ratingQuery}`,
               ),
             ]);
 
@@ -187,10 +228,10 @@ export function useSearch() {
             // Discover endpoint logic
             const [movieRes, tvRes] = await Promise.all([
               fetch(
-                `${baseUrl}/discover/movie?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&page=${currentPage}&sort_by=${getSortQuery(currentSort)}${currentGenre !== "all" ? `&with_genres=${currentGenre}` : ""}${currentYear !== "all" ? `&primary_release_year=${currentYear}` : ""}${currentNetwork !== "all" ? `&with_networks=${currentNetwork}` : ""}${currentCountry !== "all" ? `&with_origin_country=${currentCountry}` : ""}${ratingQuery}`,
+                `${baseUrl}/discover/movie?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&page=${currentPage}&sort_by=${getSortQuery(currentSort)}${currentGenre !== "all" ? `&with_genres=${currentGenre}` : ""}${currentYear !== "all" ? `&primary_release_year=${currentYear}` : ""}${currentWatchProvider !== "all" ? `&with_watch_providers=${currentWatchProvider}&watch_region=${watchRegion}` : ""}${currentCountry !== "all" ? `&with_origin_country=${currentCountry}` : ""}${ratingQuery}`,
               ),
               fetch(
-                `${baseUrl}/discover/tv?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&page=${currentPage}&sort_by=${getSortQuery(currentSort)}${currentGenre !== "all" ? `&with_genres=${currentGenre}` : ""}${currentYear !== "all" ? `&first_air_date_year=${currentYear}` : ""}${currentNetwork !== "all" ? `&with_networks=${currentNetwork}` : ""}${currentCountry !== "all" ? `&with_origin_country=${currentCountry}` : ""}${ratingQuery}`,
+                `${baseUrl}/discover/tv?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&page=${currentPage}&sort_by=${getSortQuery(currentSort)}${currentGenre !== "all" ? `&with_genres=${currentGenre}` : ""}${currentYear !== "all" ? `&first_air_date_year=${currentYear}` : ""}${currentWatchProvider !== "all" ? `&with_watch_providers=${currentWatchProvider}&watch_region=${watchRegion}` : ""}${currentCountry !== "all" ? `&with_origin_country=${currentCountry}` : ""}${ratingQuery}`,
               ),
             ]);
 
@@ -229,7 +270,7 @@ export function useSearch() {
               : `/discover/${currentType}`;
 
           const response = await fetch(
-            `${baseUrl}${endpoint}?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US&page=${currentPage}${currentSort !== "rating" ? `&sort_by=${getSortQuery(currentSort)}` : ""}${currentGenre !== "all" ? `&with_genres=${currentGenre}` : ""}${currentYear !== "all" ? `&${currentType === "movie" ? "primary_release_year" : "first_air_date_year"}=${currentYear}` : ""}${currentNetwork !== "all" ? `&with_networks=${currentNetwork}` : ""}${currentCountry !== "all" ? `&with_origin_country=${currentCountry}` : ""}${ratingQuery}`,
+            `${baseUrl}${endpoint}?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US&page=${currentPage}${currentSort !== "rating" ? `&sort_by=${getSortQuery(currentSort)}` : ""}${currentGenre !== "all" ? `&with_genres=${currentGenre}` : ""}${currentYear !== "all" ? `&${currentType === "movie" ? "primary_release_year" : "first_air_date_year"}=${currentYear}` : ""}${currentWatchProvider !== "all" ? `&with_watch_providers=${currentWatchProvider}&watch_region=${watchRegion}` : ""}${currentCountry !== "all" ? `&with_origin_country=${currentCountry}` : ""}${ratingQuery}`,
           );
           const data = await response.json();
 
@@ -263,19 +304,41 @@ export function useSearch() {
     router.push(`${pathname}?${current.toString()}`);
   };
 
-  // Effect for handling URL search params
+  const debouncedSearch = useCallback(
+    debounce((value: string) => {
+      const params = new URLSearchParams(searchParams);
+      params.set("q", value);
+      router.push(`${pathname}?${params.toString()}`);
+    }, 300),
+    [searchParams, pathname, router]
+  );
+
+  const handleSearch = (value: string) => {
+    setInputValue(value);
+    debouncedSearch(value);
+  };
+
+  const handleReset = useCallback(() => {
+    setInputValue("");
+    setSearchQuery("");
+    setPage(1);
+    setResultsMap(new Map());
+    router.push(pathname);
+  }, [pathname, router]);
+
+  const loadMore = useCallback(() => {
+    if (!loading) {
+      setPage((prev) => prev + 1);
+      fetchResults(false);
+    }
+  }, [loading, fetchResults]);
+
   useEffect(() => {
     const query = searchParams.get("q") || "";
-    setInputValue(query);
     setSearchQuery(query);
+    setInputValue(query);
   }, [searchParams]);
 
-  // Effect for fetching genres
-  useEffect(() => {
-    fetchGenres();
-  }, [currentType]);
-
-  // Effect for fetching results
   useEffect(() => {
     fetchResults(true);
   }, [
@@ -284,42 +347,17 @@ export function useSearch() {
     currentGenre,
     currentSort,
     currentYear,
-    currentNetwork,
+    currentWatchProvider,
     currentCountry,
     currentRating,
   ]);
 
-  const handleReset = () => {
-    setInputValue("");
-    setSearchQuery("");
-    setPage(1);
-    router.push(pathname);
-    fetchResults(true);
-  };
+  useEffect(() => {
+    fetchGenres();
+    fetchWatchProviders();
+  }, [currentType, currentCountry]);
 
-  // Effect for infinite scroll
-  const loadMore = () => {
-    if (!loading) {
-      fetchResults(false); // Pass false to append results instead of resetting
-    }
-  };
-
-  // Create a debounced search function
-  const debouncedSearch = useCallback(
-    debounce((query: string) => {
-      setSearchQuery(query);
-      updateSearchParams({ q: query });
-    }, 500),
-    [],
-  );
-
-  // Update the input handler to use debouncing
-  const handleInputChange = (value: string) => {
-    setInputValue(value);
-    debouncedSearch(value);
-  };
-
-  // Cleanup debounced function
+  // Cleanup debounced function on unmount
   useEffect(() => {
     return () => {
       debouncedSearch.cancel();
@@ -329,20 +367,21 @@ export function useSearch() {
   return {
     resultsMap,
     loading,
+    searchQuery,
     inputValue,
     genres,
+    watchProviders,
     currentType,
     currentGenre,
     currentSort,
     currentYear,
-    currentNetwork,
     currentCountry,
     currentRating,
+    currentWatchProvider,
     setInputValue,
-    updateSearchParams,
-    setPage,
+    handleSearch,
     handleReset,
+    updateSearchParams,
     loadMore,
-    handleInputChange,
   };
 }
