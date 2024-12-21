@@ -25,7 +25,7 @@ export function useMediaList(type: "watchlist" | "history", isPaused: boolean) {
     const loadItems = async () => {
       setLoading(true);
       try {
-        if (isSignedIn) {
+        if (isSignedIn && type==="watchlist") {
           // Load from API
           const response = await fetch(`/api/${type}`);
           if (!response.ok) {
@@ -54,7 +54,7 @@ export function useMediaList(type: "watchlist" | "history", isPaused: boolean) {
 
   const addItem = async (item: MediaItem) => {
     try {
-      if (isSignedIn) {
+      if (isSignedIn && type==="watchlist") {
         // Check if watch history is paused
         if (isPaused) {
           console.log("Watch history is paused. Item will not be added.");
@@ -121,7 +121,7 @@ export function useMediaList(type: "watchlist" | "history", isPaused: boolean) {
 
   const removeItem = async (mediaId: string, mediaType: string) => {
     try {
-      if (isSignedIn) {
+      if (isSignedIn && type==="watchlist") {
         // Remove from API
         await fetch(`/api/${type}`, {
           method: "DELETE",
@@ -133,7 +133,7 @@ export function useMediaList(type: "watchlist" | "history", isPaused: boolean) {
       const newItems = items.filter(
         (item) => !(item.mediaId === mediaId && item.mediaType === mediaType),
       );
-      if (!isSignedIn) {
+      if (!isSignedIn || type==="history") {
         window.localStorage.setItem(
           LOCAL_STORAGE_KEYS[
             type.toUpperCase() as keyof typeof LOCAL_STORAGE_KEYS

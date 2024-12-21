@@ -3,7 +3,7 @@ import { prisma } from "@/lib/db";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  const { userId } = await auth();
+  try{const { userId } = await auth();
 
   if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 });
@@ -18,11 +18,15 @@ export async function GET() {
     },
   });
 
-  return NextResponse.json(watchlist);
+  return NextResponse.json(watchlist);}
+  catch(err){
+    console.log(err);
+    return null;
+  }
 }
 
 export async function POST(req: Request) {
-  const { userId } = await auth();
+  try{const { userId } = await auth();
 
   if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 });
@@ -45,10 +49,14 @@ export async function POST(req: Request) {
   });
 
   return NextResponse.json(watchlist);
+}catch(err){
+    console.log(err);
+    return null;
+  }
 }
 
 export async function DELETE(req: Request) {
-  const { userId } = await auth();
+  try{const { userId } = await auth();
 
   if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 });
@@ -68,5 +76,9 @@ export async function DELETE(req: Request) {
     },
   });
 
-  return new NextResponse(null, { status: 204 });
+  return new NextResponse(null, { status: 204 });}
+  catch(err){
+    console.log(err);
+    return null;
+  }
 }
