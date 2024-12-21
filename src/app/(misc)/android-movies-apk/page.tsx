@@ -14,7 +14,7 @@ export default function AndroidMoviesPage() {
     <div className="container mx-auto px-4 pt-20 py-8">
       <div className="max-w-2xl mx-auto text-center space-y-6">
         <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-          Download {WEBSITE_NAME} Android App
+          Download Android App
         </h1>
         
         <p className="text-muted-foreground text-lg">
