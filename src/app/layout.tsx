@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     siteName: "Vidbox",
     images: [
       {
-        url: "/og-image.jpg",
+        url: "/og-image.png",
         width: 1200,
         height: 630,
         alt: "Vidbox Preview",
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     title: "Vidbox - Your Ultimate Streaming Guide",
     description:
       "Discover and track your favorite movies and TV shows across all streaming platforms.",
-    images: ["/og-image.jpg"],
+    images: ["/og-image.png"],
   },
 };
 

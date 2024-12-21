@@ -1,7 +1,7 @@
 "use client";
 
 import { useInView } from "react-intersection-observer";
-import { useEffect, memo, Suspense } from "react";
+import { useEffect, memo, Suspense, useState } from "react";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -19,15 +19,22 @@ import {
 } from "@/hooks/use-anime-search";
 import { useRouter } from "next/navigation";
 
-const AnimeResultCard = memo(({ result }: { result: AnimeResult }) => (
+const AnimeResultCard = memo(({ result }: { result: AnimeResult }) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  return(
   <Link href={`/anime/${result.originalId || result.id.split("-")[0]}`}>
     <div className="relative overflow-hidden rounded-md hover:text-white">
       <div className="relative rounded-sm">
+      {!imageLoaded && (
+            <div className="absolute inset-0 bg-gray-200 animate-pulse" />
+          )}
         <img
           className="object-cover"
           src={result.image || "/placeholder.png"}
           alt={result.title.english || result.title.romaji}
           style={{ width: "100%", height: "100%" }}
+          onLoad={() => setImageLoaded(true)}
         />
         <div className="absolute left-0 top-0 flex h-full w-full flex-col items-center justify-center rounded-sm bg-gray-900 bg-opacity-60 opacity-0 transition-opacity hover:opacity-100 hover:backdrop-blur-[2px]">
           <img src="/icon-play.png" alt="play" width={25} height={25} />
@@ -57,7 +64,7 @@ const AnimeResultCard = memo(({ result }: { result: AnimeResult }) => (
       </div>
     </div>
   </Link>
-));
+)});
 
 AnimeResultCard.displayName = "AnimeResultCard";
 

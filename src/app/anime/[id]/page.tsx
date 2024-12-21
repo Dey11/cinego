@@ -167,23 +167,23 @@ const Page = async (props: { params: Props }) => {
             <p className="mb-6 text-lg">{animeDescription}</p>
             <div className="hidden md:block">
               <div className="flex items-center space-x-4">
-                <Link href={`/watch/anime/${params.id}`}>
+                {/* <Link href={`/watch/anime/${params.id}`}> */}
                   <Button
                     variant={"default"}
                     size={"lg"}
                     className="border border-white font-bold transition-transform hover:scale-110"
                   >
                     <Play className="fill-black pr-1" />
-                    Watch Now
+                    Watch Now (Soon)
                   </Button>
-                </Link>
+                {/* </Link> */}
                 <Button
                   variant={"secondary"}
                   size={"lg"}
                   className="border border-black bg-transparent font-bold transition-transform hover:scale-110 dark:border-white dark:text-white"
                 >
                   <Plus className="pr-1" />
-                  Add to watchlist
+                  Add to watchlist (Soon)
                 </Button>
               </div>
             </div>
@@ -195,7 +195,7 @@ const Page = async (props: { params: Props }) => {
                   className="w-full border border-white font-bold transition-transform hover:scale-110"
                 >
                   <Play className="fill-black pr-1" />
-                  Watch Now
+                  Watch Now (Soon)
                 </Button>
               </Link>
               <Button
@@ -204,7 +204,7 @@ const Page = async (props: { params: Props }) => {
                 className="w-full border border-black bg-transparent font-bold transition-transform hover:scale-110 dark:border-white dark:text-white"
               >
                 <Plus className="pr-1" />
-                Add to watchlist
+                Add to watchlist (Soon)
               </Button>
             </div>
           </div>
