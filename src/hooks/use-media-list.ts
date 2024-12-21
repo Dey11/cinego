@@ -119,14 +119,15 @@ export function useMediaList(type: "watchlist" | "history", isPaused: boolean) {
     }
   };
 
-  const removeItem = async (mediaId: string, mediaType: string) => {
+  const removeItem = async (mediaId: string, mediaType: string, all?: boolean) => {
     try {
+      let removeAll = all || false;
       if (isSignedIn && type==="watchlist") {
         // Remove from API
         await fetch(`/api/${type}`, {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ mediaId, mediaType }),
+          body: JSON.stringify({ mediaId, mediaType, removeAll }),
         });
       }
       // Remove locally

@@ -18,10 +18,10 @@ export function generateMediaMetadata({
   const imageUrl = `https://image.tmdb.org/t/p/original${posterPath}`;
 
   return {
-    title: `${title} | Flixhq`,
+    title: `${title}`,
     description: overview,
     openGraph: {
-      title: `${title} | Flixhq`,
+      title: `${title} | Vidbox`,
       description: overview,
       images: [
         {
@@ -36,7 +36,7 @@ export function generateMediaMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: `${title} | Flixhq`,
+      title: `${title} | Vidbox`,
       description: overview,
       images: [imageUrl],
     },

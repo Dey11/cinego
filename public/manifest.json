@@ -1,6 +1,6 @@
 {
-  "name": "FlixHQ",
-  "short_name": "FlixHQ",
+  "name": "Vidbox",
+  "short_name": "Vidbox",
   "description": "Your Ultimate Streaming Guide",
   "start_url": "/",
   "display": "standalone",

@@ -136,14 +136,16 @@ export default function HistoryPage() {
                           />
                           <div className="flex-1 pr-12">
                             <h3 className="line-clamp-2 text-lg font-semibold text-gray-800 dark:text-white">
-                              {item.title}
+                              {item.title} {item.mediaType === 'tv' && '| S' + item.season + ' E' + item.episode}
                             </h3>
                             <p className="text-sm text-gray-600 dark:text-gray-300">
-                              {item.mediaType === "tv" &&
-                              item.season &&
-                              item.episode
-                                ? `S${item.season} E${item.episode}`
-                                : item.mediaType.toUpperCase()}
+                              {
+                              // item.mediaType === "tv" &&
+                              // item.season &&
+                              // item.episode
+                              //   ? `S${item.season} E${item.episode}`
+                              //   : 
+                                item.mediaType.toUpperCase()}
                             </p>
                             <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                               {formattedDate}

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { formatDistanceToNow } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
 import { MoreVertical, Share2, Trash } from "lucide-react";
 import { useMediaList } from "@/hooks/use-media-list";
 import {
@@ -38,13 +38,33 @@ export default function WatchlistPage() {
     }
   };
 
+  const clearAllWatchlist = () => {
+    removeItem("1", "1", true);
+    window.location.reload();
+  };
+
   const filteredWatchlist = items
     .sort(
       (a, b) =>
-        new Date(b.watchedAt).getTime() - new Date(a.watchedAt).getTime(),
+        //@ts-ignore
+        new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime(),
     )
     .filter((item) =>
       item.title.toLowerCase().includes(searchQuery.toLowerCase()),
+    );
+
+    const groupedHistory = filteredWatchlist.reduce(
+      (acc, item) => {
+        //@ts-ignore
+        const date = new Date(item.addedAt!);
+        const dateString = format(date, "dd MMMM, yyyy");
+        if (!acc[dateString]) {
+          acc[dateString] = [];
+        }
+        acc[dateString].push(item);
+        return acc;
+      },
+      {} as Record<string, WatchlistItem[]>,
     );
 
   return (
@@ -53,9 +73,17 @@ export default function WatchlistPage() {
         <div className="container mx-auto h-screen max-w-[1440px] bg-white px-4 py-20 dark:bg-transparent">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr,400px]">
             <div className="order-2 lg:order-1">
+            {Object.entries(groupedHistory)
+            .sort((a, b) => new Date(b[0]).getTime() - new Date(a[0]).getTime())
+            .map(([date, items], index) => (
+              <div key={index} className="mb-8">
+                <h2 className="py-5 text-xl font-semibold text-gray-800 dark:text-gray-200">
+                  {date}
+                </h2>
               <ul className="space-y-4">
                 {filteredWatchlist.map((item) => {
-                  const addedDate = new Date(item.watchedAt);
+                  //@ts-ignore
+                  const addedDate = new Date(item.addedAt);
                   const formattedDate = `Added ${formatDistanceToNow(addedDate)} ago`;
 
                   return (
@@ -114,6 +142,9 @@ export default function WatchlistPage() {
                 })}
               </ul>
 
+              </div>
+            ))}
+
               {filteredWatchlist.length === 0 && (
                 <div className="mt-10 text-center">
                   <p className="text-gray-500 dark:text-gray-400">
@@ -131,6 +162,13 @@ export default function WatchlistPage() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full"
               />
+              <Button
+              onClick={clearAllWatchlist}
+              className="w-full border bg-transparent text-black hover:bg-transparent dark:text-white hover:dark:bg-transparent"
+            >
+              <Trash className="mr-2 h-5 w-5" />
+              Clear All Watchlist
+            </Button>
             </div>
           </div>
         </div>

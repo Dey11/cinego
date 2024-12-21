@@ -10,11 +10,11 @@ import { defaultMetadata } from "@/lib/metadata";
 export const metadata: Metadata = {
   ...defaultMetadata,
   alternates: {
-    canonical: "https://test.flixhq.lol/explore",
+    canonical: "https://test.vidbox.to/explore",
   },
   openGraph: {
     ...defaultMetadata.openGraph,
-    title: "FlixHQ - Explore Movies & TV Shows Across All Platforms",
+    title: "Vidbox - Explore Movies & TV Shows Across All Platforms",
     description:
       "Find trending movies, TV shows, and exclusive content from Netflix, Disney+, Amazon Prime, and more. Your one-stop destination for streaming entertainment.",
   },

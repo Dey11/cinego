@@ -19,7 +19,7 @@ export default function Footer({ backgroundImage }: FooterProps) {
           <div className="mb-4 w-full">
             <Image
               src="/logo.png"
-              alt="FLIXHQ Logo"
+              alt="Vidbox Logo"
               width={120}
               height={40}
               className="mx-auto h-10 w-auto sm:m-0"
@@ -82,9 +82,9 @@ export default function Footer({ backgroundImage }: FooterProps) {
           <div className="my-4 border-t border-red-500"></div>
           <div className="flex flex-col items-center justify-between text-sm md:flex-row">
             <p className="mx-auto mb-4 max-w-4xl text-center text-red-500 md:mb-0">
-              Flixhq.lol is top of free streaming website, where to watch movies
+              vidbox.to is top of free streaming website, where to watch movies
               online free without registration required. With a big database and
-              great features, we're confident. Flixhq.lol is the best free
+              great features, we're confident. vidbox.to is the best free
               movies online website in the space that you can't simply miss!
             </p>
           </div>
@@ -93,7 +93,7 @@ export default function Footer({ backgroundImage }: FooterProps) {
               This site does not store any files on our server, we only linked
               to the media which is hosted on 3rd party services.
             </p>
-            <p className="text-gray-400">FLIXHQ © 2024. All Rights Reserved</p>
+            <p className="text-gray-400">Vidbox © 2024. All Rights Reserved</p>
           </div>
         </div>
       </div>

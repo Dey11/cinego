@@ -1,8 +1,8 @@
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Terms of Service - FlixHQ",
-  description: "Terms and conditions for using FlixHQ services",
+  title: "Terms of Service - Vidbox",
+  description: "Terms and conditions for using Vidbox services",
 }
 
 export default function TermsPage() {

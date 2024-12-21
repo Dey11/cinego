@@ -91,6 +91,7 @@ const Header = () => {
                     [
                       "search",
                       "history",
+                      "watchlist",
                       "",
                       "faqs",
                       "android-movies-apk",
@@ -127,6 +128,7 @@ const Header = () => {
                 [
                   "search",
                   "history",
+                  "watchlist",
                   "",
                   "faqs",
                   "android-movies-apk",
@@ -148,6 +150,7 @@ const Header = () => {
                 [
                   "search",
                   "history",
+                  "watchlist",
                   "",
                   "faqs",
                   "android-movies-apk",
@@ -166,6 +169,7 @@ const Header = () => {
                 [
                   "search",
                   "history",
+                  "watchlist",
                   "",
                   "faqs",
                   "android-movies-apk",
@@ -187,6 +191,7 @@ const Header = () => {
               [
                 "search",
                 "history",
+                "watchlist",
                 "",
                 "faqs",
                 "android-movies-apk",
@@ -209,6 +214,7 @@ const Header = () => {
                 [
                   "search",
                   "history",
+                  "watchlist",
                   "",
                   "faqs",
                   "android-movies-apk",
@@ -241,6 +247,7 @@ const MenuOps = () => {
             [
               "search",
               "history",
+              "watchlist",
               "",
               "faqs",
               "android-movies-apk",

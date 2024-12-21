@@ -2,13 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- Main pages -->
   <url>
-    <loc>https://demo.flixhq.lol</loc>
+    <loc>https://vidbox.to</loc>
     <lastmod>2024-01-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://demo.flixhq.lol/search</loc>
+    <loc>https://vidbox.to/search</loc>
     <lastmod>2024-01-14</lastmod>
     <changefreq>hourly</changefreq>
     <priority>0.9</priority>
@@ -16,19 +16,19 @@
   
   <!-- Media type pages -->
   <url>
-    <loc>https://demo.flixhq.lol/search?type=movie</loc>
+    <loc>https://vidbox.to/search?type=movie</loc>
     <lastmod>2024-01-14</lastmod>
     <changefreq>hourly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://demo.flixhq.lol/search?type=tv</loc>
+    <loc>https://vidbox.to/search?type=tv</loc>
     <lastmod>2024-01-14</lastmod>
     <changefreq>hourly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://demo.flixhq.lol/search/anime</loc>
+    <loc>https://vidbox.to/search/anime</loc>
     <lastmod>2024-01-14</lastmod>
     <changefreq>hourly</changefreq>
     <priority>0.9</priority>
@@ -36,13 +36,13 @@
 
   <!-- User features -->
   <url>
-    <loc>https://demo.flixhq.lol/watchlist</loc>
+    <loc>https://vidbox.to/watchlist</loc>
     <lastmod>2024-01-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://demo.flixhq.lol/history</loc>
+    <loc>https://vidbox.to/history</loc>
     <lastmod>2024-01-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
@@ -50,37 +50,37 @@
 
   <!-- Information pages -->
   <url>
-    <loc>https://demo.flixhq.lol/donate</loc>
+    <loc>https://vidbox.to/donate</loc>
     <lastmod>2024-01-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://demo.flixhq.lol/faqs</loc>
+    <loc>https://vidbox.to/faqs</loc>
     <lastmod>2024-01-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://demo.flixhq.lol/contact</loc>
+    <loc>https://vidbox.to/contact</loc>
     <lastmod>2024-01-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://demo.flixhq.lol/privacy-policy</loc>
+    <loc>https://vidbox.to/privacy-policy</loc>
     <lastmod>2024-01-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://demo.flixhq.lol/terms</loc>
+    <loc>https://vidbox.to/terms</loc>
     <lastmod>2024-01-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://demo.flixhq.lol/android-movies-apk</loc>
+    <loc>https://vidbox.to/android-movies-apk</loc>
     <lastmod>2024-01-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>

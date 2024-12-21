@@ -1,8 +1,8 @@
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Privacy Policy - FlixHQ",
-  description: "Privacy policy and data handling practices for FlixHQ services",
+  title: "Privacy Policy - Vidbox",
+  description: "Privacy policy and data handling practices for Vidbox services",
 }
 
 export default function PrivacyPolicyPage() {
@@ -11,7 +11,7 @@ export default function PrivacyPolicyPage() {
       <h1 className="text-4xl font-bold mb-8">Privacy Policy</h1>
       <div className="prose prose-invert max-w-none">
         <p className="mb-6">
-          At FlixHQ, we take your privacy seriously. This Privacy Policy explains how we collect, use, 
+          At Vidbox, we take your privacy seriously. This Privacy Policy explains how we collect, use, 
           disclose, and safeguard your information when you use our service.
         </p>
 
@@ -58,7 +58,7 @@ export default function PrivacyPolicyPage() {
 
         <h2 className="text-2xl font-semibold mt-8 mb-4">Contact Us</h2>
         <p className="mb-6">
-          If you have any questions about this Privacy Policy, please contact us at admin@flixhq.lol
+          If you have any questions about this Privacy Policy, please contact us at admin@vidbox.to
         </p>
       </div>
     </div>
