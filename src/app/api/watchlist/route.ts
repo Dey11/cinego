@@ -21,7 +21,7 @@ export async function GET() {
   return NextResponse.json(watchlist);}
   catch(err){
     console.log(err);
-    return null;
+    // return null;
   }
 }
 
@@ -51,7 +51,7 @@ export async function POST(req: Request) {
   return NextResponse.json(watchlist);
 }catch(err){
     console.log(err);
-    return null;
+    // return null;
   }
 }
 
@@ -79,6 +79,6 @@ export async function DELETE(req: Request) {
   return new NextResponse(null, { status: 204 });}
   catch(err){
     console.log(err);
-    return null;
+    // return null;
   }
 }
