@@ -9,7 +9,7 @@ import Image from "next/image";
 export const metadata: Metadata = {
   ...defaultMetadata,
   alternates: {
-    canonical: "https://test.vidbox.to",
+    canonical: "https://vidbox.to",
   },
   openGraph: {
     ...defaultMetadata.openGraph,

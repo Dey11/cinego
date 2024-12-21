@@ -10,7 +10,7 @@ import { defaultMetadata } from "@/lib/metadata";
 export const metadata: Metadata = {
   ...defaultMetadata,
   alternates: {
-    canonical: "https://test.vidbox.to/explore",
+    canonical: "https://vidbox.to/home",
   },
   openGraph: {
     ...defaultMetadata.openGraph,
