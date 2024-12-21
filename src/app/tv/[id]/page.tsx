@@ -12,6 +12,7 @@ import Example from "@/components/movie-page/youtube-player";
 import Link from "next/link";
 import { Metadata } from "next";
 import { generateMediaMetadata } from "@/lib/metadata-helpers";
+import WatchlistButton from "@/components/shared/watchlist-button";
 
 type Props = Promise<{ id: string }>;
 
@@ -117,14 +118,15 @@ const Page = async (props: { params: Props }) => {
                     Play
                   </Button>
                 </Link>
-                <Button
-                  variant={"secondary"}
-                  size={"lg"}
+                <WatchlistButton
+                  mediaId={tvId.id}
+                  mediaType="tv"
+                  title={tvInfo.name}
+                  backdrop_path={tvInfo.backdrop_path}
+                  variant="secondary"
+                  size="lg"
                   className="border border-black bg-transparent font-bold dark:border-white dark:text-white lg:transition-transform lg:hover:scale-110"
-                >
-                  <Plus className="pr-1" />
-                  Add to watchlist
-                </Button>
+                />
               </div>
             </div>
             <div className="space-y-3 md:hidden">
@@ -138,14 +140,15 @@ const Page = async (props: { params: Props }) => {
                   Play
                 </Button>
               </Link>
-              <Button
-                variant={"secondary"}
-                size={"lg"}
+              <WatchlistButton
+                mediaId={tvId.id}
+                mediaType="tv"
+                title={tvInfo.name}
+                backdrop_path={tvInfo.backdrop_path}
+                variant="secondary"
+                size="lg"
                 className="w-full border border-black bg-transparent font-bold dark:border-white dark:text-white lg:transition-transform lg:hover:scale-110"
-              >
-                <Plus className="pr-1" />
-                Add to watchlist
-              </Button>
+              />
             </div>
           </div>
         </div>

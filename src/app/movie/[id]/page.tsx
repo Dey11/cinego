@@ -1,5 +1,6 @@
 import Example from "@/components/movie-page/youtube-player";
 import { Button } from "@/components/ui/button";
+import WatchlistButton from "@/components/shared/watchlist-button";
 import {
   fetchCastInfo,
   fetchMovieInfo,
@@ -107,16 +108,24 @@ const Page = async (props: { params: Props }) => {
                     Play
                   </Button>
                 </Link>
-                <Button
-                  variant={"secondary"}
-                  size={"lg"}
+                <WatchlistButton
+                  mediaId={params.id}
+                  mediaType="movie"
+                  title={movieInfo.title}
+                  backdrop_path={movieInfo.backdrop_path}
+                  variant="secondary"
+                  size="lg"
                   className="border border-black bg-transparent font-bold transition-transform hover:scale-110 dark:border-white dark:text-white"
-                >
-                  <Plus className="pr-1" />
-                  Add to watchlist
-                </Button>
+                />
                 <Link href={`https://dl.vidsrc.vip/movie/${params.id}`}>
-                  <Download className="h-5 w-5" />
+                  <Button
+                    variant={"secondary"}
+                    size={"lg"}
+                    className="border border-black bg-transparent font-bold dark:border-white dark:text-white"
+                  >
+                    <Download className="pr-1" />
+                    Download
+                  </Button>
                 </Link>
               </div>
             </div>
@@ -262,16 +271,15 @@ const Page = async (props: { params: Props }) => {
               </Button>
             </Link>
 
-            <Link href={"/"}>
-              <Button
-                variant={"secondary"}
-                size={"lg"}
-                className="w-full border border-black bg-transparent font-bold dark:border-white dark:text-white lg:transition-transform lg:hover:scale-110"
-              >
-                <Plus className="pr-1" />
-                Add to watchlist
-              </Button>
-            </Link>
+            <WatchlistButton
+              mediaId={params.id}
+              mediaType="movie"
+              title={movieInfo.title}
+              backdrop_path={movieInfo.backdrop_path}
+              variant="secondary"
+              size="lg"
+              className="w-full border border-black bg-transparent font-bold dark:border-white dark:text-white lg:transition-transform lg:hover:scale-110"
+            />
 
             <Link
               className=""

@@ -8,6 +8,7 @@ import Link from "next/link";
 import { Metadata } from "next";
 import { fetchAnimeInfo } from "@/lib/api-calls/anime";
 import AnimeEpisodesList from "@/components/anime/AnimeEpisodesList";
+import WatchlistButton from "@/components/shared/watchlist-button";
 
 type AnimeEpisode = {
   id: string;
@@ -98,6 +99,11 @@ const Page = async (props: { params: Props }) => {
     );
   }
 
+  const findZoroId = animeInfo.mappings.filter((m)=>m.providerId==="zoro")
+  const zoroIdWithWatch = findZoroId[0]?.id;
+  const zoroId = zoroIdWithWatch?.split("/")[zoroIdWithWatch?.split("/").length-1]
+  console.log(zoroId)
+
   const animeDescription = animeInfo.description
     .replaceAll("<br>", "")
     .replaceAll("\n", "")
@@ -174,17 +180,18 @@ const Page = async (props: { params: Props }) => {
                     className="border border-white font-bold transition-transform hover:scale-110"
                   >
                     <Play className="fill-black pr-1" />
-                    Watch Now (Soon)
+                    Play (Soon)
                   </Button>
                 {/* </Link> */}
-                <Button
-                  variant={"secondary"}
-                  size={"lg"}
-                  className="border border-black bg-transparent font-bold transition-transform hover:scale-110 dark:border-white dark:text-white"
-                >
-                  <Plus className="pr-1" />
-                  Add to watchlist (Soon)
-                </Button>
+                <WatchlistButton
+                  mediaId={animeInfo.id}
+                  mediaType={params.type}
+                  title={animeInfo.title.english || animeInfo.title.romaji}
+                  backdrop_path={animeInfo.cover || animeInfo.image}
+                  variant="secondary"
+                  size="lg"
+                  className="border border-black bg-transparent font-bold dark:border-white dark:text-white lg:transition-transform lg:hover:scale-110"
+                />
               </div>
             </div>
             <div className="space-y-3 md:hidden">
@@ -195,17 +202,18 @@ const Page = async (props: { params: Props }) => {
                   className="w-full border border-white font-bold transition-transform hover:scale-110"
                 >
                   <Play className="fill-black pr-1" />
-                  Watch Now (Soon)
+                  Play (Soon)
                 </Button>
               </Link>
-              <Button
-                variant={"secondary"}
-                size={"lg"}
-                className="w-full border border-black bg-transparent font-bold transition-transform hover:scale-110 dark:border-white dark:text-white"
-              >
-                <Plus className="pr-1" />
-                Add to watchlist (Soon)
-              </Button>
+              <WatchlistButton
+                mediaId={animeInfo.id}
+                mediaType={params.type}
+                title={animeInfo.title.english || animeInfo.title.romaji}
+                backdrop_path={animeInfo.cover || animeInfo.image}
+                variant="secondary"
+                size="lg"
+                className="w-full border border-black bg-transparent font-bold dark:border-white dark:text-white lg:transition-transform lg:hover:scale-110"
+              />
             </div>
           </div>
         </div>
