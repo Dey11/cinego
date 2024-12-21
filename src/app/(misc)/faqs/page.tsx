@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 const faqs = [
   {
-    question: "Is it legal to watch movies on Fmovies ?",
+    question: "Is it legal to watch movies on Vidbox ?",
     answer: "Absolutely, Watching is totally legal. We also do not host the movies, we link to them.",
   },
   {
