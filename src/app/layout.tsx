@@ -12,9 +12,7 @@ import { dark } from "@clerk/themes";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_APP_URL || "https://vidbox.to",
-  ),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://vidbox.to"),
   title: "Vidbox - Your Ultimate Streaming Guide",
   description:
     "Discover and track your favorite movies and TV shows across all streaming platforms. Get personalized recommendations and streaming availability information.",
@@ -47,7 +45,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider appearance={{ baseTheme: dark }}>
+    <ClerkProvider
+      appearance={{
+        signIn: { baseTheme: dark },
+        signUp: { baseTheme: dark },
+        userProfile: { baseTheme: dark },
+      }}
+    >
       <html lang="en" className="scrollbar" suppressHydrationWarning={true}>
         <head>
           <script

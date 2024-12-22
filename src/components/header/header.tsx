@@ -30,6 +30,7 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { SignInButton, UserButton, useUser } from "@clerk/nextjs";
 import { DISCORD_URL, DOWNLOAD_APK } from "@/lib/constants";
+import { dark } from "@clerk/themes";
 
 const options = [
   { name: "Home", href: "/", icon: Home },
@@ -205,7 +206,7 @@ const Header = () => {
           />
         )}
         {user ? (
-          <UserButton />
+          <UserButton appearance={{ baseTheme: dark }} />
         ) : (
           <SignInButton mode="modal">
             <User
