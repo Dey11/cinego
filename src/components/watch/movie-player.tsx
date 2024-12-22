@@ -138,7 +138,6 @@ const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
     try {
       // Build the base URL
       let url = provider.url;
-      console.log(url);
       // Add the formatted path
       if (provider.urlFormat) {
         url = url.replace("{id}", id.toString());
@@ -153,7 +152,6 @@ const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
         // url += separator + provider.extraParams.replace(/^\?/, "");
         url += provider.extraParams;
       }
-      console.log(url);
       return url;
     } catch (error) {
       console.error("Error generating provider URL:", error);

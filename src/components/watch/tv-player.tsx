@@ -239,7 +239,6 @@ const TVPlayer = ({ tvId, tvInfo, imdbId }: TVPlayerProps) => {
         const separator = url.includes("?") ? "&" : "?";
         url += separator + provider.extraParams.replace(/^\?/, "");
       }
-      console.log(url);
       return url;
     } catch (error) {
       console.error("Error generating provider URL:", error);
