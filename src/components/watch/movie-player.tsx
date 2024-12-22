@@ -45,6 +45,8 @@ const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
     "currentProvider",
     DEFAULT_MOVIE_PROVIDER,
   );
+
+  // console.log(currentProvider);
   const [bookmarked, setBookmarked] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
   const [linkCopied, setLinkCopied] = useState(false);
@@ -122,20 +124,40 @@ const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
     provider: (typeof PROVIDERS_MOVIE)[0],
     movieId: string,
   ) => {
-    const imdbId = movieInfo.imdb_id;
-    const tmdbId = movieInfo.id;
+    // Wait for provider to be loaded
+    if (loading || !provider) {
+      return "";
+    }
 
-    switch (provider.name) {
-      case "Max":
-      case "Spanish":
-      case "Lima":
-      case "Gama":
-      case "Nova":
-        return `${provider.url}${tmdbId}`;
-      case "Echo":
-        return `${provider.url}${imdbId}?primaryColor=white&secondaryColor=white&iconColor=white&title=false&poster=true&autoplay=true`;
-      default:
-        return `${provider.url}${imdbId}`;
+    // Get the correct ID based on provider's idType
+    const id = provider.idType === "imdb" ? imdbId : tmdbId;
+    if (!id) {
+      return "";
+    }
+    console.log(id);
+    try {
+      // Build the base URL
+      let url = provider.url;
+      console.log(url);
+      // Add the formatted path
+      if (provider.urlFormat) {
+        url = url.replace("{id}", id.toString());
+      } else {
+        url += id.toString();
+      }
+      console.log(url, "here");
+      // Add extra parameters if they exist
+      if (provider.extraParams) {
+        // Remove duplicate question marks
+        // const separator = url.includes("?") ? "&" : "?";
+        // url += separator + provider.extraParams.replace(/^\?/, "");
+        url += provider.extraParams;
+      }
+      console.log(url);
+      return url;
+    } catch (error) {
+      console.error("Error generating provider URL:", error);
+      return "";
     }
   };
 
@@ -216,18 +238,15 @@ const VideoPlayer = ({ movieId, movieInfo }: VideoPlayerProps) => {
             </div>
           )}
 
-          {!loading && (
-            <div>
-              <iframe
-                src={getProviderUrl(
-                  currentProvider || PROVIDERS_MOVIE[0],
-                  movieId,
-                )}
-                className="absolute left-0 top-0 h-full w-full"
-                allowFullScreen
-                allow="autoplay; encrypted-media; picture-in-picture"
-              />
-            </div>
+          {!loading && currentProvider && (
+            <iframe
+              //@ts-ignore
+              src={getProviderUrl(currentProvider, movieId)}
+              // src={"autoembed.cc/embed/player.php?id=19404"}
+              className="absolute left-0 top-0 h-full w-full"
+              allowFullScreen
+              allow="autoplay; encrypted-media; picture-in-picture"
+            />
           )}
         </div>
 

@@ -208,27 +208,42 @@ const TVPlayer = ({ tvId, tvInfo, imdbId }: TVPlayerProps) => {
     season: number,
     episode: number,
   ) => {
-    const tmdbId = tvInfo.id;
+    // Wait for provider to be loaded
+    if (loading || !provider) {
+      return "";
+    }
 
-    switch (provider.name) {
-      case "Max":
-      case "Spanish":
-        return `${provider.url}${tmdbId}/${season}-${episode}`;
-      case "Bravo":
-      case "Lima":
-      case "Nova":
-      case "Jade":
-        return `${provider.url}${tmdbId}/${season}/${episode}`;
-      case "Echo":
-        return `${provider.url}${tmdbId}/${season}/${episode}?primaryColor=white&secondaryColor=white&iconColor=white&title=false&poster=true&autoplay=true`;
-      case "Asia":
-        return `${provider.url}${imdbId}&s=${season}&e=${episode}`;
-      case "Gama":
-        return `${provider.url}${tmdbId}&s=${season}&e=${episode}`;
-      case "French":
-        return `${provider.url}${imdbId}&sa=${season}&epi=${episode}`;
-      default:
-        return `${provider.url}${imdbId}/${season}/${episode}`;
+    // Get the correct ID based on provider's idType
+    const id = provider.idType === "imdb" ? imdbId : tmdbId;
+    if (!id) {
+      return "";
+    }
+
+    try {
+      // Build the base URL
+      let url = provider.url;
+
+      // Add the formatted path
+      if (provider.urlFormat) {
+        url += provider.urlFormat
+          .replace(/id/g, id.toString())
+          .replace(/season/g, season.toString())
+          .replace(/episode/g, episode.toString());
+      } else {
+        url += `${id}/${season}/${episode}`;
+      }
+
+      // Add extra parameters if they exist
+      if (provider.extraParams) {
+        // Remove duplicate question marks
+        const separator = url.includes("?") ? "&" : "?";
+        url += separator + provider.extraParams.replace(/^\?/, "");
+      }
+      console.log(url);
+      return url;
+    } catch (error) {
+      console.error("Error generating provider URL:", error);
+      return "";
     }
   };
 
@@ -312,11 +327,13 @@ const TVPlayer = ({ tvId, tvInfo, imdbId }: TVPlayerProps) => {
           )}
 
           {/* Video Player */}
-          {!loading && (
+          {!loading && currentProvider && (
             <div>
               <iframe
+                // src={"vidlink.pro/tv/1396/1/1"}
                 src={getProviderUrl(
-                  currentProvider || PROVIDERS_TV[0],
+                  //@ts-ignore
+                  currentProvider,
                   tvId,
                   currentSeason,
                   currentEpisode,
