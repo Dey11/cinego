@@ -118,14 +118,14 @@ const Page = async (props: { params: Props }) => {
                   className="border border-black bg-transparent font-bold transition-transform hover:scale-110 dark:border-white dark:text-white"
                 />
                 <Link href={`https://dl.vidsrc.vip/movie/${params.id}`}>
-                  <Button
+                  {/* <Button
                     variant={"secondary"}
                     size={"lg"}
                     className="border border-black bg-transparent font-bold dark:border-white dark:text-white"
-                  >
-                    <Download className="pr-1" />
-                    Download
-                  </Button>
+                  > */}
+                  <Download className="pr-1" />
+                  {/* Download
+                  </Button> */}
                 </Link>
               </div>
             </div>

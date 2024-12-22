@@ -3,7 +3,14 @@
 import Link from "next/link";
 import { formatDistanceToNow, format } from "date-fns";
 import { useState, useEffect } from "react";
-import { Pause, Play, Trash, MoreVertical, Share2 } from "lucide-react";
+import {
+  Pause,
+  Play,
+  Trash,
+  MoreVertical,
+  Share2,
+  Loader2,
+} from "lucide-react";
 import { useMediaList } from "@/hooks/use-media-list";
 import {
   DropdownMenu,
@@ -102,6 +109,14 @@ export default function HistoryPage() {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-red-500" />
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto max-w-[1440px] bg-white px-4 py-20 dark:bg-transparent">
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr,400px]">
@@ -125,27 +140,38 @@ export default function HistoryPage() {
                           href={`/${item.mediaType}/${item.mediaId}`}
                           className="group flex w-full items-center space-x-4 rounded-md bg-gray-100 transition-all hover:bg-gray-200 dark:bg-[#2a2a30] dark:hover:bg-gray-700"
                         >
-                          <img
-                            src={
-                              item.backdrop_path
-                                ? `https://image.tmdb.org/t/p/w500${item.backdrop_path}`
-                                : "/placeholder.png"
-                            }
-                            alt={item.title}
-                            className="h-[80px] w-[120px] rounded-md object-cover lg:h-[100px] lg:w-[150px]"
-                          />
+                          {item.backdrop_path.startsWith("/") ? (
+                            <img
+                              src={
+                                item.backdrop_path
+                                  ? `https://image.tmdb.org/t/p/w500${item.backdrop_path}`
+                                  : "/placeholder.png"
+                              }
+                              alt={item.title}
+                              className="h-[80px] w-[120px] rounded-md object-cover lg:h-[100px] lg:w-[150px]"
+                            />
+                          ) : (
+                            <img
+                              src={item.backdrop_path ?? "/placeholder.png"}
+                              alt={item.title}
+                              className="h-[80px] w-[120px] rounded-md object-cover lg:h-[100px] lg:w-[150px]"
+                            />
+                          )}
                           <div className="flex-1 pr-12">
                             <h3 className="line-clamp-2 text-lg font-semibold text-gray-800 dark:text-white">
-                              {item.title} {item.mediaType === 'tv' && '| S' + item.season + ' E' + item.episode}
+                              {item.title}{" "}
+                              {item.mediaType === "tv" &&
+                                "| S" + item.season + " E" + item.episode}
                             </h3>
                             <p className="text-sm text-gray-600 dark:text-gray-300">
                               {
-                              // item.mediaType === "tv" &&
-                              // item.season &&
-                              // item.episode
-                              //   ? `S${item.season} E${item.episode}`
-                              //   : 
-                                item.mediaType.toUpperCase()}
+                                // item.mediaType === "tv" &&
+                                // item.season &&
+                                // item.episode
+                                //   ? `S${item.season} E${item.episode}`
+                                //   :
+                                item.mediaType.toUpperCase()
+                              }
                             </p>
                             <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                               {formattedDate}
